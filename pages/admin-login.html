@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Admin - Batik Nusantara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .bg-batik {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      .bg-batik::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+          radial-gradient(circle at 25px 25px, rgba(255,255,255,0.1) 2px, transparent 2px),
+          radial-gradient(circle at 75px 75px, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 50px 50px, 100px 100px;
+        background-position: 0 0, 50px 50px;
+        opacity: 0.3;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 h-screen flex items-center justify-center bg-batik">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-amber-800">Admin Panel</h1>
+        <p class="text-gray-600">Batik Nusantara</p>
+      </div>
+
+      <div id="alert-container" class="mb-6 hidden">
+        <!-- Alert will be shown here -->
+      </div>
+
+      <form id="login-form" class="space-y-6">
+        <!-- CSRF Protection Token -->
+        <input type="hidden" id="csrf_token" name="csrf_token" />
+
+        <div>
+          <label
+            for="username"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Username</label
+          >
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"
+            >
+              <i class="fas fa-user"></i>
+            </span>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            for="password"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Password</label
+          >
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"
+            >
+              <i class="fas fa-lock"></i>
+            </span>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-amber-700 text-white py-2 px-4 rounded-md hover:bg-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition"
+          >
+            <span id="login-text">Login</span>
+            <span id="login-loading" class="hidden">
+              <i class="fas fa-spinner fa-spin mr-2"></i> Memproses...
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-gray-600">
+        <a href="../index.html" class="text-amber-700 hover:text-amber-800">
+          <i class="fas fa-arrow-left mr-1"></i> Kembali ke Website
+        </a>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/admin-login.js"></script>
+</body>
+</html>

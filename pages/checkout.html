@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Batik Nusantara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        .step-indicator {
+            position: relative;
+        }
+
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100px;
+            height: 2px;
+            background: #e5e7eb;
+            transform: translateY(-50%);
+        }
+
+        .step-indicator.active::after {
+            background: #d97706;
+        }
+
+        .step-indicator:last-child::after {
+            display: none;
+        }
+
+        .payment-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-option.selected {
+            border-color: #d97706;
+            background-color: #fef3c7;
+        }
+
+        .loading-overlay {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-amber-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors">
+                <i class="fas fa-tshirt text-amber-300"></i>
+                <span>Batik Nusantara</span>
+            </a>
+
+            <div class="text-right">
+                <div class="text-sm text-amber-200">Checkout Aman</div>
+                <div class="flex items-center text-sm">
+                    <i class="fas fa-shield-check mr-1"></i>
+                    <span>SSL Terenkripsi</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Steps -->
+    <div class="bg-white border-b">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-center space-x-8">
+                <div class="step-indicator flex items-center active">
+                    <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-semibold">
+                        1
+                    </div>
+                    <span class="ml-2 text-amber-600 font-medium">Keranjang</span>
+                </div>
+                <div class="step-indicator flex items-center active">
+                    <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-semibold">
+                        2
+                    </div>
+                    <span class="ml-2 text-amber-600 font-medium">Checkout</span>
+                </div>
+                <div class="step-indicator flex items-center">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center font-semibold">
+                        3
+                    </div>
+                    <span class="ml-2 text-gray-500 font-medium">Pembayaran</span>
+                </div>
+                <div class="step-indicator flex items-center">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center font-semibold">
+                        4
+                    </div>
+                    <span class="ml-2 text-gray-500 font-medium">Selesai</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div id="checkout-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Checkout Form -->
+            <div class="lg:col-span-2">
+                <form id="checkout-form" class="space-y-8">
+                    <!-- Customer Information -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-sm"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-900">Informasi Pelanggan</h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nama Lengkap <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="fullName" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" name="email" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nomor Telepon <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" name="phone" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                       placeholder="08xxxxxxxxxx">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Tanggal Lahir
+                                </label>
+                                <input type="date" name="birthDate"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Information -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-truck text-sm"></i>
+                                </div>
+                                <h2 class="text-xl font-bold text-gray-900">Informasi Pengiriman</h2>
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="same-as-billing" class="mr-2">
+                                <span class="text-sm text-gray-600">Sama dengan alamat pelanggan</span>
+                            </label>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Alamat Lengkap <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="address" required rows="3"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                          placeholder="Jalan, No. Rumah, RT/RW, Kelurahan"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Provinsi <span class="text-red-500">*</span>
+                                    </label>
+                                    <select name="province" required
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                        <option value="">Pilih Provinsi</option>
+                                        <option value="DKI Jakarta">DKI Jakarta</option>
+                                        <option value="Jawa Barat">Jawa Barat</option>
+                                        <option value="Jawa Tengah">Jawa Tengah</option>
+                                        <option value="DI Yogyakarta">DI Yogyakarta</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Banten">Banten</option>
+                                        <option value="Sumatera Utara">Sumatera Utara</option>
+                                        <option value="Sumatera Barat">Sumatera Barat</option>
+                                        <option value="Bali">Bali</option>
+                                        <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Kota/Kabupaten <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" name="city" required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Kode Pos <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" name="postalCode" required pattern="[0-9]{5}"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                           placeholder="12345">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Catatan Pengiriman (Opsional)
+                                </label>
+                                <textarea name="shippingNotes" rows="2"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                          placeholder="Catatan khusus untuk kurir (warna pagar, patokan, dll)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center mb-6">
+                            <div class="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-credit-card text-sm"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-900">Metode Pembayaran</h2>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Bank Transfer -->
+                            <div class="payment-option border border-gray-300 rounded-lg p-4" data-method="bank_transfer">
+                                <div class="flex items-center">
+                                    <input type="radio" name="paymentMethod" value="bank_transfer" id="bank_transfer" class="mr-3">
+                                    <div class="flex-1">
+                                        <label for="bank_transfer" class="font-medium text-gray-900 cursor-pointer">Transfer Bank</label>
+                                        <div class="text-sm text-gray-600 mt-1">BCA, BNI, BRI, Mandiri</div>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <div class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">BCA</div>
+                                            <div class="bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">BNI</div>
+                                            <div class="bg-blue-800 text-white px-2 py-1 rounded text-xs font-bold">BRI</div>
+                                            <div class="bg-yellow-500 text-blue-900 px-2 py-1 rounded text-xs font-bold">MANDIRI</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-green-600 font-medium">GRATIS</div>
+                                </div>
+                            </div>
+
+                            <!-- E-Wallet -->
+                            <div class="payment-option border border-gray-300 rounded-lg p-4" data-method="ewallet">
+                                <div class="flex items-center">
+                                    <input type="radio" name="paymentMethod" value="ewallet" id="ewallet" class="mr-3">
+                                    <div class="flex-1">
+                                        <label for="ewallet" class="font-medium text-gray-900 cursor-pointer">E-Wallet</label>
+                                        <div class="text-sm text-gray-600 mt-1">GoPay, OVO, DANA, ShopeePay</div>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <div class="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">GOPAY</div>
+                                            <div class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">OVO</div>
+                                            <div class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">DANA</div>
+                                            <div class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">SHOPEE</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-green-600 font-medium">GRATIS</div>
+                                </div>
+                            </div>
+
+                            <!-- Credit Card -->
+                            <div class="payment-option border border-gray-300 rounded-lg p-4" data-method="credit_card">
+                                <div class="flex items-center">
+                                    <input type="radio" name="paymentMethod" value="credit_card" id="credit_card" class="mr-3">
+                                    <div class="flex-1">
+                                        <label for="credit_card" class="font-medium text-gray-900 cursor-pointer">Kartu Kredit/Debit</label>
+                                        <div class="text-sm text-gray-600 mt-1">Visa, MasterCard, JCB</div>
+                                        <div class="flex items-center mt-2 space-x-2">
+                                            <div class="bg-blue-900 text-white px-2 py-1 rounded text-xs font-bold">VISA</div>
+                                            <div class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">MASTERCARD</div>
+                                            <div class="bg-blue-700 text-white px-2 py-1 rounded text-xs font-bold">JCB</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-600 font-medium">+2.9%</div>
+                                </div>
+                            </div>
+
+                            <!-- COD -->
+                            <div class="payment-option border border-gray-300 rounded-lg p-4" data-method="cod">
+                                <div class="flex items-center">
+                                    <input type="radio" name="paymentMethod" value="cod" id="cod" class="mr-3">
+                                    <div class="flex-1">
+                                        <label for="cod" class="font-medium text-gray-900 cursor-pointer">Bayar di Tempat (COD)</label>
+                                        <div class="text-sm text-gray-600 mt-1">Bayar tunai saat barang sampai</div>
+                                    </div>
+                                    <div class="text-amber-600 font-medium">+Rp 5.000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <input type="checkbox" name="agreeTerms" id="agreeTerms" required class="mt-1 mr-3">
+                                <label for="agreeTerms" class="text-sm text-gray-600">
+                                    Saya telah membaca dan menyetujui <a href="#" class="text-amber-600 hover:text-amber-700 underline">Syarat & Ketentuan</a>
+                                    serta <a href="#" class="text-amber-600 hover:text-amber-700 underline">Kebijakan Privasi</a> Batik Nusantara.
+                                </label>
+                            </div>
+                            <div class="flex items-start">
+                                <input type="checkbox" name="agreeNewsletter" id="agreeNewsletter" class="mt-1 mr-3">
+                                <label for="agreeNewsletter" class="text-sm text-gray-600">
+                                    Saya ingin menerima newsletter dan informasi promosi dari Batik Nusantara.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
+
+                    <!-- Order Items -->
+                    <div id="order-items" class="space-y-4 mb-6">
+                        <!-- Items will be loaded here -->
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="border-t pt-6 space-y-3">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal (<span id="total-items">0</span> item)</span>
+                            <span id="subtotal">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Ongkos Kirim</span>
+                            <span id="shipping-fee" class="text-green-600">GRATIS</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Biaya Layanan</span>
+                            <span id="service-fee">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Diskon</span>
+                            <span id="discount" class="text-green-600">-Rp <span id="discount-amount">0</span></span>
+                        </div>
+                        <hr class="border-gray-200">
+                        <div class="flex justify-between text-lg font-bold text-gray-900">
+                            <span>Total Pembayaran</span>
+                            <span id="grand-total" class="text-amber-600">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button type="submit" form="checkout-form" id="checkout-btn"
+                            class="w-full mt-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-lock mr-2"></i>
+                        Bayar Sekarang
+                    </button>
+
+                    <!-- Security Info -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center text-sm text-gray-600 mb-2">
+                            <i class="fas fa-shield-check text-green-500 mr-2"></i>
+                            <span>Transaksi aman dengan enkripsi SSL</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600 mb-2">
+                            <i class="fas fa-undo text-blue-500 mr-2"></i>
+                            <span>Garansi uang kembali 7 hari</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-headset text-purple-500 mr-2"></i>
+                            <span>Customer service 24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 loading-overlay items-center justify-center z-50 hidden">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-amber-600 mx-auto mb-4"></div>
+            <div class="text-lg font-medium text-gray-900">Memproses pesanan...</div>
+            <div class="text-sm text-gray-600 mt-2">Mohon tunggu sebentar</div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Pesanan Berhasil!</h3>
+                <p class="text-gray-600">Terima kasih telah berbelanja di Batik Nusantara. Kami akan segera memproses pesanan Anda.</p>
+            </div>
+            <div class="border-t pt-6">
+                <div class="text-sm text-gray-600 mb-4">
+                    <div>Nomor Pesanan: <span id="order-number" class="font-medium text-gray-900">#12345</span></div>
+                    <div class="mt-1">Total: <span id="order-total" class="font-medium text-amber-600">Rp 0</span></div>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="continueShoppingFromModal()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                        Lanjut Belanja
+                    </button>
+                    <button onclick="viewOrderDetails()" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
+                        Lihat Pesanan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script defer src="../assets/js/checkout.js"></script>
+</body>
+</html>

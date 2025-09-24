@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Produk - Batik Nusantara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-amber-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors">
+                <i class="fas fa-tshirt text-amber-300"></i>
+                <span>Batik Nusantara</span>
+            </a>
+
+            <nav class="hidden md:flex space-x-8">
+                <a href="../index.html" class="hover:text-amber-200 transition-colors">Beranda</a>
+                <a href="products.html" class="hover:text-amber-200 transition-colors border-b-2 border-amber-300">Produk</a>
+                <a href="about.html" class="hover:text-amber-200 transition-colors">Tentang Kami</a>
+                <a href="contact.html" class="hover:text-amber-200 transition-colors">Kontak</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="cart.html" class="relative group">
+                    <i class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">0</span>
+                </a>
+                <button id="mobile-menu-button" class="md:hidden text-white hover:text-amber-200 transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="bg-white shadow-sm py-3">
+        <div class="container mx-auto px-4">
+            <ol class="flex items-center space-x-2 text-sm">
+                <li><a href="../index.html" class="text-amber-600 hover:text-amber-700">Beranda</a></li>
+                <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
+                <li class="text-gray-500">Katalog Produk</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Katalog Produk Batik</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">Temukan koleksi batik terbaik dari berbagai daerah di Indonesia dengan kualitas premium dan desain autentik</p>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-end">
+                <!-- Search -->
+                <div class="lg:col-span-2">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Pencarian Produk</label>
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Sort -->
+                <div>
+                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Urutkan</label>
+                    <select id="sort-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                        <option value="created_at-desc">Terbaru</option>
+                        <option value="created_at-asc">Terlama</option>
+                        <option value="name-asc">Nama A-Z</option>
+                        <option value="name-desc">Nama Z-A</option>
+                        <option value="price-asc">Harga Terendah</option>
+                        <option value="price-desc">Harga Tertinggi</option>
+                    </select>
+                </div>
+
+                <!-- Items per page -->
+                <div>
+                    <label for="per-page" class="block text-sm font-medium text-gray-700 mb-2">Per Halaman</label>
+                    <select id="per-page-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                        <option value="12">12 Produk</option>
+                        <option value="24">24 Produk</option>
+                        <option value="36">36 Produk</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-3">Filter Kategori</label>
+                <div class="flex flex-wrap gap-3">
+                    <button class="filter-button active px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="all">
+                        Semua
+                    </button>
+                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Klasik">
+                        Batik Klasik
+                    </button>
+                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Pesisir">
+                        Batik Pesisir
+                    </button>
+                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Modern">
+                        Batik Modern
+                    </button>
+                </div>
+            </div>
+
+            <!-- Apply Filters Button -->
+            <div class="mt-6 flex justify-end">
+                <button id="apply-filters" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium">
+                    <i class="fas fa-filter mr-2"></i>
+                    Terapkan Filter
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Info -->
+        <div class="flex justify-between items-center mb-6">
+            <div id="results-info" class="text-gray-600">
+                <span class="font-medium">Menampilkan <span id="showing-count">0</span> dari <span id="total-count">0</span> produk</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="grid-view" class="p-2 rounded-lg bg-amber-100 text-amber-600">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button id="list-view" class="p-2 rounded-lg text-gray-400 hover:bg-gray-100">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="loading-skeleton bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="loading-skeleton h-48 bg-gray-200"></div>
+                    <div class="p-4">
+                        <div class="loading-skeleton h-4 bg-gray-200 rounded mb-2"></div>
+                        <div class="loading-skeleton h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
+                        <div class="loading-skeleton h-6 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Products will be loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="text-center py-16 hidden">
+            <div class="mb-8">
+                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-600 mb-2">Produk Tidak Ditemukan</h2>
+                <p class="text-gray-500">Coba ubah kata kunci pencarian atau filter yang Anda gunakan</p>
+            </div>
+            <button id="clear-filters" class="inline-flex items-center px-6 py-3 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                <i class="fas fa-refresh mr-2"></i>
+                Reset Filter
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-12">
+            <!-- Pagination will be rendered here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <i class="fas fa-tshirt text-2xl text-amber-300"></i>
+                    <span class="text-2xl font-bold">Batik Nusantara</span>
+                </div>
+                <p class="text-amber-200">Preserving Indonesian Heritage Through Beautiful Batik</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add to Cart Success Modal -->
+    <div id="cart-success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4 transform scale-95 transition-transform">
+            <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check text-green-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Berhasil Ditambahkan!</h3>
+                <p class="text-gray-600 mb-6">Produk telah ditambahkan ke keranjang belanja Anda</p>
+                <div class="flex space-x-3">
+                    <button id="continue-shopping" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                        Lanjut Belanja
+                    </button>
+                    <button id="view-cart" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
+                        Lihat Keranjang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script defer src="../assets/js/products.js"></script>
+</body>
+</html>
