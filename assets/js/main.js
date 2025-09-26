@@ -1,10 +1,7 @@
-// API Configuration - Read from .env or use fallback values
+// API Configuration - Use fallback values for non-module context
 const getEnvVar = (key, fallback) => {
-  try {
-    return import.meta?.env?.[key] || fallback;
-  } catch {
-    return fallback;
-  }
+  // Since we're not using ES modules, just return fallback values
+  return fallback;
 };
 
 const API_BASE_URL = getEnvVar("VITE_API_BASE_URL", "http://localhost:3000/api");

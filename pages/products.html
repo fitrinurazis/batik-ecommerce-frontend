@@ -1,250 +1,915 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Katalog Produk - Batik Nusantara</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
 
     <style>
-        .product-card {
-            transition: all 0.3s ease;
-        }
+      .product-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(0);
+      }
 
-        .product-card:hover {
-            transform: translateY(-4px);
-        }
+      .product-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      }
 
-        .filter-button.active {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
+      .filter-button.active {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+        transform: translateY(-2px);
+      }
 
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
+      .loading-skeleton {
+        background: linear-gradient(
+          90deg,
+          #f8fafc 25%,
+          #e2e8f0 50%,
+          #f8fafc 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 2s infinite ease-in-out;
+      }
 
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
         }
+        100% {
+          background-position: -200% 0;
+        }
+      }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
+      .fade-in {
+        animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Smooth scroll behavior */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Enhanced focus states */
+      .focus-ring:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+      }
+
+      /* Gradient backgrounds */
+      .bg-gradient-amber {
+        background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+      }
+
+      /* Custom animations */
+      .animate-bounce-slow {
+        animation: bounce 2s infinite;
+      }
+
+      .animate-pulse-slow {
+        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
     </style>
-</head>
-<body class="bg-gray-50">
+  </head>
+  <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-amber-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors">
-                <i class="fas fa-tshirt text-amber-300"></i>
-                <span>Batik Nusantara</span>
-            </a>
+    <header
+      class="bg-amber-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm"
+    >
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a
+          href="/"
+          class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+        >
+          <i class="fas fa-tshirt text-amber-300"></i>
+          <span>Batik Nusantara</span>
+        </a>
 
-            <nav class="hidden md:flex space-x-8">
-                <a href="/" class="hover:text-amber-200 transition-colors">Beranda</a>
-                <a href="/products" class="hover:text-amber-200 transition-colors border-b-2 border-amber-300">Produk</a>
-                <a href="/about" class="hover:text-amber-200 transition-colors">Tentang Kami</a>
-                <a href="/contact" class="hover:text-amber-200 transition-colors">Kontak</a>
-            </nav>
-
-            <div class="flex items-center space-x-4">
-                <a href="/cart" class="relative group">
-                    <i class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">0</span>
-                </a>
-                <button id="mobile-menu-button" class="md:hidden text-white hover:text-amber-200 transition-colors">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
+        <!-- Search Bar (Desktop) -->
+        <div class="hidden lg:flex flex-1 max-w-sm mx-8">
+          <div class="relative w-full">
+            <input
+              type="text"
+              id="header-search"
+              placeholder="Cari di semua produk batik..."
+              class="w-full px-4 py-2 pl-10 pr-4 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+            />
+            <i
+              class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <button id="header-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
         </div>
+
+        <nav class="hidden md:flex space-x-8">
+          <a
+            href="/"
+            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
+          >
+            Beranda
+          </a>
+          <a href="/products" class="hover:text-amber-200 transition-colors">
+            Produk
+          </a>
+          <a href="/about" class="hover:text-amber-200 transition-colors">
+            Tentang Kami
+          </a>
+          <a href="/contact" class="hover:text-amber-200 transition-colors">
+            Kontak
+          </a>
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <!-- Mobile Search Button -->
+          <button
+            id="mobile-search-button"
+            class="lg:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-search text-xl"></i>
+          </button>
+
+          <!-- Cart Button -->
+          <a href="/cart" class="relative group">
+            <i
+              class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold animate-pulse"
+            >
+              0
+            </span>
+          </a>
+
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Search -->
+      <div id="mobile-search" class="md:hidden hidden bg-amber-900 px-4 py-3">
+        <div class="relative">
+          <input
+            type="text"
+            id="mobile-search-input"
+            placeholder="Cari di semua produk batik..."
+            class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          />
+          <button id="mobile-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors">
+            <i class="fas fa-search"></i>
+          </button>
+          <i
+            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          ></i>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+      >
+        <a
+          href="index.html"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
+        >
+          Beranda
+        </a>
+        <a
+          href="/products"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Produk
+        </a>
+        <a
+          href="/about"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Tentang Kami
+        </a>
+        <a
+          href="/contact"
+          class="block py-3 hover:text-amber-200 transition-colors"
+        >
+          Kontak
+        </a>
+      </div>
     </header>
 
     <!-- Breadcrumb -->
     <nav class="bg-white shadow-sm py-3">
-        <div class="container mx-auto px-4">
-            <ol class="flex items-center space-x-2 text-sm">
-                <li><a href="/" class="text-amber-600 hover:text-amber-700">Beranda</a></li>
-                <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
-                <li class="text-gray-500">Katalog Produk</li>
-            </ol>
-        </div>
+      <div class="container max-w-[1200px] mx-auto px-4">
+        <ol class="flex items-center space-x-2 text-sm">
+          <li>
+            <a href="../index.html" class="text-amber-600 hover:text-amber-700"
+              >Beranda</a
+            >
+          </li>
+          <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
+          <li class="text-gray-500">Katalog Produk</li>
+        </ol>
+      </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Page Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Katalog Produk Batik</h1>
-            <p class="text-gray-600 max-w-2xl mx-auto">Temukan koleksi batik terbaik dari berbagai daerah di Indonesia dengan kualitas premium dan desain autentik</p>
+    <main class="container max-w-[1200px] mx-auto px-4 py-6">
+      <!-- Page Header - Simplified -->
+      <div class="mb-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+              Katalog Produk Batik
+            </h1>
+            <p class="text-gray-600">
+              Temukan koleksi batik terbaik dari seluruh Indonesia
+            </p>
+            <!-- Search indicator -->
+            <div id="search-indicator" class="mt-2 hidden">
+              <span class="inline-flex items-center px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                <i class="fas fa-search mr-2"></i>
+                Hasil pencarian: "<span id="search-query"></span>"
+                <button id="clear-search" class="ml-2 hover:text-amber-900">
+                  <i class="fas fa-times"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="text-sm text-gray-500">
+            <span id="total-products-header">Loading...</span> produk tersedia
+          </div>
         </div>
+      </div>
 
-        <!-- Search and Filters -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-end">
-                <!-- Search -->
-                <div class="lg:col-span-2">
-                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Pencarian Produk</label>
-                    <div class="relative">
-                        <input type="text" id="search-input" placeholder="Cari nama produk..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+      <!-- Mobile Filter Toggle -->
+      <button
+        id="mobile-filter-toggle"
+        class="lg:hidden w-full mb-4 px-4 py-3 bg-amber-600 text-white rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-amber-700 transition-colors"
+      >
+        <i class="fas fa-filter"></i>
+        <span>Filter & Pencarian</span>
+      </button>
+
+      <!-- Main Layout: Sidebar + Content -->
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Left Sidebar - Filters -->
+        <div class="lg:w-80 flex-shrink-0">
+          <!-- Mobile Overlay -->
+          <div id="mobile-filter-overlay" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+          <div id="filter-sidebar" class="bg-white rounded-xl shadow-lg border border-gray-100 lg:sticky lg:top-24
+            lg:translate-x-0 lg:opacity-100 lg:block
+            fixed top-0 left-0 h-full w-80 z-50 transform -translate-x-full opacity-0 transition-all duration-300 overflow-y-auto hidden lg:block">
+            <!-- Mobile Close Button -->
+            <div class="lg:hidden flex justify-between items-center p-4 border-b border-gray-200">
+              <h2 class="text-lg font-bold text-gray-900">Filter & Pencarian</h2>
+              <button id="close-mobile-filter" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fas fa-times text-gray-600"></i>
+              </button>
+            </div>
+
+            <!-- Search Help Info -->
+            <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 lg:hidden">
+              <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-600 mt-1 mr-2"></i>
+                <div class="text-sm">
+                  <p class="font-semibold text-blue-900 mb-1">Tips Pencarian:</p>
+                  <p class="text-blue-800 text-xs leading-relaxed">
+                    • <strong>Search di atas (navbar):</strong> Cari di semua produk<br>
+                    • <strong>Filter di sidebar:</strong> Filter hasil yang tampil
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-filter text-amber-600 mr-2"></i>Filter Hasil
+              </h3>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Filter dalam halaman ini..."
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300"
+                />
+                <i class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                Filter produk yang sudah tampil di halaman ini
+              </p>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-th-large text-amber-600 mr-2"></i>Kategori
+              </h3>
+              <div class="space-y-3">
+                <label class="flex items-center cursor-pointer group">
+                  <input type="radio" name="category" value="all" checked class="sr-only">
+                  <div class="w-4 h-4 border-2 border-amber-500 rounded-full bg-amber-500 mr-3 flex items-center justify-center">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Semua Kategori</span>
+                  <span class="ml-auto text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">500+</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="radio" name="category" value="Klasik" class="sr-only">
+                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Klasik</span>
+                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">150</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="radio" name="category" value="Pesisir" class="sr-only">
+                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Pesisir</span>
+                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">200</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="radio" name="category" value="Modern" class="sr-only">
+                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Modern</span>
+                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">150</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Price Filter -->
+            <div class="p-6 border-b border-gray-200">
+              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-tag text-amber-600 mr-2"></i>Harga
+              </h3>
+              <div class="space-y-3">
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Di bawah Rp 100.000</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Rp 100.000 - Rp 300.000</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Rp 300.000 - Rp 500.000</span>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Di atas Rp 500.000</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-star text-amber-600 mr-2"></i>Rating
+              </h3>
+              <div class="space-y-3">
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <div class="flex items-center">
+                    <div class="flex text-yellow-400 mr-2">
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
                     </div>
-                </div>
-
-                <!-- Sort -->
-                <div>
-                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Urutkan</label>
-                    <select id="sort-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
-                        <option value="created_at-desc">Terbaru</option>
-                        <option value="created_at-asc">Terlama</option>
-                        <option value="name-asc">Nama A-Z</option>
-                        <option value="name-desc">Nama Z-A</option>
-                        <option value="price-asc">Harga Terendah</option>
-                        <option value="price-desc">Harga Tertinggi</option>
-                    </select>
-                </div>
-
-                <!-- Items per page -->
-                <div>
-                    <label for="per-page" class="block text-sm font-medium text-gray-700 mb-2">Per Halaman</label>
-                    <select id="per-page-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
-                        <option value="12">12 Produk</option>
-                        <option value="24">24 Produk</option>
-                        <option value="36">36 Produk</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Category Filters -->
-            <div class="mt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-3">Filter Kategori</label>
-                <div class="flex flex-wrap gap-3">
-                    <button class="filter-button active px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="all">
-                        Semua
-                    </button>
-                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Klasik">
-                        Batik Klasik
-                    </button>
-                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Pesisir">
-                        Batik Pesisir
-                    </button>
-                    <button class="filter-button px-4 py-2 rounded-full border border-gray-300 hover:bg-amber-50 transition-colors text-sm font-medium" data-category="Modern">
-                        Batik Modern
-                    </button>
-                </div>
-            </div>
-
-            <!-- Apply Filters Button -->
-            <div class="mt-6 flex justify-end">
-                <button id="apply-filters" class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium">
-                    <i class="fas fa-filter mr-2"></i>
-                    Terapkan Filter
-                </button>
-            </div>
-        </div>
-
-        <!-- Results Info -->
-        <div class="flex justify-between items-center mb-6">
-            <div id="results-info" class="text-gray-600">
-                <span class="font-medium">Menampilkan <span id="showing-count">0</span> dari <span id="total-count">0</span> produk</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button id="grid-view" class="p-2 rounded-lg bg-amber-100 text-amber-600">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button id="list-view" class="p-2 rounded-lg text-gray-400 hover:bg-gray-100">
-                    <i class="fas fa-list"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Loading State -->
-        <div id="loading-state" class="hidden">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <div class="loading-skeleton bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="loading-skeleton h-48 bg-gray-200"></div>
-                    <div class="p-4">
-                        <div class="loading-skeleton h-4 bg-gray-200 rounded mb-2"></div>
-                        <div class="loading-skeleton h-3 bg-gray-200 rounded w-2/3 mb-2"></div>
-                        <div class="loading-skeleton h-6 bg-gray-200 rounded w-1/2"></div>
+                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">5 bintang</span>
+                  </div>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <div class="flex items-center">
+                    <div class="flex text-yellow-400 mr-2">
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="far fa-star text-sm"></i>
                     </div>
-                </div>
+                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">4 bintang ke atas</span>
+                  </div>
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <div class="flex items-center">
+                    <div class="flex text-yellow-400 mr-2">
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="fas fa-star text-sm"></i>
+                      <i class="far fa-star text-sm"></i>
+                      <i class="far fa-star text-sm"></i>
+                    </div>
+                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">3 bintang ke atas</span>
+                  </div>
+                </label>
+              </div>
             </div>
+          </div>
         </div>
 
-        <!-- Products Grid -->
-        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Right Content Area -->
+        <div class="flex-1 min-w-0">
+
+          <!-- Top Controls -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div id="results-info" class="text-gray-700 mb-3 sm:mb-0">
+              <span class="font-medium"
+                >Menampilkan <span id="showing-count" class="text-amber-600 font-bold">0</span> dari
+                <span id="total-count" class="text-amber-600 font-bold">0</span> produk</span
+              >
+            </div>
+            <div class="flex items-center space-x-4">
+              <!-- Sort -->
+              <div class="flex items-center space-x-2">
+                <label for="sort-select" class="text-sm font-medium text-gray-700">Urutkan:</label>
+                <select
+                  id="sort-select"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                >
+                  <option value="created_at-desc">Terbaru</option>
+                  <option value="created_at-asc">Terlama</option>
+                  <option value="name-asc">Nama A-Z</option>
+                  <option value="name-desc">Nama Z-A</option>
+                  <option value="price-asc">Harga Terendah</option>
+                  <option value="price-desc">Harga Tertinggi</option>
+                </select>
+              </div>
+              <!-- View Toggle -->
+              <div class="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  id="grid-view"
+                  class="p-2 rounded-lg bg-amber-500 text-white transition-all duration-300"
+                  title="Grid View"
+                >
+                  <i class="fas fa-th-large text-sm"></i>
+                </button>
+                <button
+                  id="list-view"
+                  class="p-2 rounded-lg text-gray-500 hover:bg-white hover:text-amber-600 transition-all duration-300"
+                  title="List View"
+                >
+                  <i class="fas fa-list text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="loading-state" class="hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <!-- Skeleton cards -->
+              <div class="loading-skeleton bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                <div class="loading-skeleton h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
+                <div class="p-4">
+                  <div class="loading-skeleton h-3 bg-gray-200 rounded-full mb-2 w-1/4"></div>
+                  <div class="loading-skeleton h-5 bg-gray-300 rounded mb-2 w-4/5"></div>
+                  <div class="loading-skeleton h-3 bg-gray-200 rounded w-full mb-3"></div>
+                  <div class="flex justify-between items-center">
+                    <div class="loading-skeleton h-6 bg-amber-200 rounded w-2/5"></div>
+                    <div class="loading-skeleton h-8 bg-amber-300 rounded w-8"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Grid -->
+          <div
+            id="products-container"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8"
+          >
             <!-- Products will be loaded here -->
-        </div>
+          </div>
 
-        <!-- Empty State -->
-        <div id="empty-state" class="text-center py-16 hidden">
-            <div class="mb-8">
-                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-                <h2 class="text-2xl font-bold text-gray-600 mb-2">Produk Tidak Ditemukan</h2>
-                <p class="text-gray-500">Coba ubah kata kunci pencarian atau filter yang Anda gunakan</p>
-            </div>
-            <button id="clear-filters" class="inline-flex items-center px-6 py-3 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+          <!-- Empty State -->
+          <div id="empty-state" class="text-center py-16 hidden">
+            <div class="bg-white rounded-xl p-8 shadow-md border border-gray-100">
+              <div class="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-search text-2xl text-amber-600"></i>
+              </div>
+              <h2 class="text-xl font-bold text-gray-800 mb-2">
+                Produk Tidak Ditemukan
+              </h2>
+              <p class="text-gray-600 mb-6">
+                Coba ubah kata kunci pencarian atau filter yang digunakan.
+              </p>
+              <button
+                id="clear-filters"
+                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-lg hover:from-amber-700 hover:to-orange-700 transition-all duration-300"
+              >
                 <i class="fas fa-refresh mr-2"></i>
                 Reset Filter
-            </button>
-        </div>
+              </button>
+            </div>
+          </div>
 
-        <!-- Pagination -->
-        <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-12">
-            <!-- Pagination will be rendered here -->
+          <!-- Pagination -->
+          <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div
+              id="pagination-container"
+              class="flex justify-center items-center space-x-2"
+            >
+              <!-- Pagination will be rendered here -->
+            </div>
+          </div>
         </div>
+      </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-amber-900 text-white py-12 mt-16">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-4">
-                    <i class="fas fa-tshirt text-2xl text-amber-300"></i>
-                    <span class="text-2xl font-bold">Batik Nusantara</span>
-                </div>
-                <p class="text-amber-200">Preserving Indonesian Heritage Through Beautiful Batik</p>
+    <footer
+      class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 text-white relative overflow-hidden"
+    >
+      <!-- Background pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div
+          class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Im0yMCAyMGMwLTExLjA0NiA4Ljk1NC0yMCAyMC0yMHMyMCA4Ljk1NCAyMCAyMC04Ljk1NCAyMC0yMCAyMC0yMC04Ljk1NC0yMC0yMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] bg-repeat"
+        ></div>
+      </div>
+
+      <!-- Decorative elements -->
+      <div
+        class="absolute top-0 right-0 w-40 h-40 bg-amber-600/20 rounded-full -translate-y-20 translate-x-20"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
+      ></div>
+
+      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
+        <!-- Main Footer Content -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <!-- Brand Section -->
+          <div class="lg:col-span-2">
+            <div class="flex items-center space-x-3 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center"
+              >
+                <i class="fas fa-tshirt text-white text-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold">Batik Nusantara</h3>
+                <p class="text-amber-200 text-sm">Warisan Budaya Indonesia</p>
+              </div>
             </div>
+
+            <p class="text-amber-100 mb-6 leading-relaxed max-w-md">
+              Melestarikan keindahan dan keunikan batik Indonesia dengan koleksi
+              berkualitas tinggi yang memadukan tradisi dan modernitas untuk
+              generasi masa kini.
+            </p>
+
+            <!-- Social Media -->
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-facebook-f text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-instagram text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-whatsapp text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-tiktok text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-link text-amber-400 mr-2"></i>
+              Tautan Cepat
+            </h4>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="index.html"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Beranda
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/products"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Produk
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Tentang Kami
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Kontak
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-phone text-amber-400 mr-2"></i>
+              Hubungi Kami
+            </h4>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <i class="fas fa-map-marker-alt text-amber-400 mt-1"></i>
+                <div>
+                  <p class="text-amber-100 text-sm">
+                    Jl. Batik Indonesia No. 123<br />
+                    Yogyakarta, Indonesia 55161
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-phone text-amber-400"></i>
+                <p class="text-amber-100">+62 274 123 456</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-envelope text-amber-400"></i>
+                <p class="text-amber-100">info@batiknusantara.com</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Bottom Section -->
+        <div class="border-t border-amber-700/50 pt-8">
+          <div
+            class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+          >
+            <div class="text-amber-200 text-center md:text-left">
+              <p>
+                &copy; 2024 Batik Nusantara. Hak Cipta Dilindungi Undang-Undang.
+              </p>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="flex items-center space-x-4">
+              <span class="text-amber-200 text-sm">Pembayaran Aman:</span>
+              <div class="flex space-x-2">
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-blue-600">VISA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-red-600">MC</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-blue-600 to-blue-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">BCA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-green-600 to-green-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">GP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <!-- Add to Cart Success Modal -->
-    <div id="cart-success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 max-w-sm mx-4 transform scale-95 transition-transform">
-            <div class="text-center">
-                <div class="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-check text-green-500 text-xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Berhasil Ditambahkan!</h3>
-                <p class="text-gray-600 mb-6">Produk telah ditambahkan ke keranjang belanja Anda</p>
-                <div class="flex space-x-3">
-                    <button id="continue-shopping" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
-                        Lanjut Belanja
-                    </button>
-                    <button id="view-cart" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
-                        Lihat Keranjang
-                    </button>
-                </div>
-            </div>
+    <div
+      id="cart-success-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-white rounded-lg p-6 max-w-sm mx-4 transform scale-95 transition-transform"
+      >
+        <div class="text-center">
+          <div
+            class="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center"
+          >
+            <i class="fas fa-check text-green-500 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">
+            Berhasil Ditambahkan!
+          </h3>
+          <p class="text-gray-600 mb-6">
+            Produk telah ditambahkan ke keranjang belanja Anda
+          </p>
+          <div class="flex space-x-3">
+            <button
+              id="continue-shopping"
+              class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Lanjut Belanja
+            </button>
+            <button
+              id="view-cart"
+              class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+            >
+              Lihat Keranjang
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script defer src="../assets/js/products.js"></script>
-</body>
+
+    <!-- Enhanced Search & Filter Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
+        const filterSidebar = document.getElementById('filter-sidebar');
+        const closeMobileFilter = document.getElementById('close-mobile-filter');
+
+        // Search elements
+        const headerSearch = document.getElementById('header-search');
+        const headerSearchBtn = document.getElementById('header-search-btn');
+        const mobileSearch = document.getElementById('mobile-search-input');
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const sidebarSearch = document.getElementById('search-input');
+
+        function openMobileFilter() {
+          mobileFilterOverlay.classList.remove('hidden');
+          filterSidebar.classList.remove('hidden', '-translate-x-full', 'opacity-0');
+          filterSidebar.classList.add('translate-x-0', 'opacity-100');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileFilterFunc() {
+          filterSidebar.classList.add('-translate-x-full', 'opacity-0');
+          filterSidebar.classList.remove('translate-x-0', 'opacity-100');
+          setTimeout(() => {
+            mobileFilterOverlay.classList.add('hidden');
+            filterSidebar.classList.add('hidden');
+            document.body.style.overflow = '';
+          }, 300);
+        }
+
+        mobileFilterToggle.addEventListener('click', openMobileFilter);
+        closeMobileFilter.addEventListener('click', closeMobileFilterFunc);
+        mobileFilterOverlay.addEventListener('click', closeMobileFilterFunc);
+
+        // Global Search (Header/Mobile) - navigates to products page with search
+        function handleGlobalSearch() {
+          const query = headerSearch?.value || mobileSearch?.value;
+          if (query.trim()) {
+            // If already on products page, reload with search parameter
+            if (window.location.pathname.includes('products')) {
+              const url = new URL(window.location);
+              url.searchParams.set('search', query.trim());
+              window.location.href = url.toString();
+            } else {
+              // Navigate to products page with search
+              window.location.href = `/products?search=${encodeURIComponent(query.trim())}`;
+            }
+          }
+        }
+
+        // Sidebar Search (Filter) - filters current results
+        function handleSidebarSearch() {
+          const query = sidebarSearch?.value;
+          if (typeof window.filterProducts === 'function') {
+            // Call existing filter function if available
+            window.filterProducts({ search: query });
+          }
+          console.log('Filtering current results for:', query);
+        }
+
+        // Global search event listeners
+        headerSearchBtn?.addEventListener('click', handleGlobalSearch);
+        mobileSearchBtn?.addEventListener('click', handleGlobalSearch);
+
+        headerSearch?.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') handleGlobalSearch();
+        });
+
+        mobileSearch?.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') handleGlobalSearch();
+        });
+
+        // Sidebar search event listeners (with debounce for better UX)
+        let searchTimeout;
+        sidebarSearch?.addEventListener('input', function() {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(handleSidebarSearch, 300);
+        });
+
+        // Handle radio button changes
+        document.querySelectorAll('input[name="category"]').forEach(radio => {
+          radio.addEventListener('change', function() {
+            // Update UI for selected radio button
+            document.querySelectorAll('input[name="category"]').forEach(r => {
+              const radioDiv = r.parentNode.querySelector('.w-4.h-4');
+              if (r.checked) {
+                radioDiv.classList.add('border-amber-500', 'bg-amber-500');
+                radioDiv.classList.remove('border-gray-300');
+                radioDiv.innerHTML = '<div class="w-2 h-2 bg-white rounded-full"></div>';
+              } else {
+                radioDiv.classList.remove('border-amber-500', 'bg-amber-500');
+                radioDiv.classList.add('border-gray-300');
+                radioDiv.innerHTML = '';
+              }
+            });
+
+            // Trigger filter if function exists
+            if (typeof window.filterProducts === 'function') {
+              window.filterProducts({ category: this.value });
+            }
+          });
+        });
+
+        // Auto-populate search from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+          if (headerSearch) headerSearch.value = searchParam;
+          if (mobileSearch) mobileSearch.value = searchParam;
+        }
+      });
+    </script>
+  </body>
 </html>
