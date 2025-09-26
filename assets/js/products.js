@@ -354,13 +354,244 @@ function initEventListeners() {
             openProductModal();
         });
     }
+
+    // Modal event listeners
+    initModalEventListeners();
+}
+
+function initModalEventListeners() {
+    // Close modal buttons
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelFormBtn = document.getElementById('cancel-form');
+    const modal = document.getElementById('product-modal');
+
+    if (closeModalBtn && modal) {
+        closeModalBtn.addEventListener('click', function() {
+            closeProductModal();
+        });
+    }
+
+    if (cancelFormBtn && modal) {
+        cancelFormBtn.addEventListener('click', function() {
+            closeProductModal();
+        });
+    }
+
+    // Close modal when clicking outside
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeProductModal();
+            }
+        });
+    }
+
+    // Form submission
+    const form = document.getElementById('product-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleProductSubmit();
+        });
+    }
+
+    // Image preview
+    const imageInput = document.getElementById('product-image');
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            handleImagePreview(e);
+        });
+    }
+}
+
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+
+    // Reset form
+    const form = document.getElementById('product-form');
+    if (form) {
+        form.reset();
+    }
+
+    // Reset image preview
+    resetImagePreview();
+}
+
+function handleImagePreview(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('image-preview');
+
+    if (!file || !preview) return;
+
+    try {
+        // Validate image
+        Utils.validateImage(file);
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover rounded-md">
+            `;
+        };
+        reader.readAsDataURL(file);
+    } catch (error) {
+        Utils.showAlert(error.message, 'error');
+        event.target.value = '';
+        resetImagePreview();
+    }
+}
+
+function resetImagePreview() {
+    const preview = document.getElementById('image-preview');
+    if (preview) {
+        preview.innerHTML = `
+            <i class="fas fa-image text-gray-400 text-2xl"></i>
+        `;
+    }
+}
+
+async function handleProductSubmit() {
+    try {
+        // Show loading state
+        setSubmitLoading(true);
+
+        // Get form data
+        const formData = getFormData();
+
+        // Validate form
+        validateProductForm(formData);
+
+        // Check if editing or creating
+        const productId = document.getElementById('product-id').value;
+
+        let response;
+        if (productId) {
+            // Edit existing product
+            response = await ApiService.updateProduct(productId, formData);
+            Utils.showAlert('Produk berhasil diperbarui!', 'success');
+        } else {
+            // Create new product
+            response = await ApiService.createProduct(formData);
+            Utils.showAlert('Produk berhasil ditambahkan!', 'success');
+        }
+
+        // Close modal
+        closeProductModal();
+
+        // Reload products
+        await loadProducts();
+        applyFilters();
+
+    } catch (error) {
+        console.error('Error submitting product:', error);
+        Utils.showAlert(error.message || 'Gagal menyimpan produk', 'error');
+    } finally {
+        setSubmitLoading(false);
+    }
+}
+
+function getFormData() {
+    const form = document.getElementById('product-form');
+    const formData = new FormData(form);
+
+    return {
+        name: formData.get('name'),
+        category: formData.get('category'),
+        description: formData.get('description'),
+        price: parseFloat(formData.get('price')) || 0,
+        stock: parseInt(formData.get('stock')) || 0,
+        discount: parseFloat(formData.get('discount')) || 0,
+        image: formData.get('image')
+    };
+}
+
+function validateProductForm(data) {
+    if (!data.name || data.name.trim().length < 3) {
+        throw new Error('Nama produk harus diisi minimal 3 karakter');
+    }
+
+    if (!data.category) {
+        throw new Error('Kategori produk harus dipilih');
+    }
+
+    if (!data.description || data.description.trim().length < 10) {
+        throw new Error('Deskripsi produk harus diisi minimal 10 karakter');
+    }
+
+    if (data.price <= 0) {
+        throw new Error('Harga produk harus lebih dari 0');
+    }
+
+    if (data.stock < 0) {
+        throw new Error('Stok produk tidak boleh negatif');
+    }
+
+    if (data.discount < 0 || data.discount > 100) {
+        throw new Error('Diskon harus antara 0-100%');
+    }
+}
+
+function setSubmitLoading(isLoading) {
+    const submitText = document.getElementById('submit-text');
+    const submitLoading = document.getElementById('submit-loading');
+    const submitBtn = document.querySelector('#product-form button[type="submit"]');
+
+    if (submitText && submitLoading && submitBtn) {
+        if (isLoading) {
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+            submitBtn.disabled = true;
+        } else {
+            submitText.classList.remove('hidden');
+            submitLoading.classList.add('hidden');
+            submitBtn.disabled = false;
+        }
+    }
+}
+
+async function loadProductData(productId) {
+    try {
+        const product = await ApiService.getProduct(productId);
+
+        // Fill form with product data
+        document.getElementById('product-id').value = product.id;
+        document.getElementById('product-name').value = product.name || '';
+        document.getElementById('product-category').value = product.category || '';
+        document.getElementById('product-description').value = product.description || '';
+        document.getElementById('product-price').value = product.price || '';
+        document.getElementById('product-stock').value = product.stock || '';
+        document.getElementById('product-discount').value = product.discount || '';
+
+        // Show image preview if available
+        if (product.image_url || product.imageUrl) {
+            const imageUrl = product.image_url || product.imageUrl;
+            const fullImageUrl = imageUrl.startsWith('/api/media/')
+                ? `http://localhost:3000${imageUrl}`
+                : imageUrl;
+
+            const preview = document.getElementById('image-preview');
+            if (preview) {
+                preview.innerHTML = `
+                    <img src="${fullImageUrl}" alt="Product Image" class="w-full h-full object-cover rounded-md">
+                `;
+            }
+        }
+
+    } catch (error) {
+        console.error('Error loading product data:', error);
+        Utils.showAlert('Gagal memuat data produk', 'error');
+        closeProductModal();
+    }
 }
 
 // Product management functions
 function editProduct(productId) {
     console.log('Edit product:', productId);
-    // TODO: Implement edit functionality
-    Utils.showAlert('Fitur edit produk akan segera tersedia', 'info');
+    openProductModal(productId);
 }
 
 function deleteProduct(productId, productName) {
@@ -371,10 +602,38 @@ function deleteProduct(productId, productName) {
     }
 }
 
-function openProductModal() {
-    console.log('Open product modal');
-    // TODO: Implement modal functionality
-    Utils.showAlert('Fitur tambah produk akan segera tersedia', 'info');
+function openProductModal(productId = null) {
+    console.log('Open product modal:', productId ? 'Edit mode' : 'Add mode');
+
+    const modal = document.getElementById('product-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const form = document.getElementById('product-form');
+
+    if (!modal || !modalTitle || !form) {
+        console.error('Modal elements not found');
+        return;
+    }
+
+    // Reset form
+    form.reset();
+
+    // Set modal title and mode
+    if (productId) {
+        modalTitle.textContent = 'Edit Produk';
+        loadProductData(productId);
+    } else {
+        modalTitle.textContent = 'Tambah Produk Baru';
+        document.getElementById('product-id').value = '';
+    }
+
+    // Show modal
+    modal.classList.remove('hidden');
+
+    // Focus on first input
+    const firstInput = form.querySelector('input[type="text"]');
+    if (firstInput) {
+        setTimeout(() => firstInput.focus(), 100);
+    }
 }
 
 // Export functions for global access
