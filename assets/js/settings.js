@@ -124,13 +124,10 @@ function setupEmailTest() {
 
 async function loadCurrentSettings() {
     try {
-        // This would typically load settings from the API
-        // For now, we'll use placeholder data
         console.log('Loading current settings...');
 
-        // You can implement API calls here to load actual settings
-        // const settings = await ApiService.getSettings();
-        // populateSettingsForm(settings);
+        const settings = await ApiService.getSettings();
+        populateSettingsForm(settings);
 
     } catch (error) {
         console.error('Error loading settings:', error);
@@ -141,19 +138,16 @@ async function loadCurrentSettings() {
 async function saveGeneralSettings() {
     try {
         const formData = {
-            siteName: document.getElementById('site-name').value,
-            siteDescription: document.getElementById('site-description').value,
-            siteAddress: document.getElementById('site-address').value,
-            sitePhone: document.getElementById('site-phone').value,
-            siteEmail: document.getElementById('site-email').value,
+            site_name: document.getElementById('site-name').value,
+            site_description: document.getElementById('site-description').value,
+            site_address: document.getElementById('site-address').value,
+            site_phone: document.getElementById('site-phone').value,
+            site_email: document.getElementById('site-email').value,
             currency: document.getElementById('currency').value,
             timezone: document.getElementById('timezone').value
         };
 
-        // This would typically save to API
-        // await ApiService.saveSettings('general', formData);
-
-        console.log('Saving general settings:', formData);
+        await ApiService.saveSettings('general', formData);
         Utils.showAlert('Pengaturan umum berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving general settings:', error);
@@ -164,18 +158,15 @@ async function saveGeneralSettings() {
 async function saveEmailSettings() {
     try {
         const formData = {
-            smtpHost: document.getElementById('smtp-host').value,
-            smtpPort: document.getElementById('smtp-port').value,
-            smtpUsername: document.getElementById('smtp-username').value,
-            smtpPassword: document.getElementById('smtp-password').value,
-            smtpSecure: document.getElementById('smtp-secure').checked,
-            emailFromName: document.getElementById('email-from-name').value
+            smtp_host: document.getElementById('smtp-host').value,
+            smtp_port: document.getElementById('smtp-port').value,
+            smtp_username: document.getElementById('smtp-username').value,
+            smtp_password: document.getElementById('smtp-password').value,
+            smtp_secure: document.getElementById('smtp-secure').checked,
+            email_from_name: document.getElementById('email-from-name').value
         };
 
-        // This would typically save to API
-        // await ApiService.saveSettings('email', formData);
-
-        console.log('Saving email settings:', formData);
+        await ApiService.saveSettings('email', formData);
         Utils.showAlert('Pengaturan email berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving email settings:', error);
@@ -185,17 +176,18 @@ async function saveEmailSettings() {
 
 async function savePaymentSettings() {
     try {
-        const formData = {
-            bankTransfer: document.getElementById('bank-transfer').checked,
-            eWallet: document.getElementById('e-wallet').checked,
-            creditCard: document.getElementById('credit-card').checked,
+        const paymentMethods = {
+            bank_transfer: document.getElementById('bank-transfer').checked,
+            e_wallet: document.getElementById('e-wallet').checked,
+            credit_card: document.getElementById('credit-card').checked,
             cod: document.getElementById('cod').checked
         };
 
-        // This would typically save to API
-        // await ApiService.saveSettings('payment', formData);
+        const formData = {
+            payment_methods: JSON.stringify(paymentMethods)
+        };
 
-        console.log('Saving payment settings:', formData);
+        await ApiService.saveSettings('payment', formData);
         Utils.showAlert('Pengaturan pembayaran berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving payment settings:', error);
@@ -205,18 +197,19 @@ async function savePaymentSettings() {
 
 async function saveShippingSettings() {
     try {
-        const formData = {
+        const shippingCouriers = {
             jne: document.getElementById('jne').checked,
             pos: document.getElementById('pos').checked,
-            tiki: document.getElementById('tiki').checked,
-            freeShippingMin: document.getElementById('free-shipping-min').value,
-            weightUnit: document.getElementById('shipping-weight-unit').value
+            tiki: document.getElementById('tiki').checked
         };
 
-        // This would typically save to API
-        // await ApiService.saveSettings('shipping', formData);
+        const formData = {
+            shipping_couriers: JSON.stringify(shippingCouriers),
+            free_shipping_min: document.getElementById('free-shipping-min').value,
+            weight_unit: document.getElementById('shipping-weight-unit').value
+        };
 
-        console.log('Saving shipping settings:', formData);
+        await ApiService.saveSettings('shipping', formData);
         Utils.showAlert('Pengaturan pengiriman berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving shipping settings:', error);
@@ -230,7 +223,6 @@ async function changePassword() {
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
 
-        // Validate passwords
         if (!currentPassword || !newPassword || !confirmPassword) {
             Utils.showAlert('Semua field password harus diisi', 'warning');
             return;
@@ -246,13 +238,9 @@ async function changePassword() {
             return;
         }
 
-        // This would typically save to API
-        // await ApiService.changePassword(currentPassword, newPassword);
-
-        console.log('Changing password...');
+        await ApiService.changePassword(currentPassword, newPassword);
         Utils.showAlert('Password berhasil diubah!', 'success');
 
-        // Clear form
         document.getElementById('current-password').value = '';
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';
@@ -263,12 +251,59 @@ async function changePassword() {
     }
 }
 
-// Export for global access
+function populateSettingsForm(settings) {
+    try {
+        if (settings.general) {
+            const general = settings.general;
+            if (general.site_name !== undefined) document.getElementById('site-name').value = general.site_name || '';
+            if (general.site_description !== undefined) document.getElementById('site-description').value = general.site_description || '';
+            if (general.site_address !== undefined) document.getElementById('site-address').value = general.site_address || '';
+            if (general.site_phone !== undefined) document.getElementById('site-phone').value = general.site_phone || '';
+            if (general.site_email !== undefined) document.getElementById('site-email').value = general.site_email || '';
+            if (general.currency !== undefined) document.getElementById('currency').value = general.currency || 'IDR';
+            if (general.timezone !== undefined) document.getElementById('timezone').value = general.timezone || 'Asia/Jakarta';
+        }
+
+        if (settings.email) {
+            const email = settings.email;
+            if (email.smtp_host !== undefined) document.getElementById('smtp-host').value = email.smtp_host || '';
+            if (email.smtp_port !== undefined) document.getElementById('smtp-port').value = email.smtp_port || '587';
+            if (email.smtp_username !== undefined) document.getElementById('smtp-username').value = email.smtp_username || '';
+            if (email.smtp_password !== undefined) document.getElementById('smtp-password').value = email.smtp_password || '';
+            if (email.smtp_secure !== undefined) document.getElementById('smtp-secure').checked = email.smtp_secure === true;
+            if (email.email_from_name !== undefined) document.getElementById('email-from-name').value = email.email_from_name || '';
+        }
+
+        if (settings.payment && settings.payment.payment_methods) {
+            const paymentMethods = settings.payment.payment_methods;
+            if (paymentMethods.bank_transfer !== undefined) document.getElementById('bank-transfer').checked = paymentMethods.bank_transfer;
+            if (paymentMethods.e_wallet !== undefined) document.getElementById('e-wallet').checked = paymentMethods.e_wallet;
+            if (paymentMethods.credit_card !== undefined) document.getElementById('credit-card').checked = paymentMethods.credit_card;
+            if (paymentMethods.cod !== undefined) document.getElementById('cod').checked = paymentMethods.cod;
+        }
+
+        if (settings.shipping) {
+            const shipping = settings.shipping;
+            if (shipping.shipping_couriers) {
+                const couriers = shipping.shipping_couriers;
+                if (couriers.jne !== undefined) document.getElementById('jne').checked = couriers.jne;
+                if (couriers.pos !== undefined) document.getElementById('pos').checked = couriers.pos;
+                if (couriers.tiki !== undefined) document.getElementById('tiki').checked = couriers.tiki;
+            }
+            if (shipping.free_shipping_min !== undefined) document.getElementById('free-shipping-min').value = shipping.free_shipping_min || '500000';
+            if (shipping.weight_unit !== undefined) document.getElementById('shipping-weight-unit').value = shipping.weight_unit || 'gram';
+        }
+    } catch (error) {
+        console.error('Error populating settings form:', error);
+    }
+}
+
 window.SettingsManager = {
     showSettingsSection,
     saveGeneralSettings,
     saveEmailSettings,
     savePaymentSettings,
     saveShippingSettings,
-    changePassword
+    changePassword,
+    populateSettingsForm
 };

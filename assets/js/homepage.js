@@ -20,20 +20,18 @@ function initHomepage() {
     console.log('Initializing homepage functionality...');
 
     try {
-        // Initialize mobile menu
-        initMobileMenu();
-
-        // Initialize search functionality
-        initSearchFunctionality();
-
         // Initialize smooth scrolling
         initSmoothScrolling();
 
         // Initialize newsletter form
         initNewsletterForm();
 
-        // Initialize cart count
-        updateCartCount();
+        // Initialize cart count (use navbar's method if available)
+        if (window.navbar && typeof window.navbar.updateCartCount === 'function') {
+            window.navbar.updateCartCount();
+        } else {
+            updateCartCount();
+        }
 
         // Load products with delay to ensure DOM is ready
         setTimeout(() => {
@@ -47,43 +45,6 @@ function initHomepage() {
     }
 }
 
-function initMobileMenu() {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileSearchButton = document.getElementById('mobile-search-button');
-    const mobileSearch = document.getElementById('mobile-search');
-
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-    }
-
-    if (mobileSearchButton && mobileSearch) {
-        mobileSearchButton.addEventListener('click', () => {
-            mobileSearch.classList.toggle('hidden');
-        });
-    }
-}
-
-function initSearchFunctionality() {
-    const headerSearch = document.getElementById('header-search');
-    const mobileSearchInput = document.getElementById('mobile-search-input');
-
-    [headerSearch, mobileSearchInput].forEach(input => {
-        if (input) {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const query = e.target.value.trim();
-                    if (query) {
-                        window.location.href = `pages/products.html?search=${encodeURIComponent(query)}`;
-                    }
-                }
-            });
-        }
-    });
-}
 
 function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -252,7 +213,7 @@ async function loadRecommendedProducts() {
 
 function createProductCard(product, type = 'featured') {
     const card = document.createElement('div');
-    card.className = 'compact-card group bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition-all duration-300 border border-gray-100 cursor-pointer';
+    card.className = 'product-card group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer w-full';
 
     // Calculate discount
     const hasDiscount = product.discount > 0;
@@ -269,84 +230,66 @@ function createProductCard(product, type = 'featured') {
     const finalImageUrl = imageUrl || fallbackImage;
 
     card.innerHTML = `
-        <div class="relative overflow-hidden bg-gray-50">
-            <!-- Product Image -->
-            <div class="card-image w-full h-40 relative">
+        <!-- Product Image -->
+        <div class="relative">
+            <div class="aspect-square w-full relative bg-gray-50">
                 <img
                     src="${finalImageUrl}"
                     alt="${product.name}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    class="w-full h-full object-cover"
                     onerror="this.src='${fallbackImage}'"
                     loading="lazy"
                 />
-            </div>
 
-            <!-- Badges -->
-            <div class="absolute top-2 left-2 right-2 flex justify-between items-start">
+                <!-- Discount Badge -->
                 ${hasDiscount ? `
-                    <div class="bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold shadow">
-                        -${Math.round(product.discount)}%
+                    <div class="absolute top-2 left-2">
+                        <div class="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+                            ${Math.round(product.discount)}%
+                        </div>
                     </div>
-                ` : '<div></div>'}
+                ` : ''}
 
-                <div class="bg-gradient-to-r ${type === 'recommended' ? 'from-orange-500 to-red-500' : 'from-amber-500 to-yellow-600'} text-white px-1.5 py-0.5 rounded text-xs font-medium shadow flex items-center">
-                    <i class="fas ${type === 'recommended' ? 'fa-fire' : 'fa-star'} text-xs"></i>
-                </div>
+                <!-- Stock Status Overlay -->
+                ${product.stock <= 0 ? `
+                    <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+                        <div class="text-white text-center">
+                            <i class="fas fa-ban text-2xl mb-1"></i>
+                            <p class="text-sm font-medium">Stok Habis</p>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
-
-            <!-- Stock Status Overlay -->
-            ${product.stock <= 0 ? `
-                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div class="bg-white px-2 py-1 rounded shadow">
-                        <span class="text-red-600 font-medium text-xs">Stok Habis</span>
-                    </div>
-                </div>
-            ` : ''}
         </div>
 
         <!-- Card Content -->
-        <div class="card-content p-3">
-            <!-- Category -->
-            <div class="mb-2">
-                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                    ${product.category || 'Batik'}
-                </span>
-            </div>
-
+        <div class="card-content p-2 sm:p-3">
             <!-- Product Name -->
-            <h3 class="card-title font-semibold text-gray-900 mb-1 group-hover:text-amber-700 transition-colors">
-                <span class="line-clamp-2">${product.name}</span>
+            <h3 class="card-title text-xs sm:text-sm font-medium text-gray-800 mb-1 sm:mb-2 line-clamp-2 leading-tight sm:leading-relaxed">
+                ${product.name}
             </h3>
 
-            <!-- Price and Actions -->
-            <div class="flex items-center justify-between mt-2">
-                <!-- Price -->
-                <div class="flex flex-col">
-                    ${hasDiscount ? `
-                        <div>
-                            <span class="card-price font-bold text-amber-600">
-                                ${formatCurrency(discountedPrice)}
-                            </span>
-                        </div>
-                        <span class="text-xs text-gray-500 line-through">
-                            ${formatCurrency(originalPrice)}
-                        </span>
-                    ` : `
-                        <span class="card-price font-bold text-amber-600">
-                            ${formatCurrency(discountedPrice)}
-                        </span>
-                    `}
-                </div>
-
-                <!-- Add to Cart Button -->
-                <button
-                    onclick="event.stopPropagation(); addToCart(${product.id})"
-                    ${product.stock <= 0 ? 'disabled' : ''}
-                    class="card-button flex items-center justify-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-lg transition-all duration-300 shadow-sm hover:shadow transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed"
-                    title="${product.stock > 0 ? 'Tambah ke keranjang' : 'Stok habis'}"
-                >
-                    <i class="fas ${product.stock > 0 ? 'fa-cart-plus' : 'fa-ban'} text-xs"></i>
-                </button>
+            <!-- Price Section -->
+            <div class="price-section">
+                ${hasDiscount ? `
+                    <!-- Original Price (crossed out) -->
+                    <div class="text-xs text-gray-500 line-through mb-1">
+                        ${formatCurrency(originalPrice)}
+                    </div>
+                    <!-- Discounted Price -->
+                    <div class="card-price text-sm sm:text-base font-bold text-red-600 mb-1">
+                        ${formatCurrency(discountedPrice)}
+                    </div>
+                    <!-- Discount Percentage -->
+                    <div class="text-xs text-red-600 font-medium">
+                        Hemat ${Math.round(product.discount)}%
+                    </div>
+                ` : `
+                    <!-- Regular Price -->
+                    <div class="card-price text-sm sm:text-base font-bold text-gray-900">
+                        ${formatCurrency(discountedPrice)}
+                    </div>
+                `}
             </div>
         </div>
     `;
@@ -428,8 +371,12 @@ function addToCart(productId) {
         // Save cart
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Update cart count
-        updateCartCount();
+        // Update cart count (use navbar's method if available)
+        if (window.navbar && typeof window.navbar.updateCartCount === 'function') {
+            window.navbar.updateCartCount();
+        } else {
+            updateCartCount();
+        }
 
         // Show success message
         showSuccessToast('Produk berhasil ditambahkan ke keranjang!');

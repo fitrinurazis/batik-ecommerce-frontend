@@ -1,17 +1,9 @@
-// API Configuration - Read from .env or use fallback values
-const getEnvVar = (key, fallback) => {
-  try {
-    return import.meta?.env?.[key] || fallback;
-  } catch {
-    return fallback;
-  }
-};
-
-const API_BASE_URL = getEnvVar("VITE_API_BASE_URL", "http://localhost:3000/api");
-const API_TIMEOUT = getEnvVar("VITE_API_TIMEOUT", 10000);
-const API_RETRY_ATTEMPTS = getEnvVar("VITE_API_RETRY_ATTEMPTS", 3);
-const APP_NAME = getEnvVar("VITE_APP_NAME", "Batik Nusantara");
-const ITEMS_PER_PAGE = getEnvVar("VITE_ITEMS_PER_PAGE", 10);
+// API Configuration - Values from .env file
+const API_BASE_URL = "http://localhost:3000/api";
+const API_TIMEOUT = 10000;
+const API_RETRY_ATTEMPTS = 3;
+const APP_NAME = "Batik Nusantara";
+const ITEMS_PER_PAGE = 10;
 
 // Wait for axios to be available from CDN
 function initializeAxios() {
@@ -277,6 +269,52 @@ class ApiService {
     }
   }
 
+  // Payment endpoints
+  static async getPaymentByOrder(orderId) {
+    try {
+      const response = await axios.get(`/payments/order/${orderId}`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async getPendingPayments(params = {}) {
+    try {
+      const response = await axios.get("/payments/pending", { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async getPayment(id) {
+    try {
+      const response = await axios.get(`/payments/${id}`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async verifyPayment(id) {
+    try {
+      const response = await axios.post(`/payments/${id}/verify`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async rejectPayment(id, rejectionReason) {
+    try {
+      const response = await axios.post(`/payments/${id}/reject`, { rejection_reason: rejectionReason });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   // Upload endpoints
   static async uploadProductImage(file) {
     try {
@@ -326,6 +364,37 @@ class ApiService {
         { id: 2, name: "Pesisir" },
         { id: 3, name: "Modern" },
       ];
+    }
+  }
+
+  // Settings endpoints
+  static async getSettings() {
+    try {
+      const response = await axios.get("/settings?include_private=true");
+      return response.data.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async saveSettings(category, settings) {
+    try {
+      const response = await axios.put("/settings/bulk", { settings });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async changePassword(currentPassword, newPassword) {
+    try {
+      const response = await axios.put("/auth/change-password", {
+        currentPassword,
+        newPassword
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
     }
   }
 

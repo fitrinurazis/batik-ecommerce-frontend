@@ -250,10 +250,13 @@ async function loadSalesChart() {
         ...stats.sales_trend.map((day) => parseFloat(day.daily_revenue))
       );
 
+      // Calculate total revenue from sales_trend
+      const totalRevenue = stats.sales_trend.reduce((sum, day) => sum + parseFloat(day.daily_revenue || 0), 0);
+
       container.innerHTML = `
                 <div class="w-full">
                     <h4 class="text-sm font-medium text-gray-700 mb-4">Tren Penjualan (${
-                      stats.period
+                      stats.period || "7 hari terakhir"
                     })</h4>
                     <div class="space-y-2">
                         ${stats.sales_trend
@@ -278,9 +281,7 @@ async function loadSalesChart() {
                           .join("")}
                     </div>
                     <div class="mt-4 text-center">
-                        <p class="text-xs text-gray-500">Total: ${Utils.formatCurrency(
-                          parseFloat(stats.statistics.summary.total_revenue)
-                        )}</p>
+                        <p class="text-xs text-gray-500">Total: ${Utils.formatCurrency(totalRevenue)}</p>
                     </div>
                 </div>
             `;
