@@ -74,13 +74,61 @@
           <i class="fas fa-shopping-cart w-6 mr-3"></i>
           <span>Pesanan</span>
         </a>
-        <a
-          href="dashboard-settings.html"
-          class="nav-link flex items-center px-4 py-3 bg-amber-700"
-        >
-          <i class="fas fa-gear w-6 mr-3"></i>
-          <span>Pengaturan</span>
-        </a>
+
+        <div class="px-4 py-3 bg-amber-700">
+          <button id="settings-toggle" class="flex items-center justify-between w-full text-white">
+            <div class="flex items-center">
+              <i class="fas fa-gear w-6 mr-3"></i>
+              <span>Pengaturan</span>
+            </div>
+            <i class="fas fa-chevron-down transition-transform" id="settings-chevron"></i>
+          </button>
+
+          <div id="settings-submenu" class="mt-2 space-y-1">
+            <a
+              href="#general"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fas fa-cog w-5 mr-2"></i>
+              <span>Umum</span>
+            </a>
+            <a
+              href="#email"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fas fa-envelope w-5 mr-2"></i>
+              <span>Email</span>
+            </a>
+            <a
+              href="#payment"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fas fa-credit-card w-5 mr-2"></i>
+              <span>Pembayaran</span>
+            </a>
+            <a
+              href="#shipping"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fas fa-truck w-5 mr-2"></i>
+              <span>Pengiriman</span>
+            </a>
+            <a
+              href="#whatsapp"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fab fa-whatsapp w-5 mr-2"></i>
+              <span>WhatsApp</span>
+            </a>
+            <a
+              href="#security"
+              class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-100 hover:bg-amber-600 transition text-sm"
+            >
+              <i class="fas fa-shield-alt w-5 mr-2"></i>
+              <span>Keamanan</span>
+            </a>
+          </div>
+        </div>
       </nav>
 
       <div
@@ -132,52 +180,7 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Settings Navigation -->
-          <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow">
-              <nav class="p-4 space-y-2">
-                <a
-                  href="#general"
-                  class="settings-nav-link flex items-center px-3 py-2 rounded-md text-amber-700 bg-amber-50 border border-amber-200"
-                >
-                  <i class="fas fa-cog mr-3"></i>
-                  <span>Umum</span>
-                </a>
-                <a
-                  href="#email"
-                  class="settings-nav-link flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  <i class="fas fa-envelope mr-3"></i>
-                  <span>Email</span>
-                </a>
-                <a
-                  href="#payment"
-                  class="settings-nav-link flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  <i class="fas fa-credit-card mr-3"></i>
-                  <span>Pembayaran</span>
-                </a>
-                <a
-                  href="#shipping"
-                  class="settings-nav-link flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  <i class="fas fa-truck mr-3"></i>
-                  <span>Pengiriman</span>
-                </a>
-                <a
-                  href="#security"
-                  class="settings-nav-link flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  <i class="fas fa-shield-alt mr-3"></i>
-                  <span>Keamanan</span>
-                </a>
-              </nav>
-            </div>
-          </div>
-
-          <!-- Settings Content -->
-          <div class="lg:col-span-2">
+        <div>
             <!-- General Settings -->
             <div
               id="general-settings"
@@ -188,91 +191,67 @@
               </h2>
 
               <form class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label
-                      for="site-name"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                      >Nama Situs</label
-                    >
-                    <input
-                      type="text"
-                      id="site-name"
-                      value="Batik Nusantara"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      for="site-description"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                      >Deskripsi Situs</label
-                    >
-                    <input
-                      type="text"
-                      id="site-description"
-                      value="Toko Batik Online Terpercaya"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
-                </div>
-
+                <!-- Site Branding -->
                 <div>
-                  <label
-                    for="site-address"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                    >Alamat Toko</label
-                  >
-                  <textarea
-                    id="site-address"
-                    rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
-                  >
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label
-                      for="site-phone"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                      >Telepon</label
-                    >
-                    <input
-                      type="tel"
-                      id="site-phone"
-                      value="+62 274 123456"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      for="site-email"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                      >Email</label
-                    >
-                    <input
-                      type="email"
-                      id="site-email"
-                      value="info@batiknusantara.com"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
-                </div>
-
-                <div class="border-t border-gray-200 pt-6">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
-                    Mata Uang
+                    Site Branding
                   </h3>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label
+                        for="site-title"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Site Title</label
+                      >
+                      <input
+                        type="text"
+                        id="site-title"
+                        placeholder="Batik Nusantara"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="site-tagline"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Site Tagline</label
+                      >
+                      <input
+                        type="text"
+                        id="site-tagline"
+                        placeholder="Toko Batik Online Terpercaya"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <label
+                      for="site-logo"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Logo URL</label
+                    >
+                    <input
+                      type="text"
+                      id="site-logo"
+                      placeholder="https://example.com/logo.png"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <!-- Localization -->
+                <div class="border-t border-gray-200 pt-6">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Localization
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label
                         for="currency"
                         class="block text-sm font-medium text-gray-700 mb-1"
-                        >Mata Uang</label
+                        >Currency</label
                       >
                       <select
                         id="currency"
@@ -288,7 +267,7 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                       <label
                         for="timezone"
                         class="block text-sm font-medium text-gray-700 mb-1"
-                        >Zona Waktu</label
+                        >Timezone</label
                       >
                       <select
                         id="timezone"
@@ -305,7 +284,169 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                         </option>
                       </select>
                     </div>
+
+                    <div>
+                      <label
+                        for="language"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Language</label
+                      >
+                      <select
+                        id="language"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      >
+                        <option value="id" selected>Bahasa Indonesia</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
                   </div>
+                </div>
+
+                <!-- Shop Information -->
+                <div class="border-t border-gray-200 pt-6">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Shop Information
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label
+                        for="shop-name"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Shop Name</label
+                      >
+                      <input
+                        type="text"
+                        id="shop-name"
+                        placeholder="Batik Nusantara Store"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="shop-owner"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Shop Owner</label
+                      >
+                      <input
+                        type="text"
+                        id="shop-owner"
+                        placeholder="PT Batik Nusantara Indonesia"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <label
+                      for="shop-address"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Shop Address</label
+                    >
+                    <textarea
+                      id="shop-address"
+                      rows="3"
+                      placeholder="Jl. Malioboro No. 123, Yogyakarta, DIY 55271"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    ></textarea>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                      <label
+                        for="shop-phone"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Phone</label
+                      >
+                      <input
+                        type="tel"
+                        id="shop-phone"
+                        placeholder="0274-123456"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="shop-email"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Email</label
+                      >
+                      <input
+                        type="email"
+                        id="shop-email"
+                        placeholder="info@batiknusantara.com"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                      <label
+                        for="shop-whatsapp"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >WhatsApp</label
+                      >
+                      <input
+                        type="tel"
+                        id="shop-whatsapp"
+                        placeholder="628123456789"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="shop-instagram"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Instagram</label
+                      >
+                      <input
+                        type="text"
+                        id="shop-instagram"
+                        placeholder="@batiknusantara"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <label
+                      for="shop-facebook"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Facebook</label
+                    >
+                    <input
+                      type="text"
+                      id="shop-facebook"
+                      placeholder="BatikNusantaraOfficial"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <!-- Maintenance Mode -->
+                <div class="border-t border-gray-200 pt-6">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Maintenance Mode
+                  </h3>
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="maintenance-mode"
+                      class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                    />
+                    <label
+                      for="maintenance-mode"
+                      class="ml-2 block text-sm text-gray-700"
+                    >
+                      Enable Maintenance Mode
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-1">
+                    When enabled, visitors will see a maintenance page
+                  </p>
                 </div>
 
                 <div class="flex justify-end">
@@ -410,20 +551,39 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
 
                 <div class="border-t border-gray-200 pt-6">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
-                    Email Template
+                    Email Settings
                   </h3>
-                  <div>
-                    <label
-                      for="email-from-name"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                      >Nama Pengirim</label
-                    >
-                    <input
-                      type="text"
-                      id="email-from-name"
-                      value="Batik Nusantara"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label
+                        for="email-from-name"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Nama Pengirim</label
+                      >
+                      <input
+                        type="text"
+                        id="email-from-name"
+                        placeholder="Batik Nusantara"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="admin-email"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Admin Email</label
+                      >
+                      <input
+                        type="email"
+                        id="admin-email"
+                        placeholder="admin@batiknusantara.com"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                      <p class="text-xs text-gray-500 mt-1">
+                        Email untuk menerima notifikasi admin
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -454,7 +614,7 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                 Pengaturan Pembayaran
               </h2>
 
-              <div class="space-y-6">
+              <form id="payment-form" class="space-y-6">
                 <div class="border border-gray-200 rounded-lg p-4">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
                     Metode Pembayaran
@@ -462,104 +622,135 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
 
                   <div class="space-y-4">
                     <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                      class="flex items-center p-3 border border-gray-200 rounded-lg"
                     >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="bank-transfer"
-                          checked
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label
-                          for="bank-transfer"
-                          class="ml-3 flex items-center"
+                      <input
+                        type="checkbox"
+                        id="transfer-bank"
+                        value="transfer_bank"
+                        checked
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label
+                        for="transfer-bank"
+                        class="ml-3 flex items-center"
+                      >
+                        <i class="fas fa-university text-blue-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700"
+                          >Transfer Bank</span
                         >
-                          <i class="fas fa-university text-blue-600 mr-2"></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >Transfer Bank</span
-                          >
-                        </label>
-                      </div>
-                      <button
-                        class="text-amber-600 hover:text-amber-800 text-sm"
-                      >
-                        Konfigurasi
-                      </button>
+                      </label>
                     </div>
 
                     <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                      class="flex items-center p-3 border border-gray-200 rounded-lg"
                     >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="e-wallet"
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="e-wallet" class="ml-3 flex items-center">
-                          <i class="fas fa-mobile-alt text-green-600 mr-2"></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >E-Wallet (OVO, DANA, GoPay)</span
-                          >
-                        </label>
-                      </div>
-                      <button
-                        class="text-amber-600 hover:text-amber-800 text-sm"
-                      >
-                        Konfigurasi
-                      </button>
+                      <input
+                        type="checkbox"
+                        id="ewallet"
+                        value="ewallet"
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="ewallet" class="ml-3 flex items-center">
+                        <i class="fas fa-mobile-alt text-green-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700"
+                          >E-Wallet (OVO, DANA, GoPay)</span
+                        >
+                      </label>
                     </div>
 
                     <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                      class="flex items-center p-3 border border-gray-200 rounded-lg"
                     >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="credit-card"
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="credit-card" class="ml-3 flex items-center">
-                          <i
-                            class="fas fa-credit-card text-purple-600 mr-2"
-                          ></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >Kartu Kredit/Debit</span
-                          >
-                        </label>
-                      </div>
-                      <button
-                        class="text-amber-600 hover:text-amber-800 text-sm"
-                      >
-                        Konfigurasi
-                      </button>
+                      <input
+                        type="checkbox"
+                        id="cod"
+                        value="cod"
+                        checked
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="cod" class="ml-3 flex items-center">
+                        <i
+                          class="fas fa-hand-holding-usd text-orange-600 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium text-gray-700"
+                          >Cash on Delivery (COD)</span
+                        >
+                      </label>
                     </div>
+                  </div>
+                </div>
 
-                    <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                <!-- Bank Accounts Configuration -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-800">
+                      Rekening Bank
+                    </h3>
+                    <button
+                      type="button"
+                      id="add-bank-btn"
+                      class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                     >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="cod"
-                          checked
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="cod" class="ml-3 flex items-center">
-                          <i
-                            class="fas fa-hand-holding-usd text-orange-600 mr-2"
-                          ></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >Cash on Delivery (COD)</span
-                          >
-                        </label>
-                      </div>
-                      <button
-                        class="text-amber-600 hover:text-amber-800 text-sm"
+                      <i class="fas fa-plus mr-1"></i> Tambah Bank
+                    </button>
+                  </div>
+
+                  <div id="bank-accounts-list" class="space-y-3">
+                    <!-- Bank accounts will be rendered here -->
+                    <p class="text-sm text-gray-500">Belum ada rekening bank. Klik "Tambah Bank" untuk menambahkan.</p>
+                  </div>
+                </div>
+
+                <!-- E-Wallet Configuration -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-800">
+                      Akun E-Wallet
+                    </h3>
+                    <button
+                      type="button"
+                      id="add-ewallet-btn"
+                      class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition"
+                    >
+                      <i class="fas fa-plus mr-1"></i> Tambah E-Wallet
+                    </button>
+                  </div>
+
+                  <div id="ewallet-accounts-list" class="space-y-3">
+                    <!-- E-wallet accounts will be rendered here -->
+                    <p class="text-sm text-gray-500">Belum ada akun e-wallet. Klik "Tambah E-Wallet" untuk menambahkan.</p>
+                  </div>
+                </div>
+
+                <!-- COD Configuration -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Konfigurasi COD
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        for="cod-fee"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Biaya COD</label
                       >
-                        Konfigurasi
-                      </button>
+                      <div class="relative">
+                        <span
+                          class="absolute left-3 top-2 text-sm text-gray-500"
+                          >Rp</span
+                        >
+                        <input
+                          type="number"
+                          id="cod-fee"
+                          value="5000"
+                          min="0"
+                          class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        />
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">
+                        Biaya tambahan untuk layanan COD
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -572,6 +763,104 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                     Simpan Perubahan
                   </button>
                 </div>
+              </form>
+            </div>
+
+            <!-- Modal for Add/Edit Bank Account -->
+            <div id="bank-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-900" id="bank-modal-title">Tambah Rekening Bank</h3>
+                  <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeBankModal()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <form id="bank-form">
+                  <input type="hidden" id="bank-index" value="">
+                  <div class="space-y-4">
+                    <div>
+                      <label for="bank-name" class="block text-sm font-medium text-gray-700 mb-1">Nama Bank <span class="text-red-500">*</span></label>
+                      <select id="bank-name" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Pilih Bank</option>
+                        <option value="BCA">BCA</option>
+                        <option value="Mandiri">Mandiri</option>
+                        <option value="BNI">BNI</option>
+                        <option value="BRI">BRI</option>
+                        <option value="CIMB Niaga">CIMB Niaga</option>
+                        <option value="Permata">Permata</option>
+                        <option value="Danamon">Danamon</option>
+                        <option value="BSI">BSI (Bank Syariah Indonesia)</option>
+                        <option value="BTN">BTN</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="bank-account-number" class="block text-sm font-medium text-gray-700 mb-1">Nomor Rekening <span class="text-red-500">*</span></label>
+                      <input type="text" id="bank-account-number" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                      <label for="bank-account-holder" class="block text-sm font-medium text-gray-700 mb-1">Nama Pemilik Rekening <span class="text-red-500">*</span></label>
+                      <input type="text" id="bank-account-holder" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                      <label for="bank-branch" class="block text-sm font-medium text-gray-700 mb-1">Cabang</label>
+                      <input type="text" id="bank-branch" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                  </div>
+                  <div class="flex justify-end space-x-2 mt-6">
+                    <button type="button" onclick="closeBankModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md transition">
+                      Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                      Simpan
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Modal for Add/Edit E-Wallet -->
+            <div id="ewallet-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-900" id="ewallet-modal-title">Tambah E-Wallet</h3>
+                  <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeEwalletModal()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <form id="ewallet-form">
+                  <input type="hidden" id="ewallet-index" value="">
+                  <div class="space-y-4">
+                    <div>
+                      <label for="ewallet-provider" class="block text-sm font-medium text-gray-700 mb-1">Provider <span class="text-red-500">*</span></label>
+                      <select id="ewallet-provider" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Pilih Provider</option>
+                        <option value="GoPay">GoPay</option>
+                        <option value="OVO">OVO</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                        <option value="LinkAja">LinkAja</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="ewallet-account-number" class="block text-sm font-medium text-gray-700 mb-1">Nomor/ID Akun <span class="text-red-500">*</span></label>
+                      <input type="text" id="ewallet-account-number" required placeholder="628123456789" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                      <label for="ewallet-account-holder" class="block text-sm font-medium text-gray-700 mb-1">Nama Pemilik <span class="text-red-500">*</span></label>
+                      <input type="text" id="ewallet-account-holder" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                  </div>
+                  <div class="flex justify-end space-x-2 mt-6">
+                    <button type="button" onclick="closeEwalletModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md transition">
+                      Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition">
+                      Simpan
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
 
@@ -584,113 +873,266 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                 Pengaturan Pengiriman
               </h2>
 
-              <div class="space-y-6">
-                <div>
+              <form id="shipping-form" class="space-y-6">
+                <!-- Shipping Enable Toggle -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-lg font-medium text-gray-800">
+                        Aktifkan Pengiriman
+                      </h3>
+                      <p class="text-sm text-gray-500">
+                        Enable atau disable fitur pengiriman
+                      </p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="shipping-enabled"
+                        checked
+                        class="sr-only peer"
+                      />
+                      <div
+                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"
+                      ></div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Shipping Methods -->
+                <div class="border border-gray-200 rounded-lg p-4">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
                     Kurir Pengiriman
                   </h3>
 
                   <div class="space-y-4">
-                    <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                    >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="jne"
-                          checked
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="jne" class="ml-3 flex items-center">
-                          <i class="fas fa-truck text-red-600 mr-2"></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >JNE</span
-                          >
-                        </label>
-                      </div>
-                      <span class="text-sm text-gray-500">Aktif</span>
+                    <div class="flex items-center p-3 border border-gray-200 rounded-lg">
+                      <input
+                        type="checkbox"
+                        id="jne"
+                        value="jne"
+                        checked
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="jne" class="ml-3 flex items-center">
+                        <i class="fas fa-truck text-red-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700">JNE</span>
+                      </label>
                     </div>
 
-                    <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                    >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="pos"
-                          checked
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="pos" class="ml-3 flex items-center">
-                          <i class="fas fa-truck text-blue-600 mr-2"></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >Pos Indonesia</span
-                          >
-                        </label>
-                      </div>
-                      <span class="text-sm text-gray-500">Aktif</span>
+                    <div class="flex items-center p-3 border border-gray-200 rounded-lg">
+                      <input
+                        type="checkbox"
+                        id="pos"
+                        value="pos"
+                        checked
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="pos" class="ml-3 flex items-center">
+                        <i class="fas fa-truck text-blue-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700">Pos Indonesia</span>
+                      </label>
                     </div>
 
-                    <div
-                      class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
-                    >
-                      <div class="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="tiki"
-                          class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                        />
-                        <label for="tiki" class="ml-3 flex items-center">
-                          <i class="fas fa-truck text-yellow-600 mr-2"></i>
-                          <span class="text-sm font-medium text-gray-700"
-                            >TIKI</span
-                          >
-                        </label>
-                      </div>
-                      <span class="text-sm text-gray-500">Tidak Aktif</span>
+                    <div class="flex items-center p-3 border border-gray-200 rounded-lg">
+                      <input
+                        type="checkbox"
+                        id="tiki"
+                        value="tiki"
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="tiki" class="ml-3 flex items-center">
+                        <i class="fas fa-truck text-yellow-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700">TIKI</span>
+                      </label>
+                    </div>
+
+                    <div class="flex items-center p-3 border border-gray-200 rounded-lg">
+                      <input
+                        type="checkbox"
+                        id="jnt"
+                        value="jnt"
+                        class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      />
+                      <label for="jnt" class="ml-3 flex items-center">
+                        <i class="fas fa-truck text-green-600 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-700">J&T Express</span>
+                      </label>
                     </div>
                   </div>
                 </div>
 
-                <div class="border-t border-gray-200 pt-6">
+                <!-- Shipping Origin -->
+                <div class="border border-gray-200 rounded-lg p-4">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
-                    Biaya Pengiriman
+                    Alamat Asal Pengiriman
                   </h3>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label
-                        for="free-shipping-min"
+                        for="shipping-origin-city"
                         class="block text-sm font-medium text-gray-700 mb-1"
-                        >Minimal Gratis Ongkir</label
+                        >Kota</label
                       >
-                      <div class="relative">
-                        <span
-                          class="absolute left-3 top-2 text-sm text-gray-500"
-                          >Rp</span
-                        >
-                        <input
-                          type="number"
-                          id="free-shipping-min"
-                          value="500000"
-                          class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        id="shipping-origin-city"
+                        placeholder="Yogyakarta"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
                     </div>
 
                     <div>
                       <label
-                        for="shipping-weight-unit"
+                        for="shipping-origin-province"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Provinsi</label
+                      >
+                      <input
+                        type="text"
+                        id="shipping-origin-province"
+                        placeholder="DI Yogyakarta"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        for="shipping-origin-postal-code"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Kode Pos</label
+                      >
+                      <input
+                        type="text"
+                        id="shipping-origin-postal-code"
+                        placeholder="55000"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Shipping Rates -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Biaya Pengiriman
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        for="flat-shipping-rate"
+                        class="block text-sm font-medium text-gray-700 mb-1"
+                        >Tarif Flat (Opsional)</label
+                      >
+                      <div class="relative">
+                        <span class="absolute left-3 top-2 text-sm text-gray-500">Rp</span>
+                        <input
+                          type="number"
+                          id="flat-shipping-rate"
+                          placeholder="20000"
+                          min="0"
+                          class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        />
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">
+                        Kosongkan jika menggunakan RajaOngkir
+                      </p>
+                    </div>
+
+                    <div>
+                      <label
+                        for="weight-unit"
                         class="block text-sm font-medium text-gray-700 mb-1"
                         >Satuan Berat</label
                       >
                       <select
-                        id="shipping-weight-unit"
+                        id="weight-unit"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                       >
                         <option value="gram" selected>Gram</option>
                         <option value="kg">Kilogram</option>
                       </select>
                     </div>
+                  </div>
+                </div>
+
+                <!-- Free Shipping -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Gratis Ongkir
+                  </h3>
+
+                  <div class="flex items-center mb-4">
+                    <input
+                      type="checkbox"
+                      id="free-shipping-enabled"
+                      class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                    />
+                    <label
+                      for="free-shipping-enabled"
+                      class="ml-2 block text-sm text-gray-700"
+                    >
+                      Aktifkan Gratis Ongkir
+                    </label>
+                  </div>
+
+                  <div>
+                    <label
+                      for="free-shipping-min-amount"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Minimal Pembelian</label
+                    >
+                    <div class="relative">
+                      <span class="absolute left-3 top-2 text-sm text-gray-500">Rp</span>
+                      <input
+                        type="number"
+                        id="free-shipping-min-amount"
+                        value="500000"
+                        min="0"
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                      Gratis ongkir untuk pembelian di atas nominal ini
+                    </p>
+                  </div>
+                </div>
+
+                <!-- RajaOngkir Integration -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Integrasi RajaOngkir
+                  </h3>
+
+                  <div class="flex items-center mb-4">
+                    <input
+                      type="checkbox"
+                      id="rajaongkir-enabled"
+                      class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                    />
+                    <label
+                      for="rajaongkir-enabled"
+                      class="ml-2 block text-sm text-gray-700"
+                    >
+                      Aktifkan RajaOngkir (Otomatis Hitung Ongkir)
+                    </label>
+                  </div>
+
+                  <div>
+                    <label
+                      for="rajaongkir-api-key"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >API Key RajaOngkir</label
+                    >
+                    <input
+                      type="text"
+                      id="rajaongkir-api-key"
+                      placeholder="xxxxxxxxxxxxxxxxxxxx"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    <p class="text-xs text-gray-500 mt-1">
+                      Dapatkan API key di <a href="https://rajaongkir.com" target="_blank" class="text-amber-600 hover:text-amber-800">rajaongkir.com</a>
+                    </p>
                   </div>
                 </div>
 
@@ -702,7 +1144,226 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                     Simpan Perubahan
                   </button>
                 </div>
+              </form>
+            </div>
+
+            <!-- WhatsApp Settings -->
+            <div
+              id="whatsapp-settings"
+              class="settings-content hidden bg-white rounded-lg shadow p-6"
+            >
+              <h2 class="text-xl font-semibold text-gray-800 mb-6">
+                Pengaturan WhatsApp
+              </h2>
+
+              <form class="space-y-6">
+                <div>
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Konfigurasi WhatsApp
+                  </h3>
+
+                  <div class="space-y-4">
+                    <div
+                      class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                    >
+                      <div>
+                        <h4 class="text-sm font-medium text-gray-700">
+                          WhatsApp Notification
+                        </h4>
+                        <p class="text-xs text-gray-500">
+                          Aktifkan notifikasi pesanan via WhatsApp
+                        </p>
+                      </div>
+                      <label
+                        class="relative inline-flex items-center cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          id="whatsapp-enabled"
+                          class="sr-only peer"
+                        />
+                        <div
+                          class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"
+                        ></div>
+                      </label>
+                    </div>
+
+                    <!-- Removed duplicate admin-phone input - this was causing conflict -->
+                    <!-- WhatsApp admin phone is configured in WhatsApp Settings tab -->
+
+                    <div
+                      class="p-4 bg-blue-50 border border-blue-200 rounded-lg"
+                    >
+                      <h4 class="text-sm font-medium text-blue-800 mb-2">
+                        <i class="fas fa-qrcode mr-2"></i>WhatsApp Connection
+                      </h4>
+                      <p class="text-xs text-blue-600 mb-3">
+                        Scan QR code untuk menghubungkan WhatsApp
+                      </p>
+                      <div class="flex space-x-2">
+                        <button
+                          type="button"
+                          id="whatsapp-init"
+                          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm transition"
+                        >
+                          <i class="fab fa-whatsapp mr-1"></i> Initialize
+                          WhatsApp
+                        </button>
+                        <button
+                          type="button"
+                          id="whatsapp-qr"
+                          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition"
+                        >
+                          <i class="fas fa-qrcode mr-1"></i> Show QR Code
+                        </button>
+                        <button
+                          type="button"
+                          id="whatsapp-status"
+                          class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm transition"
+                        >
+                          <i class="fas fa-info-circle mr-1"></i> Check Status
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- WhatsApp Settings -->
+            <div
+              id="whatsapp-settings"
+              class="settings-content hidden bg-white rounded-lg shadow p-6"
+            >
+              <h2 class="text-xl font-semibold text-gray-800 mb-6">
+                Pengaturan WhatsApp
+              </h2>
+
+              <!-- Connection Status -->
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-lg font-medium text-gray-800">Status Koneksi</h3>
+                  <div class="flex items-center">
+                    <span id="whatsapp-status-indicator" class="w-3 h-3 rounded-full bg-gray-400 mr-2"></span>
+                    <span id="whatsapp-status-text" class="text-sm font-medium text-gray-600">Checking...</span>
+                  </div>
+                </div>
+                <p id="whatsapp-status-message" class="text-sm text-gray-600">Loading WhatsApp status...</p>
               </div>
+
+              <!-- WhatsApp Configuration -->
+              <div class="space-y-6 mb-6">
+                <h3 class="text-lg font-medium text-gray-800">Konfigurasi</h3>
+
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="whatsapp-enabled"
+                    class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                  />
+                  <label
+                    for="whatsapp-enabled"
+                    class="ml-2 block text-sm text-gray-700"
+                  >
+                    Aktifkan Notifikasi WhatsApp
+                  </label>
+                </div>
+
+                <div>
+                  <label
+                    for="admin-phone"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Nomor WhatsApp Admin <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="admin-phone"
+                    placeholder="628123456789"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                  <p class="text-xs text-gray-500 mt-1">
+                    Format: 628xxx (dengan kode negara) atau 08xxx
+                  </p>
+                </div>
+
+                <div class="flex justify-end">
+                  <button
+                    id="save-whatsapp-settings-btn"
+                    type="button"
+                    class="bg-amber-700 hover:bg-amber-800 text-white px-6 py-2 rounded-md transition"
+                  >
+                    Simpan Pengaturan
+                  </button>
+                </div>
+              </div>
+
+              <!-- Connected Section -->
+              <div id="whatsapp-connected-section" class="hidden border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">WhatsApp Connected</h3>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                  <p class="text-sm text-green-700 mb-2">
+                    <i class="fas fa-check-circle mr-1"></i>
+                    WhatsApp terhubung dan siap mengirim notifikasi otomatis.
+                  </p>
+                  <p class="text-xs text-green-600">
+                    Notifikasi akan dikirim untuk: Order confirmation, Payment updates, Status changes
+                  </p>
+                </div>
+
+                <button
+                  id="disconnect-whatsapp-btn"
+                  type="button"
+                  class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition"
+                >
+                  <i class="fas fa-unlink mr-1"></i> Disconnect WhatsApp
+                </button>
+              </div>
+
+              <!-- QR Code Section -->
+              <div id="whatsapp-qr-section" class="hidden border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Scan QR Code</h3>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                  <p class="text-sm text-yellow-700 mb-2">
+                    <i class="fas fa-qrcode mr-1"></i>
+                    Scan QR code di bawah dengan aplikasi WhatsApp Anda
+                  </p>
+                  <ol class="text-xs text-yellow-600 list-decimal list-inside">
+                    <li>Buka WhatsApp di HP Anda</li>
+                    <li>Tap Menu (⋮) → Linked Devices</li>
+                    <li>Tap "Link a Device"</li>
+                    <li>Scan QR code di bawah</li>
+                  </ol>
+                </div>
+
+                <div id="qr-code-container" class="flex justify-center">
+                  <!-- QR Code will be displayed here -->
+                  <div class="text-center text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p>Generating QR Code...</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Disconnected Section -->
+              <div id="whatsapp-disconnected-section" class="hidden border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Connect WhatsApp</h3>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <p class="text-sm text-red-700">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    WhatsApp belum terhubung. Klik tombol di bawah untuk memulai koneksi.
+                  </p>
+                </div>
+
+                <button
+                  id="init-whatsapp-btn"
+                  type="button"
+                  class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition"
+                >
+                  <i class="fas fa-qrcode mr-1"></i> Initialize WhatsApp
+                </button>
+              </div>
+
             </div>
 
             <!-- Security Settings -->
@@ -716,52 +1377,6 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
 
               <div class="space-y-6">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-800 mb-4">
-                    Keamanan Admin
-                  </h3>
-                  <div class="space-y-4">
-                    <div
-                      class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
-                    >
-                      <div>
-                        <h4 class="text-sm font-medium text-gray-700">
-                          Two-Factor Authentication
-                        </h4>
-                        <p class="text-xs text-gray-500">
-                          Tambahkan lapisan keamanan ekstra untuk akun admin
-                        </p>
-                      </div>
-                      <button
-                        class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm transition"
-                      >
-                        Aktifkan
-                      </button>
-                    </div>
-
-                    <div
-                      class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
-                    >
-                      <div>
-                        <h4 class="text-sm font-medium text-gray-700">
-                          Session Timeout
-                        </h4>
-                        <p class="text-xs text-gray-500">
-                          Otomatis logout setelah tidak aktif
-                        </p>
-                      </div>
-                      <select
-                        class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="30">30 menit</option>
-                        <option value="60" selected>1 jam</option>
-                        <option value="120">2 jam</option>
-                        <option value="240">4 jam</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="border-t border-gray-200 pt-6">
                   <h3 class="text-lg font-medium text-gray-800 mb-4">
                     Ganti Password
                   </h3>
@@ -815,52 +1430,6 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
                     </div>
                   </form>
                 </div>
-
-                <div class="border-t border-gray-200 pt-6">
-                  <h3 class="text-lg font-medium text-gray-800 mb-4">
-                    Backup & Restore
-                  </h3>
-                  <div class="space-y-4">
-                    <div
-                      class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
-                    >
-                      <div>
-                        <h4 class="text-sm font-medium text-gray-700">
-                          Backup Otomatis
-                        </h4>
-                        <p class="text-xs text-gray-500">
-                          Backup database secara otomatis setiap hari
-                        </p>
-                      </div>
-                      <label
-                        class="relative inline-flex items-center cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          value=""
-                          class="sr-only peer"
-                          checked
-                        />
-                        <div
-                          class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"
-                        ></div>
-                      </label>
-                    </div>
-
-                    <div class="flex space-x-3">
-                      <button
-                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
-                      >
-                        <i class="fas fa-download mr-1"></i> Download Backup
-                      </button>
-                      <button
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition"
-                      >
-                        <i class="fas fa-upload mr-1"></i> Upload Restore
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -870,8 +1439,26 @@ Jl. Malioboro No. 123, Yogyakarta, DIY 55271</textarea
 
     <!-- JavaScript Files -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/admin-layout.js"></script>
+    <script src="../assets/js/payment-accounts.js"></script>
     <script src="../assets/js/settings.js"></script>
+    <script src="../assets/js/whatsapp-settings.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsSubmenu = document.getElementById('settings-submenu');
+        const settingsChevron = document.getElementById('settings-chevron');
+
+        if (settingsToggle) {
+          settingsToggle.addEventListener('click', function() {
+            settingsSubmenu.classList.toggle('hidden');
+            settingsChevron.classList.toggle('rotate-180');
+          });
+        }
+      });
+    </script>
   </body>
 </html>

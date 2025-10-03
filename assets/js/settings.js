@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeSettingsPage() {
-    // Settings navigation handling
     const settingsNavLinks = document.querySelectorAll('.settings-nav-link');
     const settingsContents = document.querySelectorAll('.settings-content');
 
@@ -14,7 +13,6 @@ function initializeSettingsPage() {
             const targetId = this.getAttribute('href').substring(1) + '-settings';
             showSettingsSection(targetId);
 
-            // Update active navigation
             settingsNavLinks.forEach(navLink => {
                 navLink.classList.remove('text-amber-700', 'bg-amber-50', 'border', 'border-amber-200');
                 navLink.classList.add('text-gray-700', 'hover:bg-gray-50');
@@ -25,13 +23,8 @@ function initializeSettingsPage() {
         });
     });
 
-    // Form submissions
     setupFormHandlers();
-
-    // Test email functionality
     setupEmailTest();
-
-    // Load current settings
     loadCurrentSettings();
 }
 
@@ -49,7 +42,6 @@ function showSettingsSection(sectionId) {
 }
 
 function setupFormHandlers() {
-    // General settings form
     const generalForm = document.querySelector('#general-settings form');
     if (generalForm) {
         generalForm.addEventListener('submit', function(e) {
@@ -58,7 +50,6 @@ function setupFormHandlers() {
         });
     }
 
-    // Email settings form
     const emailForm = document.querySelector('#email-settings form');
     if (emailForm) {
         emailForm.addEventListener('submit', function(e) {
@@ -67,8 +58,7 @@ function setupFormHandlers() {
         });
     }
 
-    // Payment settings form
-    const paymentForm = document.querySelector('#payment-settings form');
+    const paymentForm = document.querySelector('#payment-form');
     if (paymentForm) {
         paymentForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -76,8 +66,7 @@ function setupFormHandlers() {
         });
     }
 
-    // Shipping settings form
-    const shippingForm = document.querySelector('#shipping-settings form');
+    const shippingForm = document.querySelector('#shipping-form');
     if (shippingForm) {
         shippingForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -85,7 +74,6 @@ function setupFormHandlers() {
         });
     }
 
-    // Security settings form
     const securityForm = document.querySelector('#security-settings form');
     if (securityForm) {
         securityForm.addEventListener('submit', function(e) {
@@ -106,7 +94,6 @@ function setupEmailTest() {
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Mengirim...';
                 btn.disabled = true;
 
-                // Get test email from user
                 const testEmail = prompt('Masukkan alamat email untuk test:');
                 if (!testEmail) return;
 
@@ -124,10 +111,19 @@ function setupEmailTest() {
 
 async function loadCurrentSettings() {
     try {
-        console.log('Loading current settings...');
+        const response = await ApiService.getSettings();
 
-        const settings = await ApiService.getSettings();
-        populateSettingsForm(settings);
+        const groupedSettings = {};
+        if (Array.isArray(response)) {
+            response.forEach(setting => {
+                if (!groupedSettings[setting.category]) {
+                    groupedSettings[setting.category] = {};
+                }
+                groupedSettings[setting.category][setting.key] = setting.value;
+            });
+        }
+
+        populateSettingsForm(groupedSettings);
 
     } catch (error) {
         console.error('Error loading settings:', error);
@@ -137,83 +133,147 @@ async function loadCurrentSettings() {
 
 async function saveGeneralSettings() {
     try {
-        const formData = {
-            site_name: document.getElementById('site-name').value,
-            site_description: document.getElementById('site-description').value,
-            site_address: document.getElementById('site-address').value,
-            site_phone: document.getElementById('site-phone').value,
-            site_email: document.getElementById('site-email').value,
-            currency: document.getElementById('currency').value,
-            timezone: document.getElementById('timezone').value
+        const settings = {};
+
+        const getElementValue = (htmlId, apiKey) => {
+            const el = document.getElementById(htmlId);
+            const value = el ? el.value : '';
+            if (value) settings[apiKey] = value;
         };
 
-        await ApiService.saveSettings('general', formData);
+        const getElementChecked = (htmlId, apiKey) => {
+            const el = document.getElementById(htmlId);
+            if (el) settings[apiKey] = el.checked;
+        };
+
+        getElementValue('site-title', 'site_title');
+        getElementValue('site-tagline', 'site_tagline');
+        getElementValue('site-logo', 'site_logo');
+        getElementValue('currency', 'currency');
+        getElementValue('timezone', 'timezone');
+        getElementValue('language', 'language');
+        getElementChecked('maintenance-mode', 'maintenance_mode');
+        getElementValue('shop-name', 'shop_name');
+        getElementValue('shop-owner', 'shop_owner');
+        getElementValue('shop-address', 'shop_address');
+        getElementValue('shop-phone', 'shop_phone');
+        getElementValue('shop-email', 'shop_email');
+        getElementValue('shop-whatsapp', 'shop_whatsapp');
+        getElementValue('shop-instagram', 'shop_instagram');
+        getElementValue('shop-facebook', 'shop_facebook');
+
+        await ApiService.saveSettings('general', settings);
         Utils.showAlert('Pengaturan umum berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving general settings:', error);
-        Utils.showAlert('Gagal menyimpan pengaturan umum', 'error');
+        Utils.showAlert('Gagal menyimpan pengaturan umum: ' + (error.message || 'Unknown error'), 'error');
     }
 }
 
 async function saveEmailSettings() {
     try {
-        const formData = {
-            smtp_host: document.getElementById('smtp-host').value,
-            smtp_port: document.getElementById('smtp-port').value,
-            smtp_username: document.getElementById('smtp-username').value,
-            smtp_password: document.getElementById('smtp-password').value,
-            smtp_secure: document.getElementById('smtp-secure').checked,
-            email_from_name: document.getElementById('email-from-name').value
-        };
+        const settings = {};
 
-        await ApiService.saveSettings('email', formData);
+        const smtpHost = document.getElementById('smtp-host');
+        if (smtpHost && smtpHost.value) settings.smtp_host = smtpHost.value;
+
+        const smtpPort = document.getElementById('smtp-port');
+        if (smtpPort && smtpPort.value) settings.smtp_port = parseInt(smtpPort.value);
+
+        const smtpUser = document.getElementById('smtp-username');
+        if (smtpUser && smtpUser.value) settings.smtp_user = smtpUser.value;
+
+        const smtpPass = document.getElementById('smtp-password');
+        if (smtpPass && smtpPass.value) settings.smtp_pass = smtpPass.value;
+
+        const smtpSecure = document.getElementById('smtp-secure');
+        if (smtpSecure) settings.smtp_secure = smtpSecure.checked;
+
+        const emailFromName = document.getElementById('email-from-name');
+        if (emailFromName && emailFromName.value) settings.email_from_name = emailFromName.value;
+
+        const adminEmail = document.getElementById('admin-email');
+        if (adminEmail && adminEmail.value) settings.admin_email = adminEmail.value;
+
+        await ApiService.saveSettings('notification', settings);
         Utils.showAlert('Pengaturan email berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving email settings:', error);
-        Utils.showAlert('Gagal menyimpan pengaturan email', 'error');
+        Utils.showAlert('Gagal menyimpan pengaturan email: ' + (error.message || 'Unknown error'), 'error');
     }
 }
 
 async function savePaymentSettings() {
     try {
-        const paymentMethods = {
-            bank_transfer: document.getElementById('bank-transfer').checked,
-            e_wallet: document.getElementById('e-wallet').checked,
-            credit_card: document.getElementById('credit-card').checked,
-            cod: document.getElementById('cod').checked
+        const paymentMethods = [];
+
+        const transferBank = document.getElementById('transfer-bank');
+        if (transferBank && transferBank.checked) paymentMethods.push('transfer_bank');
+
+        const ewallet = document.getElementById('ewallet');
+        if (ewallet && ewallet.checked) paymentMethods.push('ewallet');
+
+        const cod = document.getElementById('cod');
+        if (cod && cod.checked) paymentMethods.push('cod');
+
+        const codFee = document.getElementById('cod-fee');
+        const codFeeValue = codFee ? parseInt(codFee.value) || 0 : 0;
+
+        const accountsData = typeof getPaymentAccountsData === 'function'
+            ? getPaymentAccountsData()
+            : { bank_accounts: [], ewallet_accounts: [] };
+
+        const settings = {
+            payment_methods: paymentMethods,
+            cod_enabled: cod ? cod.checked : false,
+            cod_fee: codFeeValue,
+            bank_accounts: accountsData.bank_accounts,
+            ewallet_accounts: accountsData.ewallet_accounts
         };
 
-        const formData = {
-            payment_methods: JSON.stringify(paymentMethods)
-        };
-
-        await ApiService.saveSettings('payment', formData);
+        await ApiService.saveSettings('payment', settings);
         Utils.showAlert('Pengaturan pembayaran berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving payment settings:', error);
-        Utils.showAlert('Gagal menyimpan pengaturan pembayaran', 'error');
+        Utils.showAlert('Gagal menyimpan pengaturan pembayaran: ' + (error.message || 'Unknown error'), 'error');
     }
 }
 
 async function saveShippingSettings() {
     try {
-        const shippingCouriers = {
-            jne: document.getElementById('jne').checked,
-            pos: document.getElementById('pos').checked,
-            tiki: document.getElementById('tiki').checked
+        const shippingMethods = [];
+
+        const jne = document.getElementById('jne');
+        if (jne && jne.checked) shippingMethods.push('jne');
+
+        const pos = document.getElementById('pos');
+        if (pos && pos.checked) shippingMethods.push('pos');
+
+        const tiki = document.getElementById('tiki');
+        if (tiki && tiki.checked) shippingMethods.push('tiki');
+
+        const jnt = document.getElementById('jnt');
+        if (jnt && jnt.checked) shippingMethods.push('jnt');
+
+        const settings = {
+            shipping_enabled: document.getElementById('shipping-enabled')?.checked || false,
+            shipping_methods: shippingMethods,
+            shipping_origin_city: document.getElementById('shipping-origin-city')?.value || '',
+            shipping_origin_province: document.getElementById('shipping-origin-province')?.value || '',
+            shipping_origin_postal_code: document.getElementById('shipping-origin-postal-code')?.value || '',
+            flat_shipping_rate: parseInt(document.getElementById('flat-shipping-rate')?.value) || 0,
+            weight_unit: document.getElementById('weight-unit')?.value || 'gram',
+            free_shipping_enabled: document.getElementById('free-shipping-enabled')?.checked || false,
+            free_shipping_min_amount: parseInt(document.getElementById('free-shipping-min-amount')?.value) || 0,
+            rajaongkir_enabled: document.getElementById('rajaongkir-enabled')?.checked || false,
+            rajaongkir_api_key: document.getElementById('rajaongkir-api-key')?.value || ''
         };
 
-        const formData = {
-            shipping_couriers: JSON.stringify(shippingCouriers),
-            free_shipping_min: document.getElementById('free-shipping-min').value,
-            weight_unit: document.getElementById('shipping-weight-unit').value
-        };
-
-        await ApiService.saveSettings('shipping', formData);
+        await ApiService.saveSettings('shipping', settings);
         Utils.showAlert('Pengaturan pengiriman berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving shipping settings:', error);
-        Utils.showAlert('Gagal menyimpan pengaturan pengiriman', 'error');
+        Utils.showAlert('Gagal menyimpan pengaturan pengiriman: ' + (error.message || 'Unknown error'), 'error');
     }
 }
 
@@ -253,45 +313,112 @@ async function changePassword() {
 
 function populateSettingsForm(settings) {
     try {
+        const setElementValue = (htmlId, apiKey, category, defaultValue = '') => {
+            const el = document.getElementById(htmlId);
+            if (el && settings[category] && settings[category][apiKey] !== undefined) {
+                const value = settings[category][apiKey] || defaultValue;
+                el.value = value;
+            }
+        };
+
+        const setElementChecked = (htmlId, apiKey, category) => {
+            const el = document.getElementById(htmlId);
+            if (el && settings[category] && settings[category][apiKey] !== undefined) {
+                const checked = settings[category][apiKey] === true || settings[category][apiKey] === 'true';
+                el.checked = checked;
+            }
+        };
+
         if (settings.general) {
-            const general = settings.general;
-            if (general.site_name !== undefined) document.getElementById('site-name').value = general.site_name || '';
-            if (general.site_description !== undefined) document.getElementById('site-description').value = general.site_description || '';
-            if (general.site_address !== undefined) document.getElementById('site-address').value = general.site_address || '';
-            if (general.site_phone !== undefined) document.getElementById('site-phone').value = general.site_phone || '';
-            if (general.site_email !== undefined) document.getElementById('site-email').value = general.site_email || '';
-            if (general.currency !== undefined) document.getElementById('currency').value = general.currency || 'IDR';
-            if (general.timezone !== undefined) document.getElementById('timezone').value = general.timezone || 'Asia/Jakarta';
+            setElementValue('site-title', 'site_title', 'general');
+            setElementValue('site-tagline', 'site_tagline', 'general');
+            setElementValue('site-logo', 'site_logo', 'general');
+
+            setElementValue('currency', 'currency', 'general', 'IDR');
+            setElementValue('timezone', 'timezone', 'general', 'Asia/Jakarta');
+            setElementValue('language', 'language', 'general', 'id');
+
+            setElementChecked('maintenance-mode', 'maintenance_mode', 'general');
         }
 
-        if (settings.email) {
-            const email = settings.email;
-            if (email.smtp_host !== undefined) document.getElementById('smtp-host').value = email.smtp_host || '';
-            if (email.smtp_port !== undefined) document.getElementById('smtp-port').value = email.smtp_port || '587';
-            if (email.smtp_username !== undefined) document.getElementById('smtp-username').value = email.smtp_username || '';
-            if (email.smtp_password !== undefined) document.getElementById('smtp-password').value = email.smtp_password || '';
-            if (email.smtp_secure !== undefined) document.getElementById('smtp-secure').checked = email.smtp_secure === true;
-            if (email.email_from_name !== undefined) document.getElementById('email-from-name').value = email.email_from_name || '';
+        if (settings.shop) {
+            setElementValue('shop-name', 'shop_name', 'shop');
+            setElementValue('shop-owner', 'shop_owner', 'shop');
+            setElementValue('shop-address', 'shop_address', 'shop');
+            setElementValue('shop-phone', 'shop_phone', 'shop');
+            setElementValue('shop-email', 'shop_email', 'shop');
+            setElementValue('shop-whatsapp', 'shop_whatsapp', 'shop');
+            setElementValue('shop-instagram', 'shop_instagram', 'shop');
+            setElementValue('shop-facebook', 'shop_facebook', 'shop');
         }
 
-        if (settings.payment && settings.payment.payment_methods) {
-            const paymentMethods = settings.payment.payment_methods;
-            if (paymentMethods.bank_transfer !== undefined) document.getElementById('bank-transfer').checked = paymentMethods.bank_transfer;
-            if (paymentMethods.e_wallet !== undefined) document.getElementById('e-wallet').checked = paymentMethods.e_wallet;
-            if (paymentMethods.credit_card !== undefined) document.getElementById('credit-card').checked = paymentMethods.credit_card;
-            if (paymentMethods.cod !== undefined) document.getElementById('cod').checked = paymentMethods.cod;
+        if (settings.notification) {
+            setElementValue('smtp-host', 'smtp_host', 'notification');
+            setElementValue('smtp-port', 'smtp_port', 'notification', '587');
+            setElementValue('smtp-username', 'smtp_user', 'notification');
+            setElementValue('smtp-password', 'smtp_pass', 'notification');
+            setElementChecked('smtp-secure', 'smtp_secure', 'notification');
+            setElementValue('email-from-name', 'email_from_name', 'notification');
+            setElementValue('admin-email', 'admin_email', 'notification');
+            setElementChecked('whatsapp-enabled', 'whatsapp_enabled', 'notification');
+            setElementValue('whatsapp-admin-phone', 'admin_phone', 'notification');
+        }
+
+        if (settings.payment) {
+            if (settings.payment.payment_methods && Array.isArray(settings.payment.payment_methods)) {
+                const methods = settings.payment.payment_methods;
+
+                const transferBankEl = document.getElementById('transfer-bank');
+                if (transferBankEl) transferBankEl.checked = methods.includes('transfer_bank');
+
+                const ewalletEl = document.getElementById('ewallet');
+                if (ewalletEl) ewalletEl.checked = methods.includes('ewallet');
+
+                const codEl = document.getElementById('cod');
+                if (codEl) codEl.checked = methods.includes('cod');
+            }
+
+            const codFeeEl = document.getElementById('cod-fee');
+            if (codFeeEl && settings.payment.cod_fee !== undefined) {
+                codFeeEl.value = settings.payment.cod_fee;
+            }
+
+            if (typeof loadPaymentAccounts === 'function') {
+                loadPaymentAccounts(settings);
+            }
         }
 
         if (settings.shipping) {
-            const shipping = settings.shipping;
-            if (shipping.shipping_couriers) {
-                const couriers = shipping.shipping_couriers;
-                if (couriers.jne !== undefined) document.getElementById('jne').checked = couriers.jne;
-                if (couriers.pos !== undefined) document.getElementById('pos').checked = couriers.pos;
-                if (couriers.tiki !== undefined) document.getElementById('tiki').checked = couriers.tiki;
+            setElementChecked('shipping-enabled', 'shipping_enabled', 'shipping');
+
+            if (settings.shipping.shipping_methods && Array.isArray(settings.shipping.shipping_methods)) {
+                const methods = settings.shipping.shipping_methods;
+
+                const jneEl = document.getElementById('jne');
+                if (jneEl) jneEl.checked = methods.includes('jne');
+
+                const posEl = document.getElementById('pos');
+                if (posEl) posEl.checked = methods.includes('pos');
+
+                const tikiEl = document.getElementById('tiki');
+                if (tikiEl) tikiEl.checked = methods.includes('tiki');
+
+                const jntEl = document.getElementById('jnt');
+                if (jntEl) jntEl.checked = methods.includes('jnt');
             }
-            if (shipping.free_shipping_min !== undefined) document.getElementById('free-shipping-min').value = shipping.free_shipping_min || '500000';
-            if (shipping.weight_unit !== undefined) document.getElementById('shipping-weight-unit').value = shipping.weight_unit || 'gram';
+
+            setElementValue('shipping-origin-city', 'shipping_origin_city', 'shipping');
+            setElementValue('shipping-origin-province', 'shipping_origin_province', 'shipping');
+            setElementValue('shipping-origin-postal-code', 'shipping_origin_postal_code', 'shipping');
+
+            setElementValue('flat-shipping-rate', 'flat_shipping_rate', 'shipping');
+            setElementValue('weight-unit', 'weight_unit', 'shipping', 'gram');
+
+            setElementChecked('free-shipping-enabled', 'free_shipping_enabled', 'shipping');
+            setElementValue('free-shipping-min-amount', 'free_shipping_min_amount', 'shipping', '500000');
+
+            setElementChecked('rajaongkir-enabled', 'rajaongkir_enabled', 'shipping');
+            setElementValue('rajaongkir-api-key', 'rajaongkir_api_key', 'shipping');
         }
     } catch (error) {
         console.error('Error populating settings form:', error);

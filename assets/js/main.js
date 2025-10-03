@@ -1,34 +1,28 @@
-// API Configuration - Values from .env file
 const API_BASE_URL = "http://localhost:3000/api";
 const API_TIMEOUT = 10000;
 const API_RETRY_ATTEMPTS = 3;
 const APP_NAME = "Batik Nusantara";
 const ITEMS_PER_PAGE = 10;
 
-// Wait for axios to be available from CDN
 function initializeAxios() {
   if (typeof axios === "undefined") {
     console.error("Axios is not loaded. Make sure the CDN script is included.");
     return false;
   }
 
-  // Configure axios defaults
   axios.defaults.baseURL = API_BASE_URL;
   axios.defaults.timeout = API_TIMEOUT;
   axios.defaults.headers.common["Content-Type"] = "application/json";
 
-  console.log("Axios initialized with baseURL:", axios.defaults.baseURL);
   return true;
 }
 
-// Initialize axios when available
 function setupAxiosInterceptors() {
   if (typeof axios === "undefined") {
     setTimeout(setupAxiosInterceptors, 100);
     return;
   }
 
-  // Axios interceptors for authentication
   axios.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem("admin_token");
@@ -42,12 +36,10 @@ function setupAxiosInterceptors() {
     }
   );
 
-  // Response interceptor for handling authentication errors
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        // Token expired or invalid
         localStorage.removeItem("admin_token");
         if (window.location.pathname !== "/pages/admin-login.html") {
           window.location.href = "/pages/admin-login.html";
@@ -58,26 +50,15 @@ function setupAxiosInterceptors() {
   );
 }
 
-// API Service Class
 class ApiService {
-  // Authentication endpoints
   static async login(credentials) {
     try {
-      console.log(
-        "ApiService.login - Making request to:",
-        axios.defaults.baseURL + "/auth/login"
-      );
       const response = await axios.post("/auth/login", credentials);
-      console.log("ApiService.login - Response status:", response.status);
-      console.log("ApiService.login - Response data:", response.data);
 
       if (response.data.accessToken || response.data.token) {
         const token = response.data.accessToken || response.data.token;
         localStorage.setItem("admin_token", token);
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        console.log("ApiService.login - Token saved to localStorage");
-      } else {
-        console.warn("ApiService.login - No token in response");
       }
       return response.data;
     } catch (error) {
@@ -122,14 +103,12 @@ class ApiService {
     }
   }
 
-  // Dashboard/Statistics endpoints
   static async getDashboardStats() {
     try {
       const response = await axios.get("/stats/dashboard");
       return response.data;
     } catch (error) {
       console.error("getDashboardStats - Error:", error);
-      // Return minimal fallback to prevent crash
       return {
         totalProducts: 0,
         newOrders: 0,
@@ -157,7 +136,6 @@ class ApiService {
     }
   }
 
-  // Products endpoints
   static async getProducts(params = {}) {
     try {
       const response = await axios.get("/products", { params });
@@ -231,7 +209,6 @@ class ApiService {
     }
   }
 
-  // Orders endpoints
   static async getOrders(params = {}) {
     try {
       const response = await axios.get("/orders", { params });
@@ -269,7 +246,6 @@ class ApiService {
     }
   }
 
-  // Payment endpoints
   static async getPaymentByOrder(orderId) {
     try {
       const response = await axios.get(`/payments/order/${orderId}`);
@@ -315,7 +291,6 @@ class ApiService {
     }
   }
 
-  // Upload endpoints
   static async uploadProductImage(file) {
     try {
       const formData = new FormData();
@@ -332,7 +307,6 @@ class ApiService {
     }
   }
 
-  // Email endpoints
   static async testEmailConnection() {
     try {
       const response = await axios.post("/email/test-connection");
@@ -351,14 +325,12 @@ class ApiService {
     }
   }
 
-  // Utility endpoints
   static async getCategories() {
     try {
       const response = await axios.get("/categories");
       return response.data;
     } catch (error) {
       console.error("getCategories - Error:", error);
-      // Return minimal fallback categories to prevent crash
       return [
         { id: 1, name: "Klasik" },
         { id: 2, name: "Pesisir" },
@@ -367,7 +339,6 @@ class ApiService {
     }
   }
 
-  // Settings endpoints
   static async getSettings() {
     try {
       const response = await axios.get("/settings?include_private=true");
@@ -398,22 +369,18 @@ class ApiService {
     }
   }
 
-  // Error handler
   static handleError(error) {
     if (error.response) {
-      // Server responded with error status
       const message =
         error.response.data?.message ||
         error.response.data?.error ||
         "Terjadi kesalahan pada server";
       return new Error(message);
     } else if (error.request) {
-      // Request was made but no response received
       return new Error(
         "Tidak dapat terhubung ke server. Periksa koneksi internet Anda."
       );
     } else {
-      // Something else happened
       return new Error(
         error.message || "Terjadi kesalahan yang tidak diketahui"
       );
@@ -421,7 +388,6 @@ class ApiService {
   }
 }
 
-// Utility Functions
 class Utils {
   static showAlert(message, type = "info", duration = 5000) {
     const alertContainer = document.getElementById("alert-container");
@@ -550,22 +516,17 @@ class Utils {
   }
 }
 
-// Authentication Manager
 class AuthManager {
   static async checkAuth() {
     const token = localStorage.getItem("admin_token");
-    console.log("CheckAuth - Token exists:", !!token);
 
     if (!token) return null;
 
     try {
-      console.log("CheckAuth - Calling getProfile API...");
       const response = await ApiService.getProfile();
-      console.log("CheckAuth - API response:", response);
       return response.user;
     } catch (error) {
       console.error("CheckAuth - API error:", error);
-      // Remove invalid token
       localStorage.removeItem("admin_token");
       delete axios.defaults.headers.common["Authorization"];
       return null;
@@ -588,13 +549,10 @@ class AuthManager {
   }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
-  // Setup axios configuration and interceptors
   if (initializeAxios()) {
     setupAxiosInterceptors();
 
-    // Set existing token if available
     const token = localStorage.getItem("admin_token");
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -602,10 +560,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Also setup when axios becomes available (fallback)
 setupAxiosInterceptors();
 
-// Export for global access
 window.ApiService = ApiService;
 window.Utils = Utils;
 window.AuthManager = AuthManager;

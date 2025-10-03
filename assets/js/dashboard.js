@@ -1,25 +1,14 @@
-// Dashboard Page Script
-
 let currentUser = null;
 let currentPage = 1;
 let currentFilters = {};
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.log('Dashboard script loaded');
-
-  // Wait for dependencies to be available
   function waitForDependencies() {
     if (typeof window.ApiService !== 'undefined' &&
         typeof window.Utils !== 'undefined' &&
         typeof window.AuthManager !== 'undefined') {
-      console.log('Dependencies available, initializing dashboard...');
       initDashboard();
     } else {
-      console.log('Waiting for dependencies...', {
-        ApiService: typeof window.ApiService,
-        Utils: typeof window.Utils,
-        AuthManager: typeof window.AuthManager
-      });
       setTimeout(waitForDependencies, 100);
     }
   }
@@ -28,46 +17,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function initDashboard() {
-  console.log("Dashboard - Starting initialization...");
-
-  // Check if we have a token first (quick check)
   const token = localStorage.getItem("admin_token");
   if (!token) {
-    console.log("Dashboard - No token found, redirecting to login");
     window.location.href = "/pages/admin-login.html";
     return;
   }
 
-  console.log("Dashboard - Token found, checking authentication...");
-
-  // Try to get user info, but don't redirect immediately if backend is down
   try {
     currentUser = await window.AuthManager.checkAuth();
-    if (currentUser) {
-      console.log("Dashboard - User authenticated:", currentUser);
-    } else {
-      console.log(
-        "Dashboard - Auth check failed, but token exists - continuing anyway"
-      );
-      // Create a dummy user object to continue
+    if (!currentUser) {
       currentUser = { username: "admin", name: "Admin" };
     }
   } catch (error) {
     console.error("Dashboard - Auth error:", error);
-    // If there's an error but we have token, continue with dummy user
     currentUser = { username: "admin", name: "Admin" };
   }
 
-  // Update user info in sidebar
   updateUserInfo();
 
-  // Initialize components
   await loadDashboardData();
   initNavigation();
   initEventListeners();
   initModals();
 
-  // Load initial data
   await loadInitialData();
 
   window.Utils.showAlert("Dashboard berhasil dimuat", "success", 3000);
@@ -89,7 +61,6 @@ async function loadDashboardData() {
   try {
     const stats = await window.ApiService.getDashboardStats();
 
-    // Update dashboard statistics using correct API response structure
     if (stats.overview) {
       updateElement("total-products", stats.overview.total_products || 0);
       updateElement("total-orders", stats.overview.total_orders || 0);
@@ -104,14 +75,12 @@ async function loadDashboardData() {
       updateElement("low-stock", stats.alerts.low_stock_products || 0);
     }
 
-    // Load recent activity from API response if available
     if (stats.recent_activity && stats.recent_activity.recent_orders) {
       loadRecentActivityFromStats(stats.recent_activity.recent_orders);
     } else {
       await loadRecentActivity();
     }
 
-    // Load additional dashboard components
     await loadPopularProducts();
     await loadSalesChart();
 
@@ -151,10 +120,8 @@ async function loadRecentActivity() {
   if (!container) return;
 
   try {
-    // Try to get recent orders, but handle errors gracefully
     const orders = await ApiService.getOrders({ page: 1, limit: 5 });
 
-    // Handle different response formats
     const orderData = orders.orders || orders.data || [];
 
     if (orderData && orderData.length > 0) {
@@ -179,7 +146,6 @@ async function loadRecentActivity() {
     }
   } catch (error) {
     console.error("Error loading recent activity:", error);
-    // Show placeholder activity instead of error
     container.innerHTML = `
             <div class="flex items-center text-sm text-gray-600">
                 <i class="fas fa-info-circle mr-2 text-blue-600"></i>
@@ -245,12 +211,10 @@ async function loadSalesChart() {
     const stats = await ApiService.getOrderStats();
 
     if (stats.sales_trend && stats.sales_trend.length > 0) {
-      // Simple text-based chart representation
       const maxRevenue = Math.max(
         ...stats.sales_trend.map((day) => parseFloat(day.daily_revenue))
       );
 
-      // Calculate total revenue from sales_trend
       const totalRevenue = stats.sales_trend.reduce((sum, day) => sum + parseFloat(day.daily_revenue || 0), 0);
 
       container.innerHTML = `
@@ -305,15 +269,9 @@ async function loadSalesChart() {
 }
 
 function initNavigation() {
-  // Let admin-layout.js handle sidebar toggle and navigation
-  // This is a single page dashboard, no need for section navigation
 }
 
-// Section functions removed - this is a single-page dashboard
-// Navigation is handled by admin-layout.js
-
 function initEventListeners() {
-  // Logout buttons
   document.querySelectorAll("#logout-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -321,7 +279,6 @@ function initEventListeners() {
     });
   });
 
-  // Refresh dashboard
   const refreshBtn = document.getElementById("refresh-dashboard");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", async () => {
@@ -337,7 +294,6 @@ function initEventListeners() {
     });
   }
 
-  // Add product button
   const addProductBtn = document.getElementById("add-product-btn");
   if (addProductBtn) {
     addProductBtn.addEventListener("click", () => {
@@ -345,10 +301,7 @@ function initEventListeners() {
     });
   }
 
-  // Search functionality
   initSearchListeners();
-
-  // Filter functionality
   initFilterListeners();
 }
 
@@ -379,7 +332,6 @@ function initSearchListeners() {
 }
 
 function initFilterListeners() {
-  // Category filter
   const categoryFilter = document.getElementById("category-filter");
   if (categoryFilter) {
     categoryFilter.addEventListener("change", async (e) => {
@@ -388,7 +340,6 @@ function initFilterListeners() {
     });
   }
 
-  // Sort filter
   const sortBy = document.getElementById("sort-by");
   if (sortBy) {
     sortBy.addEventListener("change", async (e) => {
@@ -397,7 +348,6 @@ function initFilterListeners() {
     });
   }
 
-  // Status filter for orders
   const statusFilter = document.getElementById("status-filter");
   if (statusFilter) {
     statusFilter.addEventListener("change", async (e) => {
@@ -406,7 +356,6 @@ function initFilterListeners() {
     });
   }
 
-  // Date filter for orders
   const dateFilter = document.getElementById("date-filter");
   if (dateFilter) {
     dateFilter.addEventListener("change", async (e) => {
@@ -417,13 +366,8 @@ function initFilterListeners() {
 }
 
 async function loadInitialData() {
-  // Load categories for filters
   await loadCategoriesData();
-
-  // Load products data for products section
   await loadProductsData();
-
-  // Load orders data for orders section
   await loadOrdersData();
 }
 
@@ -435,7 +379,6 @@ async function loadCategoriesData() {
     const categories = await ApiService.getCategories();
 
     if (categories && categories.length > 0) {
-      // Update filter dropdown
       if (categoryFilter) {
         categoryFilter.innerHTML = '<option value="">Semua Kategori</option>';
         categories.forEach((category) => {
@@ -448,7 +391,6 @@ async function loadCategoriesData() {
         });
       }
 
-      // Update product modal category dropdown
       if (productCategorySelect) {
         productCategorySelect.innerHTML =
           '<option value="">Pilih Kategori</option>';
@@ -462,7 +404,6 @@ async function loadCategoriesData() {
     }
   } catch (error) {
     console.error("Error loading categories:", error);
-    // Keep default options if API fails
   }
 }
 
@@ -471,7 +412,6 @@ async function loadProductsData() {
   if (!tableBody) return;
 
   try {
-    // Show loading state
     tableBody.innerHTML = `
             <tr>
                 <td colspan="6" class="px-6 py-4 text-center text-gray-500">
@@ -483,7 +423,6 @@ async function loadProductsData() {
             </tr>
         `;
 
-    // Map frontend sort values to backend format
     const sortMapping = {
       newest: { sort: "created_at", order: "DESC" },
       oldest: { sort: "created_at", order: "ASC" },
@@ -499,12 +438,10 @@ async function loadProductsData() {
       ...currentFilters,
     };
 
-    // Apply sort mapping
     if (currentFilters.sort && sortMapping[currentFilters.sort]) {
       const { sort, order } = sortMapping[currentFilters.sort];
       params.sort = sort;
       params.order = order;
-      // Remove the frontend sort value
       const { sort: frontendSort, ...restParams } = params;
       Object.assign(params, restParams);
     }
@@ -615,7 +552,6 @@ function renderProductsTable(products) {
 function updateProductsPagination(pagination) {
   if (!pagination) return;
 
-  // Update pagination info
   updateElement("pagination-start", pagination.offset + 1);
   updateElement(
     "pagination-end",
@@ -623,7 +559,6 @@ function updateProductsPagination(pagination) {
   );
   updateElement("pagination-total", pagination.total);
 
-  // Update pagination buttons
   const prevBtn = document.getElementById("prev-page");
   const nextBtn = document.getElementById("next-page");
 
@@ -756,13 +691,8 @@ function updateOrdersPagination(pagination) {
 }
 
 function initModals() {
-  // Initialize product modal
   initProductModal();
-
-  // Initialize order detail modal
   initOrderDetailModal();
-
-  // Initialize delete confirmation modal
   initDeleteModal();
 }
 
@@ -779,7 +709,6 @@ function initProductModal() {
     cancelBtn.addEventListener("click", closeProductModal);
   }
 
-  // Close modal when clicking outside
   if (modal) {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
@@ -833,7 +762,6 @@ function initDeleteModal() {
   }
 }
 
-// Modal control functions
 function openProductModal(productId = null) {
   const modal = document.getElementById("product-modal");
   const title = document.getElementById("modal-title");
@@ -864,7 +792,6 @@ function closeDeleteModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-// Product management functions
 async function editProduct(productId) {
   openProductModal(productId);
 }
@@ -894,7 +821,6 @@ async function deleteProduct(productId, productName) {
   }
 }
 
-// Order management functions
 async function viewOrderDetail(orderId) {
   try {
     const order = await ApiService.getOrder(orderId);
@@ -908,7 +834,6 @@ async function viewOrderDetail(orderId) {
 }
 
 function displayOrderDetail(order) {
-  // Update order detail in modal
   updateElement("order-id", order.id);
   updateElement("customer-name", order.customer_name);
   updateElement("customer-email", order.customer_email);
@@ -921,7 +846,6 @@ function displayOrderDetail(order) {
   updateElement("order-shipping", Utils.formatCurrency(order.shipping_cost));
   updateElement("order-total", Utils.formatCurrency(order.total));
 
-  // Update status
   const statusElement = document.getElementById("current-status");
   if (statusElement) {
     statusElement.innerHTML = Utils.getStatusBadge(order.status);
@@ -932,7 +856,6 @@ function displayOrderDetail(order) {
     statusSelect.value = order.status;
   }
 
-  // Render order items
   const itemsContainer = document.getElementById("order-items");
   if (itemsContainer && order.items) {
     itemsContainer.innerHTML = order.items
@@ -958,7 +881,6 @@ function displayOrderDetail(order) {
   }
 }
 
-// Utility functions
 function updateElement(id, value) {
   const element = document.getElementById(id);
   if (element) {
@@ -972,7 +894,6 @@ function handleLogout() {
   }
 }
 
-// Global functions for onclick handlers
 window.editProduct = editProduct;
 window.deleteProduct = deleteProduct;
 window.viewOrderDetail = viewOrderDetail;
