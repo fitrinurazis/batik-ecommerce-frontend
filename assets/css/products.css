@@ -1,0 +1,150 @@
+.product-card {
+  transition: all 0.2s ease-in-out;
+  transform: translateY(0);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.product-card .product-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* 1:1 aspect ratio like Tokopedia/Shopee */
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.product-card .product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-card .product-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-button.active {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+  transform: translateY(-2px);
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced focus states */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-amber {
+  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+}
+
+/* Custom animations */
+.animate-bounce-slow {
+  animation: bounce 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Responsive text improvements */
+@media (max-width: 640px) {
+  .product-card .product-content h3 {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 641px) {
+  .product-card .product-content h3 {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+}
+
+/* Ensure cards have equal height in grid */
+#products-container {
+  align-items: stretch;
+}
+
+/* Better scrollbar for filter sidebar on mobile */
+#filter-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#filter-sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#filter-sidebar::-webkit-scrollbar-thumb {
+  background: #d97706;
+  border-radius: 3px;
+}
+
+#filter-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #b45309;
+}

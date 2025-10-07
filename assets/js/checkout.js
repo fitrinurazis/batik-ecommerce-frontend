@@ -198,9 +198,8 @@ function calculateOrderSummary() {
         totalDiscount += discountAmount;
     });
 
-    // Calculate service fee based on payment method
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-    serviceFee = calculateServiceFee(subtotal, paymentMethod);
+    // No service fee - free shipping
+    serviceFee = 0;
 
     orderTotal = subtotal + serviceFee;
 
@@ -220,48 +219,7 @@ function calculateOrderSummary() {
     });
 }
 
-function calculateServiceFee(subtotal, paymentMethod) {
-    switch (paymentMethod) {
-        case 'credit_card':
-            return Math.round(subtotal * 0.029); // 2.9%
-        case 'cod':
-            return 5000; // Rp 5,000
-        default:
-            return 0; // Free for bank transfer and e-wallet
-    }
-}
-
 function initEventListeners() {
-    // Payment method change
-    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            // Update visual selection
-            document.querySelectorAll('.payment-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-
-            const selectedOption = document.querySelector(`[data-method="${this.value}"]`);
-            if (selectedOption) {
-                selectedOption.classList.add('selected');
-            }
-
-            // Recalculate service fee
-            calculateOrderSummary();
-        });
-    });
-
-    // Payment option click
-    document.querySelectorAll('.payment-option').forEach(option => {
-        option.addEventListener('click', function() {
-            const method = this.dataset.method;
-            const radio = document.getElementById(method);
-            if (radio) {
-                radio.checked = true;
-                radio.dispatchEvent(new Event('change'));
-            }
-        });
-    });
-
     // Same as billing checkbox
     document.getElementById('same-as-billing').addEventListener('change', function() {
         if (this.checked) {
@@ -315,7 +273,6 @@ async function handleCheckoutSubmission(event) {
                 shipping_city: formData.get('city'),
                 shipping_postal: formData.get('postalCode'),
                 shipping_notes: formData.get('shippingNotes'),
-                payment_method: formData.get('paymentMethod'),
                 subtotal: subtotal,
                 shipping_cost: serviceFee,
                 total: orderTotal,
@@ -368,13 +325,6 @@ function validateCheckoutForm() {
             missingFields.push(field);
         }
     });
-
-    // Check payment method
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!paymentMethod) {
-        showError('Pilih metode pembayaran');
-        return false;
-    }
 
     // Check terms agreement
     const agreeTerms = document.querySelector('input[name="agreeTerms"]:checked');
@@ -450,18 +400,20 @@ async function submitOrder(orderData) {
 function showOrderSuccess(orderResponse) {
     // Use order data from API response
     const order = orderResponse.order;
-    const orderNumber = order.id ? `ORD-${order.id.toString().padStart(6, '0')}` : 'ORD-' + Date.now().toString().slice(-8);
 
-    // Update modal content
-    document.getElementById('order-number').textContent = '#' + orderNumber;
-    document.getElementById('order-total').textContent = formatCurrency(order.total || orderResponse.total);
+    // Save order ID to localStorage for payment page
+    localStorage.setItem('currentOrderId', order.id);
+    localStorage.setItem('currentOrder', JSON.stringify(order));
 
-    // Show modal
-    const modal = document.getElementById('success-modal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    console.log('Order created successfully, redirecting to payment page...');
 
-    console.log('Order completed successfully');
+    // Show success message briefly before redirect
+    showSuccess('Pesanan berhasil dibuat! Mengarahkan ke halaman pembayaran...');
+
+    // Redirect to payment page after short delay
+    setTimeout(() => {
+        window.location.href = `/payment?order=${order.id}`;
+    }, 1500);
 }
 
 function continueShoppingFromModal() {

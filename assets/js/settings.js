@@ -111,8 +111,10 @@ function setupEmailTest() {
 
 async function loadCurrentSettings() {
     try {
+        // Fetch dari API
         const response = await ApiService.getSettings();
 
+        // Group by category
         const groupedSettings = {};
         if (Array.isArray(response)) {
             response.forEach(setting => {
@@ -123,6 +125,10 @@ async function loadCurrentSettings() {
             });
         }
 
+        // Save to global variable
+        window.siteSettings = groupedSettings;
+
+        // Populate form
         populateSettingsForm(groupedSettings);
 
     } catch (error) {
@@ -162,7 +168,15 @@ async function saveGeneralSettings() {
         getElementValue('shop-instagram', 'shop_instagram');
         getElementValue('shop-facebook', 'shop_facebook');
 
+        // Save to API (data akan tersimpan di database)
         await ApiService.saveSettings('general', settings);
+
+        // Update global variable
+        if (!window.siteSettings) {
+            window.siteSettings = {};
+        }
+        window.siteSettings.general = settings;
+
         Utils.showAlert('Pengaturan umum berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving general settings:', error);

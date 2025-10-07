@@ -1,0 +1,27 @@
+.step-indicator {
+  position: relative;
+}
+
+.step-indicator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 100px;
+  height: 2px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+}
+
+.step-indicator.active::after {
+  background: #d97706;
+}
+
+.step-indicator:last-child::after {
+  display: none;
+}
+
+.loading-overlay {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+}

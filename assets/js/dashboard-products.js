@@ -13,6 +13,7 @@ let currentFilters = {
     sortBy: 'newest'
 };
 let productToDelete = null;
+let uploadedImages = []; // Store uploaded image URLs (max 5)
 
 // Helper function to get base URL for media
 function getBaseURL() {
@@ -312,16 +313,19 @@ function initModalEventListeners() {
         productForm.addEventListener('submit', handleProductSubmit);
     }
 
-    // Image file selection
-    const imageInput = document.getElementById('product-image');
-    if (imageInput) {
-        imageInput.addEventListener('change', handleImageSelect);
+    // Add image button
+    const addImageBtn = document.getElementById('add-image-btn');
+    if (addImageBtn) {
+        addImageBtn.addEventListener('click', () => {
+            const fileInput = document.getElementById('product-images');
+            fileInput.click();
+        });
     }
 
-    // Upload image button
-    const uploadBtn = document.getElementById('upload-image-btn');
-    if (uploadBtn) {
-        uploadBtn.addEventListener('click', handleImageUpload);
+    // File input change
+    const imagesInput = document.getElementById('product-images');
+    if (imagesInput) {
+        imagesInput.addEventListener('change', handleImageAdd);
     }
 
     // Format price input with thousand separator
@@ -395,32 +399,38 @@ function loadProductToForm(productId) {
     document.getElementById('product-name').value = product.name;
     document.getElementById('product-category').value = product.category;
     document.getElementById('product-description').value = product.description;
-    // Format price with thousand separator
-    document.getElementById('product-price').value = formatNumber(product.price);
+    // Format price with thousand separator (parse as integer first to remove decimals)
+    const priceValue = parseInt(product.price) || 0;
+    document.getElementById('product-price').value = formatNumber(priceValue);
     document.getElementById('product-stock').value = product.stock;
     document.getElementById('product-discount').value = product.discount || 0;
 
-    // Show current image and set image_url
-    if (product.image_url) {
-        document.getElementById('product-image-url').value = product.image_url;
-        const preview = document.getElementById('image-preview');
-        const uploadStatus = document.getElementById('upload-status');
-        const baseURL = getBaseURL();
-        const imageUrl = product.image_url.startsWith('http') ? product.image_url : baseURL + product.image_url;
-        preview.innerHTML = `<img src="${imageUrl}" class="w-full h-full object-cover rounded-md" onerror="this.parentElement.innerHTML='<i class=\\"fas fa-image text-gray-400 text-2xl\\"></i>'">`;
-        uploadStatus.classList.remove('hidden');
+    // Load existing images into uploadedImages array
+    uploadedImages = [];
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+        uploadedImages = [...product.images];
+    } else if (product.image_url) {
+        uploadedImages = [product.image_url];
     }
+
+    // Update UI
+    updateHiddenInputs();
+    updateImagePreview();
+    updateImageCounter();
+    updateAddButtonState();
+
+    // Trigger discount calculation
+    calculateDiscountedPrice();
 }
 
 async function handleProductSubmit(e) {
     e.preventDefault();
 
     const productId = document.getElementById('product-id').value;
-    const imageUrl = document.getElementById('product-image-url').value;
 
     // Validasi: gambar harus sudah diupload (kecuali edit dan tidak ganti gambar)
-    if (!imageUrl && !productId) {
-        Utils.showAlert('Upload gambar terlebih dahulu', 'warning');
+    if (uploadedImages.length === 0 && !productId) {
+        Utils.showAlert('Upload minimal 1 gambar terlebih dahulu', 'warning');
         return;
     }
 
@@ -434,7 +444,8 @@ async function handleProductSubmit(e) {
         price: parseFloat(priceValue) || 0,
         stock: parseInt(document.getElementById('product-stock').value) || 0,
         discount: parseInt(document.getElementById('product-discount').value) || 0,
-        image_url: imageUrl
+        image_url: uploadedImages.length > 0 ? uploadedImages[0] : '',
+        images: uploadedImages
     };
 
     // Show loading
@@ -472,84 +483,175 @@ async function handleProductSubmit(e) {
     }
 }
 
-// Handle file selection (show preview, enable upload button)
-function handleImageSelect(e) {
+// Handle add single image
+async function handleImageAdd(e) {
     const file = e.target.files[0];
-    const uploadBtn = document.getElementById('upload-image-btn');
+    const maxFiles = 5;
+
+    // Clear file input for next upload
+    e.target.value = '';
 
     if (!file) {
-        uploadBtn.disabled = true;
+        return;
+    }
+
+    // Check if already at max
+    if (uploadedImages.length >= maxFiles) {
+        Utils.showAlert(`Maksimal ${maxFiles} gambar`, 'warning');
         return;
     }
 
     try {
+        // Validate image
         Utils.validateImage(file);
 
-        // Show local preview
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-md">`;
-        };
-        reader.readAsDataURL(file);
+        // Show upload progress
+        const uploadProgress = document.getElementById('upload-progress');
+        const uploadProgressBar = document.getElementById('upload-progress-bar');
+        const uploadProgressText = document.getElementById('upload-progress-text');
+        const uploadError = document.getElementById('upload-error-status');
 
-        // Enable upload button
-        uploadBtn.disabled = false;
+        uploadProgress.classList.remove('hidden');
+        uploadProgressBar.style.width = '0%';
+        uploadProgressText.textContent = `Uploading ${file.name}...`;
+        uploadError.classList.add('hidden');
+
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            if (progress < 90) {
+                progress += 15;
+                uploadProgressBar.style.width = progress + '%';
+            }
+        }, 100);
+
+        // Upload to server
+        const response = await ApiService.uploadProductImage(file);
+
+        clearInterval(progressInterval);
+        uploadProgressBar.style.width = '100%';
+
+        // Extract URL from response
+        let imageUrl = null;
+        if (response.image_url) {
+            imageUrl = response.image_url;
+        } else if (response.imageUrl) {
+            imageUrl = response.imageUrl;
+        }
+
+        if (imageUrl) {
+            // Add to uploaded images array
+            uploadedImages.push(imageUrl);
+
+            // Update hidden inputs
+            updateHiddenInputs();
+
+            // Update preview
+            updateImagePreview();
+
+            // Update counter
+            updateImageCounter();
+
+            // Hide progress
+            setTimeout(() => {
+                uploadProgress.classList.add('hidden');
+                uploadProgressBar.style.width = '0%';
+            }, 500);
+
+            Utils.showAlert('Gambar berhasil ditambahkan', 'success');
+
+            // Hide add button if reached max
+            updateAddButtonState();
+        } else {
+            throw new Error('URL tidak ditemukan dalam response');
+        }
+
     } catch (error) {
-        Utils.showAlert(error.message, 'error');
-        e.target.value = '';
-        uploadBtn.disabled = true;
+        console.error('Upload error:', error);
+        const uploadError = document.getElementById('upload-error-status');
+        const uploadErrorText = document.getElementById('upload-error-text');
+        uploadError.classList.remove('hidden');
+        uploadErrorText.textContent = error.message || 'Gagal upload gambar';
+        Utils.showAlert(error.message || 'Gagal upload gambar', 'error');
+
+        // Hide progress
+        const uploadProgress = document.getElementById('upload-progress');
+        uploadProgress.classList.add('hidden');
     }
 }
 
-// Handle image upload to server
-async function handleImageUpload() {
-    const fileInput = document.getElementById('product-image');
-    const file = fileInput.files[0];
+// Update image preview grid
+function updateImagePreview() {
+    const grid = document.getElementById('images-preview-grid');
+    const baseURL = getBaseURL();
 
-    if (!file) {
-        Utils.showAlert('Pilih gambar terlebih dahulu', 'warning');
+    if (uploadedImages.length === 0) {
+        grid.innerHTML = '';
         return;
     }
 
-    const uploadBtn = document.getElementById('upload-image-btn');
-    const uploadText = document.getElementById('upload-text');
-    const uploadLoading = document.getElementById('upload-loading');
-    const uploadStatus = document.getElementById('upload-status');
+    grid.innerHTML = uploadedImages.map((url, index) => `
+        <div class="relative group">
+            <div class="border-2 border-solid border-gray-300 rounded-md aspect-square overflow-hidden bg-white">
+                <img src="${baseURL + url}"
+                     class="w-full h-full object-cover"
+                     alt="Image ${index + 1}">
+            </div>
+            ${index === 0 ? `
+                <div class="absolute top-1 left-1 bg-amber-600 text-white text-xs px-2 py-1 rounded-md font-medium">
+                    <i class="fas fa-star mr-1"></i>Utama
+                </div>
+            ` : ''}
+            <button type="button"
+                    onclick="removeUploadedImage(${index})"
+                    class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 flex items-center justify-center">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+    `).join('');
+}
 
-    // Show loading
-    uploadText.classList.add('hidden');
-    uploadLoading.classList.remove('hidden');
-    uploadBtn.disabled = true;
+// Update hidden inputs with current uploaded images
+function updateHiddenInputs() {
+    document.getElementById('product-images-urls').value = JSON.stringify(uploadedImages);
+    document.getElementById('product-image-url').value = uploadedImages.length > 0 ? uploadedImages[0] : '';
+}
 
-    try {
-        // Upload image using ApiService
-        const response = await ApiService.uploadProductImage(file);
-
-        if (response && response.image_url) {
-            // Save image_url to hidden input
-            document.getElementById('product-image-url').value = response.image_url;
-
-            // Update preview with server image
-            const preview = document.getElementById('image-preview');
-            const baseURL = getBaseURL();
-            preview.innerHTML = `<img src="${baseURL + response.image_url}" class="w-full h-full object-cover rounded-md">`;
-
-            // Show success status
-            uploadStatus.classList.remove('hidden');
-            Utils.showAlert('Gambar berhasil diupload', 'success');
-        } else {
-            throw new Error('Response tidak valid dari server');
-        }
-    } catch (error) {
-        console.error('Upload error:', error);
-        Utils.showAlert(error.message || 'Gagal upload gambar', 'error');
-        uploadBtn.disabled = false;
-    } finally {
-        uploadText.classList.remove('hidden');
-        uploadLoading.classList.add('hidden');
+// Update image counter
+function updateImageCounter() {
+    const counter = document.getElementById('image-counter');
+    if (counter) {
+        counter.textContent = `(${uploadedImages.length}/5 gambar)`;
     }
 }
+
+// Update add button state (disable if max reached)
+function updateAddButtonState() {
+    const addZone = document.getElementById('add-image-zone');
+    const addBtn = document.getElementById('add-image-btn');
+
+    if (uploadedImages.length >= 5) {
+        addZone.classList.add('opacity-50', 'pointer-events-none');
+        addBtn.disabled = true;
+    } else {
+        addZone.classList.remove('opacity-50', 'pointer-events-none');
+        addBtn.disabled = false;
+    }
+}
+
+// Remove uploaded image
+function removeUploadedImage(index) {
+    uploadedImages.splice(index, 1);
+
+    // Update everything
+    updateHiddenInputs();
+    updateImagePreview();
+    updateImageCounter();
+    updateAddButtonState();
+
+    Utils.showAlert('Gambar berhasil dihapus', 'info');
+}
+
 
 // Calculate and display discounted price
 function calculateDiscountedPrice() {
@@ -587,18 +689,24 @@ function calculateDiscountedPrice() {
 }
 
 function resetImagePreview() {
-    const preview = document.getElementById('image-preview');
-    const uploadBtn = document.getElementById('upload-image-btn');
-    const uploadStatus = document.getElementById('upload-status');
-    const fileInput = document.getElementById('product-image');
-    const imageUrlInput = document.getElementById('product-image-url');
+    // Clear uploaded images array
+    uploadedImages = [];
+
+    // Reset all UI elements
+    updateImagePreview();
+    updateHiddenInputs();
+    updateImageCounter();
+    updateAddButtonState();
+
+    // Reset status elements
+    const uploadError = document.getElementById('upload-error-status');
+    const uploadProgress = document.getElementById('upload-progress');
+    const fileInput = document.getElementById('product-images');
     const discountContainer = document.getElementById('discounted-price-container');
 
-    preview.innerHTML = '<i class="fas fa-image text-gray-400 text-2xl"></i>';
-    uploadBtn.disabled = true;
-    uploadStatus.classList.add('hidden');
+    if (uploadError) uploadError.classList.add('hidden');
+    if (uploadProgress) uploadProgress.classList.add('hidden');
     if (fileInput) fileInput.value = '';
-    if (imageUrlInput) imageUrlInput.value = '';
     if (discountContainer) discountContainer.classList.add('hidden');
 }
 
@@ -668,3 +776,4 @@ function formatPriceInput(e) {
 window.editProduct = openProductModal;
 window.deleteProduct = deleteProduct;
 window.goToPage = goToPage;
+window.removeUploadedImage = removeUploadedImage;

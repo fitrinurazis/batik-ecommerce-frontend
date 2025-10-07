@@ -1,242 +1,566 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keranjang Belanja - Batik Nusantara</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-    <style>
-        .quantity-input::-webkit-outer-spin-button,
-        .quantity-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .quantity-input {
-            -moz-appearance: textfield;
-        }
-
-        .cart-item {
-            transition: all 0.3s ease;
-        }
-
-        .cart-item.removing {
-            opacity: 0;
-            transform: translateX(100px);
-        }
-
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="../assets/css/cart.css" />
+  </head>
+  <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-amber-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors">
-                <i class="fas fa-tshirt text-amber-300"></i>
-                <span>Batik Nusantara</span>
-            </a>
+    <header
+      class="bg-amber-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm"
+    >
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a
+          href="/"
+          class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+        >
+          <i class="fas fa-tshirt text-amber-300"></i>
+          <span>Batik Nusantara</span>
+        </a>
 
-            <nav class="hidden md:flex space-x-8">
-                <a href="/" class="hover:text-amber-200 transition-colors">Beranda</a>
-                <a href="/products" class="hover:text-amber-200 transition-colors">Produk</a>
-                <a href="/about" class="hover:text-amber-200 transition-colors">Tentang Kami</a>
-                <a href="/contact" class="hover:text-amber-200 transition-colors">Kontak</a>
-            </nav>
-
-            <div class="flex items-center space-x-4">
-                <a href="/cart" class="relative group">
-                    <i class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors border-b-2 border-amber-300"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">0</span>
-                </a>
-                <button id="mobile-menu-button" class="md:hidden text-white hover:text-amber-200 transition-colors">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
+        <!-- Search Bar (Desktop) -->
+        <div class="hidden lg:flex flex-1 max-w-sm mx-8">
+          <div class="relative w-full">
+            <input
+              type="text"
+              id="header-search"
+              placeholder="Cari batik favorit Anda..."
+              class="w-full px-4 py-1 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+            />
+            <i
+              class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <button
+              id="header-search-btn"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
         </div>
+
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="hover:text-amber-200 transition-colors">
+            Beranda
+          </a>
+          <a href="/products" class="hover:text-amber-200 transition-colors">
+            Produk
+          </a>
+          <a href="/about" class="hover:text-amber-200 transition-colors">
+            Tentang Kami
+          </a>
+          <a href="/contact" class="hover:text-amber-200 transition-colors">
+            Kontak
+          </a>
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <!-- Mobile Search Button -->
+          <button
+            id="mobile-search-button"
+            class="lg:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-search text-xl"></i>
+          </button>
+
+          <!-- Cart Button -->
+          <a href="/cart" class="relative group">
+            <i
+              class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold animate-pulse"
+            >
+              0
+            </span>
+          </a>
+
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Search -->
+      <div id="mobile-search" class="md:hidden hidden bg-amber-900 px-4 py-3">
+        <div class="relative">
+          <input
+            type="text"
+            id="mobile-search-input"
+            placeholder="Cari batik favorit Anda..."
+            class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          />
+          <i
+            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          ></i>
+          <button
+            id="mobile-search-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors"
+          >
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+      >
+        <a
+          href="/"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Beranda
+        </a>
+        <a
+          href="/products"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Produk
+        </a>
+        <a
+          href="/about"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Tentang Kami
+        </a>
+        <a
+          href="/contact"
+          class="block py-3 hover:text-amber-200 transition-colors"
+        >
+          Kontak
+        </a>
+      </div>
     </header>
 
     <!-- Breadcrumb -->
     <nav class="bg-white shadow-sm py-3">
-        <div class="container mx-auto px-4">
-            <ol class="flex items-center space-x-2 text-sm">
-                <li><a href="/" class="text-amber-600 hover:text-amber-700">Beranda</a></li>
-                <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
-                <li class="text-gray-500">Keranjang Belanja</li>
-            </ol>
-        </div>
+      <div class="container max-w-[1200px] mx-auto px-4">
+        <ol class="flex items-center space-x-2 text-sm">
+          <li>
+            <a href="/" class="text-amber-600 hover:text-amber-700">Beranda</a>
+          </li>
+          <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
+          <li class="text-gray-500">Keranjang Belanja</li>
+        </ol>
+      </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-                <i class="fas fa-shopping-cart text-amber-600 mr-3"></i>
-                Keranjang Belanja
-            </h1>
-            <button id="clear-cart" class="text-red-600 hover:text-red-700 transition-colors text-sm font-medium hidden">
-                <i class="fas fa-trash mr-1"></i>
-                Kosongkan Keranjang
+    <main class="container max-w-[1200px] mx-auto px-4 py-8">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+          <i class="fas fa-shopping-cart text-amber-600 mr-3"></i>
+          Keranjang Belanja
+        </h1>
+        <button
+          id="clear-cart"
+          class="text-red-600 hover:text-red-700 transition-colors text-sm font-medium hidden"
+        >
+          <i class="fas fa-trash mr-1"></i>
+          Kosongkan Keranjang
+        </button>
+      </div>
+
+      <!-- Cart Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2">
+          <!-- Loading State -->
+          <div id="cart-loading" class="hidden">
+            <div class="space-y-4">
+              <div class="loading-skeleton bg-white p-6 rounded-lg shadow-md">
+                <div class="flex space-x-4">
+                  <div class="loading-skeleton w-20 h-20 rounded-lg"></div>
+                  <div class="flex-1 space-y-3">
+                    <div class="loading-skeleton h-4 w-3/4 rounded"></div>
+                    <div class="loading-skeleton h-3 w-1/2 rounded"></div>
+                    <div class="loading-skeleton h-4 w-1/4 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cart Items Container -->
+          <div id="cart-items" class="space-y-4">
+            <!-- Cart items will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div
+            id="order-summary"
+            class="bg-white rounded-lg shadow-md p-6 sticky top-24 hidden"
+          >
+            <h2 class="text-xl font-bold text-gray-900 mb-6">
+              Ringkasan Pesanan
+            </h2>
+
+            <!-- Summary Details -->
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between text-gray-600">
+                <span>Subtotal (<span id="total-items">0</span> item)</span>
+                <span id="subtotal">Rp 0</span>
+              </div>
+              <div class="flex justify-between text-gray-600">
+                <span>Ongkos Kirim</span>
+                <span id="shipping-cost" class="text-green-600">GRATIS</span>
+              </div>
+              <div class="flex justify-between text-gray-600">
+                <span>Diskon</span>
+                <span id="discount" class="text-green-600"
+                  >-Rp <span id="discount-amount">0</span></span
+                >
+              </div>
+              <hr class="border-gray-200" />
+              <div class="flex justify-between text-lg font-bold text-gray-900">
+                <span>Total</span>
+                <span id="grand-total">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="mb-6">
+              <div class="flex space-x-2">
+                <input
+                  type="text"
+                  id="promo-code"
+                  placeholder="Kode promo"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+                <button
+                  id="apply-promo"
+                  class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Terapkan
+                </button>
+              </div>
+              <div id="promo-message" class="mt-2 text-sm hidden"></div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button
+              id="checkout-btn"
+              class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center"
+            >
+              <i class="fas fa-credit-card mr-2"></i>
+              Lanjutkan ke Checkout
             </button>
+
+            <!-- Continue Shopping -->
+            <a
+              href="/"
+              class="block text-center mt-4 text-amber-600 hover:text-amber-700 font-medium transition-colors"
+            >
+              <i class="fas fa-arrow-left mr-1"></i>
+              Lanjutkan Belanja
+            </a>
+
+            <!-- Security Info -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+              <div class="flex items-center text-sm text-gray-600">
+                <i class="fas fa-shield-check text-green-500 mr-2"></i>
+                <span>Pembayaran aman & terpercaya</span>
+              </div>
+              <div class="flex items-center text-sm text-gray-600 mt-2">
+                <i class="fas fa-truck text-blue-500 mr-2"></i>
+                <span>Gratis ongkir seluruh Indonesia</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Cart Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Cart Items -->
-            <div class="lg:col-span-2">
-                <!-- Loading State -->
-                <div id="cart-loading" class="hidden">
-                    <div class="space-y-4">
-                        <div class="loading-skeleton bg-white p-6 rounded-lg shadow-md">
-                            <div class="flex space-x-4">
-                                <div class="loading-skeleton w-20 h-20 rounded-lg"></div>
-                                <div class="flex-1 space-y-3">
-                                    <div class="loading-skeleton h-4 w-3/4 rounded"></div>
-                                    <div class="loading-skeleton h-3 w-1/2 rounded"></div>
-                                    <div class="loading-skeleton h-4 w-1/4 rounded"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Empty Cart -->
-                <div id="empty-cart" class="text-center py-16 hidden">
-                    <div class="mb-8">
-                        <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
-                        <h2 class="text-2xl font-bold text-gray-600 mb-2">Keranjang Anda Kosong</h2>
-                        <p class="text-gray-500">Yuk, mulai belanja koleksi batik terbaik kami!</p>
-                    </div>
-                    <a href="/" class="inline-flex items-center px-6 py-3 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        Mulai Belanja
-                    </a>
-                </div>
-
-                <!-- Cart Items Container -->
-                <div id="cart-items" class="space-y-4">
-                    <!-- Cart items will be rendered here -->
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="lg:col-span-1">
-                <div id="order-summary" class="bg-white rounded-lg shadow-md p-6 sticky top-24 hidden">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
-
-                    <!-- Summary Details -->
-                    <div class="space-y-3 mb-6">
-                        <div class="flex justify-between text-gray-600">
-                            <span>Subtotal (<span id="total-items">0</span> item)</span>
-                            <span id="subtotal">Rp 0</span>
-                        </div>
-                        <div class="flex justify-between text-gray-600">
-                            <span>Ongkos Kirim</span>
-                            <span id="shipping-cost" class="text-green-600">GRATIS</span>
-                        </div>
-                        <div class="flex justify-between text-gray-600">
-                            <span>Diskon</span>
-                            <span id="discount" class="text-green-600">-Rp <span id="discount-amount">0</span></span>
-                        </div>
-                        <hr class="border-gray-200">
-                        <div class="flex justify-between text-lg font-bold text-gray-900">
-                            <span>Total</span>
-                            <span id="grand-total">Rp 0</span>
-                        </div>
-                    </div>
-
-                    <!-- Promo Code -->
-                    <div class="mb-6">
-                        <div class="flex space-x-2">
-                            <input type="text" id="promo-code" placeholder="Kode promo" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
-                            <button id="apply-promo" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                                Terapkan
-                            </button>
-                        </div>
-                        <div id="promo-message" class="mt-2 text-sm hidden"></div>
-                    </div>
-
-                    <!-- Checkout Button -->
-                    <button id="checkout-btn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
-                        <i class="fas fa-credit-card mr-2"></i>
-                        Lanjutkan ke Checkout
-                    </button>
-
-                    <!-- Continue Shopping -->
-                    <a href="/" class="block text-center mt-4 text-amber-600 hover:text-amber-700 font-medium transition-colors">
-                        <i class="fas fa-arrow-left mr-1"></i>
-                        Lanjutkan Belanja
-                    </a>
-
-                    <!-- Security Info -->
-                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center text-sm text-gray-600">
-                            <i class="fas fa-shield-check text-green-500 mr-2"></i>
-                            <span>Pembayaran aman & terpercaya</span>
-                        </div>
-                        <div class="flex items-center text-sm text-gray-600 mt-2">
-                            <i class="fas fa-truck text-blue-500 mr-2"></i>
-                            <span>Gratis ongkir seluruh Indonesia</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Empty Cart Message -->
+      <!-- Empty Cart -->
+      <div id="empty-cart" class="text-center py-16 hidden">
+        <div class="mb-8">
+          <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+          <h2 class="text-2xl font-bold text-gray-600 mb-2">
+            Keranjang Anda Kosong
+          </h2>
+          <p class="text-gray-500">
+            Yuk, mulai belanja koleksi batik terbaik kami!
+          </p>
         </div>
+        <a
+          href="/"
+          class="inline-flex items-center px-6 py-3 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
+        >
+          <i class="fas fa-arrow-left mr-2"></i>
+          Mulai Belanja
+        </a>
+      </div>
 
-        <!-- Recommended Products -->
-        <section class="mt-16">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Mungkin Anda Suka</h2>
-                <p class="text-gray-600">Produk lain yang menarik untuk Anda</p>
-            </div>
-            <div id="recommended-products" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Recommended products will be loaded here -->
-            </div>
-        </section>
+      <!-- Recommended Products -->
+      <section class="mt-16">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">
+            Mungkin Anda Suka
+          </h2>
+          <p class="text-gray-600">Produk lain yang menarik untuk Anda</p>
+        </div>
+        <div
+          id="recommended-products"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4"
+        >
+          <!-- Recommended products will be loaded here -->
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-amber-900 text-white py-12 mt-16">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-4">
-                    <i class="fas fa-tshirt text-2xl text-amber-300"></i>
-                    <span class="text-2xl font-bold">Batik Nusantara</span>
-                </div>
-                <p class="text-amber-200">Preserving Indonesian Heritage Through Beautiful Batik</p>
+    <footer
+      class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 text-white relative overflow-hidden"
+    >
+      <!-- Background pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div
+          class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Im0yMCAyMGMwLTExLjA0NiA4Ljk1NC0yMCAyMC0yMHMyMCA4Ljk1NCAyMCAyMC04Ljk1NCAyMC0yMCAyMC0yMC04Ljk1NC0yMC0yMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] bg-repeat"
+        ></div>
+      </div>
+
+      <!-- Decorative elements -->
+      <div
+        class="absolute top-0 right-0 w-40 h-40 bg-amber-600/20 rounded-full -translate-y-20 translate-x-20"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
+      ></div>
+
+      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
+        <!-- Main Footer Content -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <!-- Brand Section -->
+          <div class="lg:col-span-2">
+            <div class="flex items-center space-x-3 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center"
+              >
+                <i class="fas fa-tshirt text-white text-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold">Batik Nusantara</h3>
+                <p class="text-amber-200 text-sm">Warisan Budaya Indonesia</p>
+              </div>
             </div>
+
+            <p class="text-amber-100 mb-6 leading-relaxed max-w-md">
+              Melestarikan keindahan dan keunikan batik Indonesia dengan koleksi
+              berkualitas tinggi yang memadukan tradisi dan modernitas untuk
+              generasi masa kini.
+            </p>
+
+            <!-- Social Media -->
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-facebook-f text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-instagram text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-whatsapp text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-tiktok text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-link text-amber-400 mr-2"></i>
+              Tautan Cepat
+            </h4>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="index.html"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Beranda
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/products"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Produk
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Tentang Kami
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Kontak
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-phone text-amber-400 mr-2"></i>
+              Hubungi Kami
+            </h4>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <i class="fas fa-map-marker-alt text-amber-400 mt-1"></i>
+                <div>
+                  <p class="text-amber-100 text-sm">
+                    Jl. Batik Indonesia No. 123<br />
+                    Yogyakarta, Indonesia 55161
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-phone text-amber-400"></i>
+                <p class="text-amber-100">+62 274 123 456</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-envelope text-amber-400"></i>
+                <p class="text-amber-100">info@batiknusantara.com</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Bottom Section -->
+        <div class="border-t border-amber-700/50 pt-8">
+          <div
+            class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+          >
+            <div class="text-amber-200 text-center md:text-left">
+              <p>
+                &copy; 2024 Batik Nusantara. Hak Cipta Dilindungi Undang-Undang.
+              </p>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="flex items-center space-x-4">
+              <span class="text-amber-200 text-sm">Pembayaran Aman:</span>
+              <div class="flex space-x-2">
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-blue-600">VISA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-red-600">MC</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-blue-600 to-blue-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">BCA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-green-600 to-green-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">GP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <!-- Remove Item Modal -->
-    <div id="remove-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
-            <div class="text-center">
-                <i class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"></i>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Produk?</h3>
-                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus produk ini dari keranjang?</p>
-                <div class="flex space-x-4">
-                    <button id="cancel-remove" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
-                        Batal
-                    </button>
-                    <button id="confirm-remove" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-                        Hapus
-                    </button>
-                </div>
-            </div>
+    <div
+      id="remove-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+        <div class="text-center">
+          <i
+            class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"
+          ></i>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Produk?</h3>
+          <p class="text-gray-600 mb-6">
+            Apakah Anda yakin ingin menghapus produk ini dari keranjang?
+          </p>
+          <div class="flex space-x-4">
+            <button
+              id="cancel-remove"
+              class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              id="confirm-remove"
+              class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Hapus
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Scripts -->
@@ -245,5 +569,5 @@
     <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script defer src="../assets/js/cart.js"></script>
-</body>
+  </body>
 </html>

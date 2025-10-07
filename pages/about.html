@@ -10,6 +10,76 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <style>
+      /* About Carousel Styles */
+      .about-carousel {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+      }
+
+      .carousel-slide-about {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out;
+        display: none;
+      }
+
+      .carousel-slide-about.active {
+        opacity: 1;
+        display: block;
+      }
+
+      .carousel-slide-about img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Carousel buttons */
+      .carousel-btn-about {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0.7;
+      }
+
+      .carousel-btn-about:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      /* Carousel indicators */
+      .indicator-about {
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .indicator-about:hover {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+      }
+
+      .indicator-about.active {
+        background-color: white !important;
+        width: 24px;
+      }
+
+      /* Mobile responsive */
+      @media (max-width: 768px) {
+        .about-carousel {
+          height: 300px;
+        }
+
+        .carousel-btn-about {
+          width: 36px;
+          height: 36px;
+        }
+      }
+    </style>
   </head>
   <body class="bg-gray-50">
     <!-- Header -->
@@ -17,7 +87,7 @@
       class="bg-amber-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm"
     >
       <div
-        class="container mx-auto px-4 py-4 flex justify-between items-center"
+        class="container max-w-[1200px] mx-auto px-4 py-4 flex justify-between items-center"
       >
         <a
           href="/"
@@ -28,43 +98,40 @@
         </a>
 
         <!-- Search Bar (Desktop) -->
-        <div class="hidden lg:flex flex-1 max-w-md mx-8">
+        <div class="hidden lg:flex flex-1 max-w-sm mx-8">
           <div class="relative w-full">
             <input
               type="text"
               id="header-search"
               placeholder="Cari batik favorit Anda..."
-              class="w-full px-4 py-2 pl-10 pr-4 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+              class="w-full px-4 py-1 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
             />
             <i
               class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             ></i>
+            <button
+              id="header-search-btn"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm"
+            >
+              <i class="fas fa-search"></i>
+            </button>
           </div>
         </div>
 
         <nav class="hidden md:flex space-x-8">
-          <a
-            href="/"
-            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
-          >
+          <a href="/" class="hover:text-amber-200 transition-colors">
             Beranda
           </a>
-          <a
-            href="/products"
-            class="hover:text-amber-200 transition-colors"
-          >
+          <a href="/products" class="hover:text-amber-200 transition-colors">
             Produk
           </a>
           <a
             href="/about"
-            class="hover:text-amber-200 transition-colors"
+            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
           >
             Tentang Kami
           </a>
-          <a
-            href="/contact"
-            class="hover:text-amber-200 transition-colors"
-          >
+          <a href="/contact" class="hover:text-amber-200 transition-colors">
             Kontak
           </a>
         </nav>
@@ -106,11 +173,17 @@
             type="text"
             id="mobile-search-input"
             placeholder="Cari batik favorit Anda..."
-            class="w-full px-4 py-2 pl-10 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
+            class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
           />
           <i
             class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
           ></i>
+          <button
+            id="mobile-search-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors"
+          >
+            <i class="fas fa-search"></i>
+          </button>
         </div>
       </div>
 
@@ -121,7 +194,7 @@
       >
         <a
           href="/"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
         >
           Beranda
         </a>
@@ -133,7 +206,7 @@
         </a>
         <a
           href="/about"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
         >
           Tentang Kami
         </a>
@@ -146,24 +219,78 @@
       </div>
     </header>
 
-    <!-- Page Title -->
-    <section class="bg-amber-700 text-white py-8">
-      <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-bold">Tentang Kami</h1>
-        <p class="mt-2">Mengenal lebih dekat Batik Nusantara dan visi kami</p>
-      </div>
-    </section>
-
     <!-- About Section -->
+
     <section class="py-16">
-      <div class="container mx-auto px-4">
+      <div class="container max-w-[1200px] mx-auto px-4">
         <div class="flex flex-col md:flex-row items-center">
           <div class="md:w-1/2 mb-8 md:mb-0">
-            <img
-              src="https://picsum.photos/600/400?random=11"
-              alt="Tentang Batik Nusantara"
-              class="rounded-lg shadow-lg"
-            />
+            <!-- About Carousel -->
+            <div class="about-carousel relative rounded-lg shadow-lg overflow-hidden">
+              <!-- Carousel Slides -->
+              <div class="carousel-slide-about active">
+                <img
+                  src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=600&h=400&fit=crop"
+                  alt="Batik Nusantara Workshop"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="carousel-slide-about">
+                <img
+                  src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&h=400&fit=crop"
+                  alt="Traditional Batik Making"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="carousel-slide-about">
+                <img
+                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop"
+                  alt="Batik Collection"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="carousel-slide-about">
+                <img
+                  src="https://images.unsplash.com/photo-1591814950825-9c8c7f8aa686?w=600&h=400&fit=crop"
+                  alt="Batik Craftsmen"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+
+              <!-- Carousel Navigation -->
+              <button
+                class="carousel-btn-about carousel-prev-about absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10"
+              >
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button
+                class="carousel-btn-about carousel-next-about absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10"
+              >
+                <i class="fas fa-chevron-right"></i>
+              </button>
+
+              <!-- Carousel Indicators -->
+              <div
+                class="carousel-indicators-about absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
+              >
+                <button
+                  class="indicator-about active w-2 h-2 bg-white rounded-full transition-all duration-300"
+                  data-slide="0"
+                ></button>
+                <button
+                  class="indicator-about w-2 h-2 bg-white/50 rounded-full transition-all duration-300"
+                  data-slide="1"
+                ></button>
+                <button
+                  class="indicator-about w-2 h-2 bg-white/50 rounded-full transition-all duration-300"
+                  data-slide="2"
+                ></button>
+                <button
+                  class="indicator-about w-2 h-2 bg-white/50 rounded-full transition-all duration-300"
+                  data-slide="3"
+                ></button>
+              </div>
+            </div>
           </div>
           <div class="md:w-1/2 md:pl-12">
             <h2 class="text-3xl font-bold mb-6 text-amber-800">
@@ -192,7 +319,7 @@
 
     <!-- Our Vision -->
     <section class="py-16 bg-amber-50">
-      <div class="container mx-auto px-4">
+      <div class="container mx-auto px-4 max-w-[1200px]">
         <h2 class="text-3xl font-bold text-center mb-12 text-amber-800">
           Visi & Misi Kami
         </h2>
@@ -243,7 +370,7 @@
 
     <!-- Our Team -->
     <section class="py-16">
-      <div class="container mx-auto px-4">
+      <div class="container max-w-[1200px] mx-auto px-4">
         <h2 class="text-3xl font-bold text-center mb-12 text-amber-800">
           Tim Kami
         </h2>
@@ -331,40 +458,7 @@
         class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
       ></div>
 
-      <div class="container mx-auto px-4 py-16 relative">
-        <!-- Newsletter Section -->
-        <div class="text-center mb-16">
-          <div class="max-w-2xl mx-auto">
-            <h3 class="text-2xl md:text-3xl font-bold mb-4">
-              Tetap Terhubung Dengan Kami
-            </h3>
-            <p class="text-amber-100 mb-8 text-lg">
-              Dapatkan info terbaru tentang koleksi batik terbaru dan penawaran
-              ekslusif langsung di inbox Anda
-            </p>
-
-            <!-- Newsletter Form -->
-            <form id="newsletter-form" class="max-w-md mx-auto">
-              <div class="flex gap-2">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Masukkan alamat email Anda..."
-                  class="flex-1 px-6 py-4 rounded-full bg-white/10 border border-amber-600/30 text-white placeholder-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent backdrop-blur-sm"
-                  required
-                />
-                <button
-                  type="submit"
-                  class="px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-full hover:from-amber-700 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg flex items-center"
-                >
-                  <span class="hidden sm:inline">Berlangganan</span>
-                  <i class="fas fa-paper-plane sm:ml-2"></i>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
+      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <!-- Brand Section -->
@@ -433,7 +527,7 @@
             <ul class="space-y-3">
               <li>
                 <a
-                  href="/"
+                  href="index.html"
                   class="text-amber-200 hover:text-white transition-colors flex items-center group"
                 >
                   <i
@@ -550,5 +644,124 @@
 
     <!-- Scripts -->
     <script src="../assets/js/navbar.js"></script>
+    <script>
+      // About Carousel JavaScript
+      document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.carousel-slide-about');
+        const indicators = document.querySelectorAll('.indicator-about');
+        const prevBtn = document.querySelector('.carousel-prev-about');
+        const nextBtn = document.querySelector('.carousel-next-about');
+
+        let currentSlide = 0;
+        let autoplayInterval;
+        const autoplayDelay = 4000; // 4 seconds
+
+        // Show specific slide
+        function showSlide(index) {
+          // Remove active class from all slides and indicators
+          slides.forEach((slide) => {
+            slide.classList.remove('active');
+          });
+          indicators.forEach((indicator) => {
+            indicator.classList.remove('active');
+          });
+
+          // Add active class to current slide and indicator
+          slides[index].classList.add('active');
+          indicators[index].classList.add('active');
+        }
+
+        // Go to next slide
+        function nextSlide() {
+          currentSlide = (currentSlide + 1) % slides.length;
+          showSlide(currentSlide);
+          resetAutoplay();
+        }
+
+        // Go to previous slide
+        function prevSlide() {
+          currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+          showSlide(currentSlide);
+          resetAutoplay();
+        }
+
+        // Start autoplay
+        function startAutoplay() {
+          autoplayInterval = setInterval(nextSlide, autoplayDelay);
+        }
+
+        // Reset autoplay (stop and start again)
+        function resetAutoplay() {
+          clearInterval(autoplayInterval);
+          startAutoplay();
+        }
+
+        // Stop autoplay on hover
+        const aboutCarousel = document.querySelector('.about-carousel');
+        if (aboutCarousel) {
+          aboutCarousel.addEventListener('mouseenter', () => {
+            clearInterval(autoplayInterval);
+          });
+
+          aboutCarousel.addEventListener('mouseleave', () => {
+            startAutoplay();
+          });
+        }
+
+        // Event listeners for navigation buttons
+        if (prevBtn) {
+          prevBtn.addEventListener('click', prevSlide);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', nextSlide);
+        }
+
+        // Event listeners for indicators
+        indicators.forEach((indicator, index) => {
+          indicator.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+            resetAutoplay();
+          });
+        });
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        if (aboutCarousel) {
+          aboutCarousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          });
+
+          aboutCarousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+          });
+        }
+
+        function handleSwipe() {
+          const swipeThreshold = 50;
+          if (touchEndX < touchStartX - swipeThreshold) {
+            nextSlide();
+          } else if (touchEndX > touchStartX + swipeThreshold) {
+            prevSlide();
+          }
+        }
+
+        // Start autoplay on page load
+        startAutoplay();
+
+        // Pause autoplay when page is not visible
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            clearInterval(autoplayInterval);
+          } else {
+            startAutoplay();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

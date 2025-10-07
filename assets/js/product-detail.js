@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global variables
 let currentProduct = null;
 let currentQuantity = 1;
+let currentImageIndex = 0;
+let productImages = [];
 
 async function initProductDetail(productId) {
     console.log('Loading product with ID:', productId);
@@ -155,44 +157,137 @@ function renderProductDetail(product) {
 }
 
 function setupProductImages(product) {
-    // Handle image URL
-    let imageUrl = product.image_url || product.imageUrl;
-    if (imageUrl && imageUrl.startsWith('/api/media/')) {
-        imageUrl = `http://localhost:3000${imageUrl}`;
+    const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center&q=80';
+    const baseURL = 'http://localhost:3000';
+
+    // Build images array from product data
+    productImages = [];
+
+    // Add images from product.images array if available
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+        product.images.forEach(imageUrl => {
+            if (imageUrl) {
+                const fullUrl = imageUrl.startsWith('/api/media/') ? baseURL + imageUrl : imageUrl;
+                productImages.push(fullUrl);
+            }
+        });
     }
 
-    const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center&q=80';
-    const finalImageUrl = imageUrl || fallbackImage;
+    // Fallback to product.image_url if no images array
+    if (productImages.length === 0) {
+        let imageUrl = product.image_url || product.imageUrl;
+        if (imageUrl) {
+            const fullUrl = imageUrl.startsWith('/api/media/') ? baseURL + imageUrl : imageUrl;
+            productImages.push(fullUrl);
+        }
+    }
+
+    // Ultimate fallback to placeholder
+    if (productImages.length === 0) {
+        productImages.push(fallbackImage);
+    }
+
+    // Reset to first image
+    currentImageIndex = 0;
 
     // Set main image
     const mainImage = document.getElementById('main-image');
-    mainImage.src = finalImageUrl;
+    mainImage.src = productImages[0];
     mainImage.alt = product.name;
+    mainImage.onerror = function() { this.src = fallbackImage; };
 
-    // Set up thumbnails (for now, just use the same image)
+    // Update image counter
+    updateImageCounter();
+
+    // Render thumbnails
+    renderThumbnails();
+
+    // Setup navigation arrows
+    setupImageNavigation();
+
+    // Show/hide arrows based on image count
+    const prevBtn = document.getElementById('prev-image');
+    const nextBtn = document.getElementById('next-image');
+    if (productImages.length <= 1) {
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (nextBtn) nextBtn.classList.add('hidden');
+    } else {
+        if (prevBtn) prevBtn.classList.remove('hidden');
+        if (nextBtn) nextBtn.classList.remove('hidden');
+    }
+}
+
+function renderThumbnails() {
     const thumbnailContainer = document.getElementById('thumbnail-container');
-    thumbnailContainer.innerHTML = `
-        <button class="thumbnail-active w-20 h-20 rounded-lg overflow-hidden border-2 border-amber-600">
-            <img src="${finalImageUrl}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${fallbackImage}'">
-        </button>
-        <button class="thumbnail-inactive w-20 h-20 rounded-lg overflow-hidden border-2 border-transparent opacity-70">
-            <img src="${fallbackImage}" alt="Alternative view" class="w-full h-full object-cover">
-        </button>
-    `;
+    if (!thumbnailContainer) return;
 
-    // Add thumbnail click handlers
-    thumbnailContainer.querySelectorAll('button').forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-            const img = btn.querySelector('img');
-            mainImage.src = img.src;
+    const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center&q=80';
 
-            // Update active state
-            thumbnailContainer.querySelectorAll('button').forEach(b => {
-                b.className = b.className.replace('thumbnail-active', 'thumbnail-inactive');
-            });
-            btn.className = btn.className.replace('thumbnail-inactive', 'thumbnail-active');
-        });
-    });
+    thumbnailContainer.innerHTML = productImages.map((imageUrl, index) => {
+        const isActive = index === currentImageIndex;
+        const activeClass = isActive ? 'thumbnail-active' : 'thumbnail-inactive';
+
+        return `
+            <button onclick="changeImage(${index})" class="${activeClass} w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 ${isActive ? 'border-amber-600' : 'border-transparent opacity-70'} flex-shrink-0 hover:opacity-100 transition-all">
+                <img src="${imageUrl}" alt="View ${index + 1}" class="w-full h-full object-cover" onerror="this.src='${fallbackImage}'">
+            </button>
+        `;
+    }).join('');
+}
+
+function updateImageCounter() {
+    const currentIndexEl = document.getElementById('current-image-index');
+    const totalImagesEl = document.getElementById('total-images');
+
+    if (currentIndexEl) currentIndexEl.textContent = currentImageIndex + 1;
+    if (totalImagesEl) totalImagesEl.textContent = productImages.length;
+}
+
+function changeImage(index) {
+    if (index < 0 || index >= productImages.length) return;
+
+    currentImageIndex = index;
+
+    // Update main image
+    const mainImage = document.getElementById('main-image');
+    if (mainImage) {
+        mainImage.src = productImages[index];
+    }
+
+    // Update counter
+    updateImageCounter();
+
+    // Update thumbnail active states
+    renderThumbnails();
+}
+
+function setupImageNavigation() {
+    const prevBtn = document.getElementById('prev-image');
+    const nextBtn = document.getElementById('next-image');
+
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            const newIndex = currentImageIndex - 1;
+            if (newIndex >= 0) {
+                changeImage(newIndex);
+            } else {
+                // Loop to last image
+                changeImage(productImages.length - 1);
+            }
+        };
+    }
+
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            const newIndex = currentImageIndex + 1;
+            if (newIndex < productImages.length) {
+                changeImage(newIndex);
+            } else {
+                // Loop to first image
+                changeImage(0);
+            }
+        };
+    }
 }
 
 function setupPricing(product) {
@@ -225,57 +320,88 @@ function setupPricing(product) {
         discountBadge.classList.add('hidden');
         savingsEl.classList.add('hidden');
     }
+
+    // Initialize subtotal
+    updateSubtotal();
+}
+
+function updateSubtotal() {
+    if (!currentProduct) return;
+
+    const price = parseFloat(currentProduct.price || 0);
+    const discount = parseFloat(currentProduct.discount || 0);
+    const hasDiscount = discount > 0;
+    const discountedPrice = hasDiscount ? price * (1 - discount / 100) : price;
+
+    const subtotal = discountedPrice * currentQuantity;
+
+    const subtotalEl = document.getElementById('subtotal-amount');
+    if (subtotalEl) {
+        subtotalEl.textContent = formatCurrency(subtotal);
+    }
 }
 
 function setupStockInfo(product) {
     const stock = parseInt(product.stock || 0);
     const stockInfo = document.getElementById('stock-info');
-    const stockCount = document.getElementById('stock-count');
-    const stockStatus = document.getElementById('stock-status');
 
-    stockCount.textContent = stock;
+    if (!stockInfo) return;
 
     if (stock > 0) {
         stockInfo.innerHTML = `
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center text-green-600">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span>Tersedia <span id="stock-count" class="font-semibold">${stock}</span> pcs</span>
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-gray-700">Stok</span>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center text-green-600 text-sm">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span><span id="stock-count" class="font-semibold">${stock}</span> tersedia</span>
+                    </div>
                 </div>
-            </div>
-        `;
-        stockStatus.innerHTML = `
-            <div class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Tersedia
             </div>
         `;
 
         // Enable quantity controls and buttons
-        document.getElementById('quantity').max = stock;
-        document.getElementById('add-to-cart-btn').disabled = false;
-        document.getElementById('buy-now-btn').disabled = false;
+        const qtyInput = document.getElementById('quantity');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const buyNowBtn = document.getElementById('buy-now-btn');
+
+        if (qtyInput) qtyInput.max = stock;
+        if (addToCartBtn) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang';
+        }
+        if (buyNowBtn) {
+            buyNowBtn.disabled = false;
+            buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-2"></i>Beli Sekarang';
+        }
 
     } else {
         stockInfo.innerHTML = `
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center text-red-500">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span class="font-semibold">Stok Habis</span>
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-gray-700">Stok</span>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center text-red-500 text-sm">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span class="font-semibold">Stok Habis</span>
+                    </div>
                 </div>
-            </div>
-        `;
-        stockStatus.innerHTML = `
-            <div class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                Stok Habis
             </div>
         `;
 
         // Disable quantity controls and buttons
-        document.getElementById('quantity').disabled = true;
-        document.getElementById('add-to-cart-btn').disabled = true;
-        document.getElementById('buy-now-btn').disabled = true;
-        document.getElementById('add-to-cart-btn').innerHTML = '<i class="fas fa-ban mr-2"></i>Stok Habis';
-        document.getElementById('buy-now-btn').innerHTML = '<i class="fas fa-ban mr-2"></i>Stok Habis';
+        const qtyInput = document.getElementById('quantity');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const buyNowBtn = document.getElementById('buy-now-btn');
+
+        if (qtyInput) qtyInput.disabled = true;
+        if (addToCartBtn) {
+            addToCartBtn.disabled = true;
+            addToCartBtn.innerHTML = '<i class="fas fa-ban mr-2"></i>Stok Habis';
+        }
+        if (buyNowBtn) {
+            buyNowBtn.disabled = true;
+            buyNowBtn.innerHTML = '<i class="fas fa-ban mr-2"></i>Stok Habis';
+        }
     }
 }
 
@@ -287,6 +413,7 @@ function initEventListeners() {
         if (currentQty > 1) {
             qtyInput.value = currentQty - 1;
             currentQuantity = currentQty - 1;
+            updateSubtotal();
         }
     });
 
@@ -297,6 +424,7 @@ function initEventListeners() {
         if (currentQty < maxStock) {
             qtyInput.value = currentQty + 1;
             currentQuantity = currentQty + 1;
+            updateSubtotal();
         }
     });
 
@@ -312,6 +440,7 @@ function initEventListeners() {
         } else {
             currentQuantity = value;
         }
+        updateSubtotal();
     });
 
     // Add to cart button
@@ -400,9 +529,9 @@ function buyNow(productId, quantity) {
     // Add to cart first
     addToCart(productId, quantity);
 
-    // Redirect to cart page
+    // Redirect to cart page using clean URL
     setTimeout(() => {
-        window.location.href = 'cart.html';
+        window.location.href = '/cart';
     }, 1000);
 }
 
@@ -476,7 +605,7 @@ function renderRelatedProducts(products) {
 
 function createRelatedProductCard(product) {
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition-all duration-300 group cursor-pointer';
+    card.className = 'product-card bg-white rounded-lg shadow-sm hover:shadow-lg overflow-hidden border border-gray-200 cursor-pointer group';
 
     // Handle image URL
     let imageUrl = product.image_url || product.imageUrl;
@@ -493,35 +622,52 @@ function createRelatedProductCard(product) {
     const discountedPrice = hasDiscount ? price * (1 - discount / 100) : price;
 
     card.innerHTML = `
-        <div class="relative">
+        <div class="product-image-wrapper">
             <img src="${finalImageUrl}" alt="${product.name}"
-                 class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                 class="product-image"
                  onerror="this.src='${fallbackImage}'">
+
             ${hasDiscount ? `
-                <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
-                    -${Math.round(discount)}%
+                <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold z-10">
+                    ${Math.round(discount)}%
+                </div>
+            ` : ''}
+
+            ${product.stock === 0 ? `
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                    <span class="text-white font-bold text-xs sm:text-sm px-3 py-1.5 bg-red-600 rounded">HABIS</span>
                 </div>
             ` : ''}
         </div>
-        <div class="p-4">
-            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">${product.name}</h3>
-            <div class="flex items-center justify-between">
-                <div>
-                    <span class="text-lg font-bold text-amber-600">${formatCurrency(discountedPrice)}</span>
-                    ${hasDiscount ? `<div class="text-sm text-gray-500 line-through">${formatCurrency(price)}</div>` : ''}
+
+        <div class="product-content p-2 sm:p-3">
+            <h3 class="font-normal text-gray-800 mb-1 line-clamp-2 text-xs sm:text-sm leading-snug min-h-[2.5rem] sm:min-h-[2.8rem]">
+                ${product.name}
+            </h3>
+
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-1.5">
+                    ${hasDiscount ? `
+                        <span class="text-[10px] sm:text-xs text-gray-400 line-through">
+                            ${formatCurrency(price)}
+                        </span>
+                    ` : ''}
                 </div>
-                <button onclick="viewProduct(${product.id})"
-                        class="bg-amber-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-amber-700 transition-colors">
-                    Lihat
-                </button>
+                <span class="text-sm sm:text-base font-bold text-gray-900">
+                    ${formatCurrency(discountedPrice)}
+                </span>
             </div>
+
+            ${product.stock > 0 && product.stock <= 5 ? `
+                <div class="mt-2 text-[10px] sm:text-xs text-orange-600 font-medium">
+                    <i class="fas fa-fire text-orange-500 mr-1"></i>Stok terbatas
+                </div>
+            ` : ''}
         </div>
     `;
 
-    card.addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON') {
-            viewProduct(product.id);
-        }
+    card.addEventListener('click', () => {
+        viewProduct(product.id);
     });
 
     return card;
@@ -529,7 +675,8 @@ function createRelatedProductCard(product) {
 
 // Global functions
 function viewProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`;
+    // Use clean URL as defined in server.js routing
+    window.location.href = `/product-detail?id=${productId}`;
 }
 
 function formatCurrency(amount) {
@@ -583,3 +730,6 @@ function showError(message) {
 
 // Initialize cart count on page load
 document.addEventListener('DOMContentLoaded', updateCartCount);
+
+// Make changeImage globally accessible for onclick handlers
+window.changeImage = changeImage;

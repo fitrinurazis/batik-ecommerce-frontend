@@ -32,6 +32,10 @@ app.get("/checkout", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/checkout.html"));
 });
 
+app.get("/payment", (req, res) => {
+  res.sendFile(path.join(__dirname, "pages/payment.html"));
+});
+
 app.get("/product-detail", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/product-detail.html"));
 });

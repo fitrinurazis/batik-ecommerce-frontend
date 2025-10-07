@@ -1,8 +1,4 @@
-// Products Catalog JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Products page loaded');
-
-    // Initialize products catalog
     initializeProductsCatalog();
     initEventListeners();
 });
@@ -20,24 +16,13 @@ let currentFilters = {
 let cart = [];
 
 async function initializeProductsCatalog() {
-    console.log('Initializing products catalog...');
-
     try {
-        // Show loading state
         showLoadingState();
-
-        // Wait for dependencies
         await waitForDependencies();
-
-        // Load cart from localStorage
         loadCartFromStorage();
-
-        // Load products
         await loadProducts();
-
-        // Initial render
+        loadSearchFromURL();
         applyFilters();
-
     } catch (error) {
         console.error('Error initializing products catalog:', error);
         showError('Gagal memuat katalog produk');
@@ -73,9 +58,44 @@ function loadCartFromStorage() {
     }
 }
 
-async function loadProducts() {
-    console.log('Loading products...');
+function loadSearchFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
 
+    if (searchQuery) {
+        currentFilters.search = searchQuery;
+
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.value = searchQuery;
+        }
+
+        const searchIndicator = document.getElementById('search-indicator');
+        const searchQueryDisplay = document.getElementById('search-query');
+
+        if (searchIndicator && searchQueryDisplay) {
+            searchQueryDisplay.textContent = searchQuery;
+            searchIndicator.classList.remove('hidden');
+        }
+
+        const clearSearch = document.getElementById('clear-search');
+        if (clearSearch) {
+            clearSearch.addEventListener('click', function() {
+                currentFilters.search = '';
+                const url = new URL(window.location);
+                url.searchParams.delete('search');
+                window.history.pushState({}, '', url);
+
+                if (searchInput) searchInput.value = '';
+                if (searchIndicator) searchIndicator.classList.add('hidden');
+
+                applyFilters();
+            });
+        }
+    }
+}
+
+async function loadProducts() {
     try {
         let products = [];
 
@@ -91,13 +111,11 @@ async function loadProducts() {
             }
         }
 
-        // Fallback data if no products from API
         if (products.length === 0) {
             products = getFallbackProducts();
         }
 
         allProducts = products;
-        console.log(`Loaded ${allProducts.length} products`);
 
     } catch (error) {
         console.error('Error loading products:', error);
@@ -149,8 +167,6 @@ function getFallbackProducts() {
 }
 
 function applyFilters() {
-    console.log('Applying filters:', currentFilters);
-
     let filtered = [...allProducts];
 
     // Apply search filter
@@ -242,7 +258,7 @@ function renderProducts() {
 
 function createProductCard(product) {
     const card = document.createElement('div');
-    card.className = 'product-card bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-all duration-300 group cursor-pointer';
+    card.className = 'product-card bg-white rounded-lg shadow-sm hover:shadow-lg overflow-hidden border border-gray-200 cursor-pointer group';
 
     // Handle image URL
     let imageUrl = product.image_url || product.imageUrl;
@@ -259,90 +275,53 @@ function createProductCard(product) {
     const discountedPrice = hasDiscount ? price * (1 - discount / 100) : price;
 
     card.innerHTML = `
-        <div class="relative overflow-hidden">
+        <div class="product-image-wrapper">
             <img src="${finalImageUrl}" alt="${product.name}"
-                 class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                 class="product-image"
                  onerror="this.src='${fallbackImage}'">
 
             ${hasDiscount ? `
-                <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
-                    -${Math.round(discount)}%
-                </div>
-            ` : ''}
-
-            ${product.stock <= 5 && product.stock > 0 ? `
-                <div class="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded text-xs font-bold">
-                    Stok Terbatas
+                <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold z-10">
+                    ${Math.round(discount)}%
                 </div>
             ` : ''}
 
             ${product.stock === 0 ? `
-                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <span class="text-white font-bold text-lg">STOK HABIS</span>
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                    <span class="text-white font-bold text-xs sm:text-sm px-3 py-1.5 bg-red-600 rounded">HABIS</span>
                 </div>
             ` : ''}
-
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
         </div>
 
-        <div class="p-4">
-            <div class="mb-2">
-                <span class="inline-block px-2 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">
-                    ${product.category || 'Batik'}
-                </span>
-            </div>
-
-            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-amber-600 transition-colors">
+        <div class="product-content p-2 sm:p-3">
+            <h3 class="font-normal text-gray-800 mb-1 line-clamp-2 text-xs sm:text-sm leading-snug min-h-[2.5rem] sm:min-h-[2.8rem]">
                 ${product.name}
             </h3>
 
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex flex-col">
-                    <span class="text-lg font-bold text-amber-600">
-                        ${formatCurrency(discountedPrice)}
-                    </span>
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-1.5">
                     ${hasDiscount ? `
-                        <span class="text-sm text-gray-500 line-through">
+                        <span class="text-[10px] sm:text-xs text-gray-400 line-through">
                             ${formatCurrency(price)}
                         </span>
                     ` : ''}
                 </div>
-                <div class="text-right">
-                    ${product.stock > 0 ? `
-                        <span class="text-xs text-green-600">
-                            <i class="fas fa-check-circle mr-1"></i>
-                            Tersedia
-                        </span>
-                    ` : `
-                        <span class="text-xs text-red-500">
-                            <i class="fas fa-times-circle mr-1"></i>
-                            Habis
-                        </span>
-                    `}
-                </div>
+                <span class="text-sm sm:text-base font-bold text-gray-900">
+                    ${formatCurrency(discountedPrice)}
+                </span>
             </div>
 
-            <div class="flex space-x-2">
-                <button onclick="viewProduct(${product.id})"
-                        class="flex-1 bg-amber-50 text-amber-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-100 transition-colors border border-amber-200">
-                    <i class="fas fa-eye mr-1"></i>
-                    Detail
-                </button>
-                <button onclick="addToCart(${product.id})"
-                        class="flex-1 bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
-                        ${product.stock === 0 ? 'disabled' : ''}>
-                    <i class="fas fa-cart-plus mr-1"></i>
-                    ${product.stock === 0 ? 'Habis' : 'Keranjang'}
-                </button>
-            </div>
+            ${product.stock > 0 && product.stock <= 5 ? `
+                <div class="mt-2 text-[10px] sm:text-xs text-orange-600 font-medium">
+                    <i class="fas fa-fire text-orange-500 mr-1"></i>Stok terbatas
+                </div>
+            ` : ''}
         </div>
     `;
 
-    // Add click event for product card
-    card.addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-            viewProduct(product.id);
-        }
+    // Add click event for entire product card
+    card.addEventListener('click', () => {
+        viewProduct(product.id);
     });
 
     return card;
@@ -363,29 +342,30 @@ function renderPagination() {
     // Previous button
     paginationHTML += `
         <button onclick="changePage(${currentPage - 1})"
-                class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
                 ${currentPage === 1 ? 'disabled' : ''}>
             <i class="fas fa-chevron-left"></i>
         </button>
     `;
 
     // Page numbers
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, currentPage + 2);
+    const isMobile = window.innerWidth < 640;
+    const startPage = Math.max(1, currentPage - (isMobile ? 1 : 2));
+    const endPage = Math.min(totalPages, currentPage + (isMobile ? 1 : 2));
 
     if (startPage > 1) {
         paginationHTML += `
-            <button onclick="changePage(1)" class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">1</button>
+            <button onclick="changePage(1)" class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm">1</button>
         `;
         if (startPage > 2) {
-            paginationHTML += '<span class="px-2 py-2 text-gray-500">...</span>';
+            paginationHTML += '<span class="px-2 py-2 text-gray-500 text-sm">...</span>';
         }
     }
 
     for (let i = startPage; i <= endPage; i++) {
         paginationHTML += `
             <button onclick="changePage(${i})"
-                    class="px-3 py-2 rounded-lg border transition-colors ${i === currentPage ? 'bg-amber-600 text-white border-amber-600' : 'border-gray-300 hover:bg-gray-50'}">
+                    class="px-3 sm:px-4 py-2 rounded-lg border transition-colors text-sm font-medium ${i === currentPage ? 'bg-amber-600 text-white border-amber-600 shadow-md' : 'border-gray-300 hover:bg-gray-50'}">
                 ${i}
             </button>
         `;
@@ -393,17 +373,17 @@ function renderPagination() {
 
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
-            paginationHTML += '<span class="px-2 py-2 text-gray-500">...</span>';
+            paginationHTML += '<span class="px-2 py-2 text-gray-500 text-sm">...</span>';
         }
         paginationHTML += `
-            <button onclick="changePage(${totalPages})" class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">${totalPages}</button>
+            <button onclick="changePage(${totalPages})" class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm">${totalPages}</button>
         `;
     }
 
     // Next button
     paginationHTML += `
         <button onclick="changePage(${currentPage + 1})"
-                class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+                class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
                 ${currentPage === totalPages ? 'disabled' : ''}>
             <i class="fas fa-chevron-right"></i>
         </button>
@@ -454,113 +434,113 @@ function hideLoadingState() {
 function initEventListeners() {
     // Search input
     const searchInput = document.getElementById('search-input');
-    let searchTimeout;
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            currentFilters.search = this.value.trim();
-            currentFilters.page = 1;
-            applyFilters();
-        }, 500);
-    });
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentFilters.search = this.value.trim();
+                currentFilters.page = 1;
+                applyFilters();
+            }, 500);
+        });
+    }
 
     // Sort select
-    document.getElementById('sort-select').addEventListener('change', function() {
-        currentFilters.sort = this.value;
-        currentFilters.page = 1;
-        applyFilters();
-    });
-
-    // Per page select
-    document.getElementById('per-page-select').addEventListener('change', function() {
-        currentFilters.limit = parseInt(this.value);
-        currentFilters.page = 1;
-        applyFilters();
-    });
-
-    // Category filter buttons
-    document.querySelectorAll('.filter-button').forEach(button => {
-        button.addEventListener('click', function() {
-            // Update active state
-            document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            currentFilters.category = this.dataset.category;
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            currentFilters.sort = this.value;
             currentFilters.page = 1;
+            applyFilters();
         });
-    });
-
-    // Apply filters button
-    document.getElementById('apply-filters').addEventListener('click', function() {
-        applyFilters();
-    });
+    }
 
     // Clear filters button
-    document.getElementById('clear-filters').addEventListener('click', function() {
-        // Reset all filters
-        currentFilters = {
-            search: '',
-            category: 'all',
-            sort: 'created_at-desc',
-            page: 1,
-            limit: 12
-        };
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            // Reset all filters
+            currentFilters = {
+                search: '',
+                category: 'all',
+                sort: 'created_at-desc',
+                page: 1,
+                limit: 12
+            };
 
-        // Reset form elements
-        document.getElementById('search-input').value = '';
-        document.getElementById('sort-select').value = 'created_at-desc';
-        document.getElementById('per-page-select').value = '12';
+            // Reset form elements
+            if (searchInput) searchInput.value = '';
+            if (sortSelect) sortSelect.value = 'created_at-desc';
 
-        // Reset category buttons
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelector('[data-category="all"]').classList.add('active');
+            // Reset category radio buttons
+            const allCategoryRadio = document.querySelector('input[name="category"][value="all"]');
+            if (allCategoryRadio) allCategoryRadio.checked = true;
 
-        applyFilters();
-    });
+            applyFilters();
+        });
+    }
 
     // View toggle buttons
-    document.getElementById('grid-view').addEventListener('click', function() {
-        this.classList.add('bg-amber-100', 'text-amber-600');
-        this.classList.remove('text-gray-400', 'hover:bg-gray-100');
+    const gridViewBtn = document.getElementById('grid-view');
+    const listViewBtn = document.getElementById('list-view');
 
-        document.getElementById('list-view').classList.remove('bg-amber-100', 'text-amber-600');
-        document.getElementById('list-view').classList.add('text-gray-400', 'hover:bg-gray-100');
+    if (gridViewBtn) {
+        gridViewBtn.addEventListener('click', function() {
+            this.classList.add('bg-amber-500', 'text-white');
+            this.classList.remove('text-gray-500', 'hover:bg-white', 'hover:text-amber-600');
 
-        // Switch to grid view
-        const container = document.getElementById('products-container');
-        container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8';
-    });
+            if (listViewBtn) {
+                listViewBtn.classList.remove('bg-amber-500', 'text-white');
+                listViewBtn.classList.add('text-gray-500', 'hover:bg-white', 'hover:text-amber-600');
+            }
 
-    document.getElementById('list-view').addEventListener('click', function() {
-        this.classList.add('bg-amber-100', 'text-amber-600');
-        this.classList.remove('text-gray-400', 'hover:bg-gray-100');
+            // Switch to grid view
+            const container = document.getElementById('products-container');
+            container.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 mb-8';
+        });
+    }
 
-        document.getElementById('grid-view').classList.remove('bg-amber-100', 'text-amber-600');
-        document.getElementById('grid-view').classList.add('text-gray-400', 'hover:bg-gray-100');
+    if (listViewBtn) {
+        listViewBtn.addEventListener('click', function() {
+            this.classList.add('bg-amber-500', 'text-white');
+            this.classList.remove('text-gray-500', 'hover:bg-white', 'hover:text-amber-600');
 
-        // Switch to list view
-        const container = document.getElementById('products-container');
-        container.className = 'grid grid-cols-1 gap-6 mb-8';
-    });
+            if (gridViewBtn) {
+                gridViewBtn.classList.remove('bg-amber-500', 'text-white');
+                gridViewBtn.classList.add('text-gray-500', 'hover:bg-white', 'hover:text-amber-600');
+            }
 
-    // Cart success modal
-    document.getElementById('continue-shopping').addEventListener('click', function() {
-        hideCartSuccessModal();
-    });
+            // Switch to list view
+            const container = document.getElementById('products-container');
+            container.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8';
+        });
+    }
 
-    document.getElementById('view-cart').addEventListener('click', function() {
-        window.location.href = 'cart.html';
-    });
+    // Cart success modal (keep for future use or remove if not needed)
+    const continueShoppingBtn = document.getElementById('continue-shopping');
+    const viewCartBtn = document.getElementById('view-cart');
+
+    if (continueShoppingBtn) {
+        continueShoppingBtn.addEventListener('click', function() {
+            hideCartSuccessModal();
+        });
+    }
+
+    if (viewCartBtn) {
+        viewCartBtn.addEventListener('click', function() {
+            window.location.href = 'cart.html';
+        });
+    }
 }
 
 // Global functions
 function viewProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`;
+    // Use clean URL as defined in server.js routing
+    window.location.href = `/product-detail?id=${productId}`;
 }
 
 function addToCart(productId) {
-    console.log('Adding product to cart:', productId);
-
     const product = allProducts.find(p => p.id == productId);
     if (!product) {
         showError('Produk tidak ditemukan');

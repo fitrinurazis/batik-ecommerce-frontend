@@ -13,86 +13,9 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
     />
-
-    <style>
-      .product-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: translateY(0);
-      }
-
-      .product-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      }
-
-      .filter-button.active {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-        box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
-        transform: translateY(-2px);
-      }
-
-      .loading-skeleton {
-        background: linear-gradient(
-          90deg,
-          #f8fafc 25%,
-          #e2e8f0 50%,
-          #f8fafc 75%
-        );
-        background-size: 200% 100%;
-        animation: loading 2s infinite ease-in-out;
-      }
-
-      @keyframes loading {
-        0% {
-          background-position: 200% 0;
-        }
-        100% {
-          background-position: -200% 0;
-        }
-      }
-
-      .fade-in {
-        animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Smooth scroll behavior */
-      html {
-        scroll-behavior: smooth;
-      }
-
-      /* Enhanced focus states */
-      .focus-ring:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
-      }
-
-      /* Gradient backgrounds */
-      .bg-gradient-amber {
-        background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
-      }
-
-      /* Custom animations */
-      .animate-bounce-slow {
-        animation: bounce 2s infinite;
-      }
-
-      .animate-pulse-slow {
-        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/products.css" />
   </head>
+
   <body class="bg-gray-50">
     <!-- Header -->
     <header
@@ -115,26 +38,29 @@
             <input
               type="text"
               id="header-search"
-              placeholder="Cari di semua produk batik..."
-              class="w-full px-4 py-2 pl-10 pr-4 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+              placeholder="Cari batik favorit Anda..."
+              class="w-full px-4 py-1 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
             />
             <i
               class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             ></i>
-            <button id="header-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm">
+            <button
+              id="header-search-btn"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm"
+            >
               <i class="fas fa-search"></i>
             </button>
           </div>
         </div>
 
         <nav class="hidden md:flex space-x-8">
-          <a
-            href="/"
-            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
-          >
+          <a href="/" class="hover:text-amber-200 transition-colors">
             Beranda
           </a>
-          <a href="/products" class="hover:text-amber-200 transition-colors">
+          <a
+            href="/products"
+            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
+          >
             Produk
           </a>
           <a href="/about" class="hover:text-amber-200 transition-colors">
@@ -181,15 +107,18 @@
           <input
             type="text"
             id="mobile-search-input"
-            placeholder="Cari di semua produk batik..."
+            placeholder="Cari batik favorit Anda..."
             class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
           />
-          <button id="mobile-search-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors">
-            <i class="fas fa-search"></i>
-          </button>
           <i
             class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
           ></i>
+          <button
+            id="mobile-search-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors"
+          >
+            <i class="fas fa-search"></i>
+          </button>
         </div>
       </div>
 
@@ -199,14 +128,14 @@
         class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
       >
         <a
-          href="index.html"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
+          href="/"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
         >
           Beranda
         </a>
         <a
           href="/products"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
         >
           Produk
         </a>
@@ -243,18 +172,24 @@
     <!-- Main Content -->
     <main class="container max-w-[1200px] mx-auto px-4 py-6">
       <!-- Page Header - Simplified -->
-      <div class="mb-8">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+      <div class="mb-6 sm:mb-8">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4"
+        >
+          <div class="flex-1">
+            <h1
+              class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2"
+            >
               Katalog Produk Batik
             </h1>
-            <p class="text-gray-600">
+            <p class="text-sm sm:text-base text-gray-600">
               Temukan koleksi batik terbaik dari seluruh Indonesia
             </p>
             <!-- Search indicator -->
             <div id="search-indicator" class="mt-2 hidden">
-              <span class="inline-flex items-center px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+              <span
+                class="inline-flex items-center px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs sm:text-sm font-medium"
+              >
                 <i class="fas fa-search mr-2"></i>
                 Hasil pencarian: "<span id="search-query"></span>"
                 <button id="clear-search" class="ml-2 hover:text-amber-900">
@@ -262,9 +197,6 @@
                 </button>
               </span>
             </div>
-          </div>
-          <div class="text-sm text-gray-500">
-            <span id="total-products-header">Loading...</span> produk tersedia
           </div>
         </div>
       </div>
@@ -281,38 +213,37 @@
       <!-- Main Layout: Sidebar + Content -->
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Left Sidebar - Filters -->
-        <div class="lg:w-80 flex-shrink-0">
+        <div class="lg:w-72 xl:w-80 flex-shrink-0">
           <!-- Mobile Overlay -->
-          <div id="mobile-filter-overlay" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+          <div
+            id="mobile-filter-overlay"
+            class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+          ></div>
 
-          <div id="filter-sidebar" class="bg-white rounded-xl shadow-lg border border-gray-100 lg:sticky lg:top-24
-            lg:translate-x-0 lg:opacity-100 lg:block
-            fixed top-0 left-0 h-full w-80 z-50 transform -translate-x-full opacity-0 transition-all duration-300 overflow-y-auto hidden lg:block">
+          <div
+            id="filter-sidebar"
+            class="bg-white rounded-xl shadow-lg border border-gray-100 lg:sticky lg:top-24 lg:translate-x-0 lg:opacity-100 lg:block fixed top-0 left-0 h-full w-80 max-w-[90vw] z-40 lg:z-0 transform -translate-x-full opacity-0 transition-all duration-300 overflow-y-auto hidden lg:block"
+          >
             <!-- Mobile Close Button -->
-            <div class="lg:hidden flex justify-between items-center p-4 border-b border-gray-200">
-              <h2 class="text-lg font-bold text-gray-900">Filter & Pencarian</h2>
-              <button id="close-mobile-filter" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <div
+              class="lg:hidden flex justify-between items-center p-4 border-b border-gray-200"
+            >
+              <h2 class="text-lg font-bold text-gray-900">
+                Filter & Pencarian
+              </h2>
+              <button
+                id="close-mobile-filter"
+                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <i class="fas fa-times text-gray-600"></i>
               </button>
             </div>
 
-            <!-- Search Help Info -->
-            <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 lg:hidden">
-              <div class="flex items-start">
-                <i class="fas fa-info-circle text-blue-600 mt-1 mr-2"></i>
-                <div class="text-sm">
-                  <p class="font-semibold text-blue-900 mb-1">Tips Pencarian:</p>
-                  <p class="text-blue-800 text-xs leading-relaxed">
-                    • <strong>Search di atas (navbar):</strong> Cari di semua produk<br>
-                    • <strong>Filter di sidebar:</strong> Filter hasil yang tampil
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <!-- Search Section -->
             <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <h3
+                class="text-lg font-bold text-gray-900 mb-4 flex items-center"
+              >
                 <i class="fas fa-filter text-amber-600 mr-2"></i>Filter Hasil
               </h3>
               <div class="relative">
@@ -322,7 +253,9 @@
                   placeholder="Filter dalam halaman ini..."
                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300"
                 />
-                <i class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <i
+                  class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                ></i>
               </div>
               <p class="text-xs text-gray-500 mt-2">
                 <i class="fas fa-info-circle mr-1"></i>
@@ -332,72 +265,158 @@
 
             <!-- Category Filter -->
             <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <h3
+                class="text-lg font-bold text-gray-900 mb-4 flex items-center"
+              >
                 <i class="fas fa-th-large text-amber-600 mr-2"></i>Kategori
               </h3>
               <div class="space-y-3">
                 <label class="flex items-center cursor-pointer group">
-                  <input type="radio" name="category" value="all" checked class="sr-only">
-                  <div class="w-4 h-4 border-2 border-amber-500 rounded-full bg-amber-500 mr-3 flex items-center justify-center">
+                  <input
+                    type="radio"
+                    name="category"
+                    value="all"
+                    checked
+                    class="sr-only"
+                  />
+                  <div
+                    class="w-4 h-4 border-2 border-amber-500 rounded-full bg-amber-500 mr-3 flex items-center justify-center"
+                  >
                     <div class="w-2 h-2 bg-white rounded-full"></div>
                   </div>
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Semua Kategori</span>
-                  <span class="ml-auto text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">500+</span>
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Semua Kategori</span
+                  >
+                  <span
+                    class="ml-auto text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full"
+                    >500+</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="radio" name="category" value="Klasik" class="sr-only">
-                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Klasik</span>
-                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">150</span>
+                  <input
+                    type="radio"
+                    name="category"
+                    value="Klasik"
+                    class="sr-only"
+                  />
+                  <div
+                    class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"
+                  ></div>
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Batik Klasik</span
+                  >
+                  <span
+                    class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                    >150</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="radio" name="category" value="Pesisir" class="sr-only">
-                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Pesisir</span>
-                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">200</span>
+                  <input
+                    type="radio"
+                    name="category"
+                    value="Pesisir"
+                    class="sr-only"
+                  />
+                  <div
+                    class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"
+                  ></div>
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Batik Pesisir</span
+                  >
+                  <span
+                    class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                    >200</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="radio" name="category" value="Modern" class="sr-only">
-                  <div class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"></div>
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Batik Modern</span>
-                  <span class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">150</span>
+                  <input
+                    type="radio"
+                    name="category"
+                    value="Modern"
+                    class="sr-only"
+                  />
+                  <div
+                    class="w-4 h-4 border-2 border-gray-300 rounded-full mr-3 group-hover:border-amber-500"
+                  ></div>
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Batik Modern</span
+                  >
+                  <span
+                    class="ml-auto text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                    >150</span
+                  >
                 </label>
               </div>
             </div>
 
             <!-- Price Filter -->
             <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <h3
+                class="text-lg font-bold text-gray-900 mb-4 flex items-center"
+              >
                 <i class="fas fa-tag text-amber-600 mr-2"></i>Harga
               </h3>
               <div class="space-y-3">
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Di bawah Rp 100.000</span>
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Di bawah Rp 100.000</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Rp 100.000 - Rp 300.000</span>
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Rp 100.000 - Rp 300.000</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Rp 300.000 - Rp 500.000</span>
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Rp 300.000 - Rp 500.000</span
+                  >
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
-                  <span class="text-gray-700 group-hover:text-amber-600 font-medium">Di atas Rp 500.000</span>
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
+                  <span
+                    class="text-gray-700 group-hover:text-amber-600 font-medium"
+                    >Di atas Rp 500.000</span
+                  >
                 </label>
               </div>
             </div>
 
             <!-- Rating Filter -->
             <div class="p-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <h3
+                class="text-lg font-bold text-gray-900 mb-4 flex items-center"
+              >
                 <i class="fas fa-star text-amber-600 mr-2"></i>Rating
               </h3>
               <div class="space-y-3">
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
                   <div class="flex items-center">
                     <div class="flex text-yellow-400 mr-2">
                       <i class="fas fa-star text-sm"></i>
@@ -406,11 +425,17 @@
                       <i class="fas fa-star text-sm"></i>
                       <i class="fas fa-star text-sm"></i>
                     </div>
-                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">5 bintang</span>
+                    <span
+                      class="text-gray-700 group-hover:text-amber-600 font-medium"
+                      >5 bintang</span
+                    >
                   </div>
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
                   <div class="flex items-center">
                     <div class="flex text-yellow-400 mr-2">
                       <i class="fas fa-star text-sm"></i>
@@ -419,11 +444,17 @@
                       <i class="fas fa-star text-sm"></i>
                       <i class="far fa-star text-sm"></i>
                     </div>
-                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">4 bintang ke atas</span>
+                    <span
+                      class="text-gray-700 group-hover:text-amber-600 font-medium"
+                      >4 bintang ke atas</span
+                    >
                   </div>
                 </label>
                 <label class="flex items-center cursor-pointer group">
-                  <input type="checkbox" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 mr-3"
+                  />
                   <div class="flex items-center">
                     <div class="flex text-yellow-400 mr-2">
                       <i class="fas fa-star text-sm"></i>
@@ -432,7 +463,10 @@
                       <i class="far fa-star text-sm"></i>
                       <i class="far fa-star text-sm"></i>
                     </div>
-                    <span class="text-gray-700 group-hover:text-amber-600 font-medium">3 bintang ke atas</span>
+                    <span
+                      class="text-gray-700 group-hover:text-amber-600 font-medium"
+                      >3 bintang ke atas</span
+                    >
                   </div>
                 </label>
               </div>
@@ -442,22 +476,32 @@
 
         <!-- Right Content Area -->
         <div class="flex-1 min-w-0">
-
           <!-- Top Controls -->
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div id="results-info" class="text-gray-700 mb-3 sm:mb-0">
-              <span class="font-medium"
-                >Menampilkan <span id="showing-count" class="text-amber-600 font-bold">0</span> dari
-                <span id="total-count" class="text-amber-600 font-bold">0</span> produk</span
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-white rounded-xl p-4 shadow-sm border border-gray-100"
+          >
+            <div id="results-info" class="text-gray-700">
+              <span class="font-medium text-sm sm:text-base"
+                >Menampilkan
+                <span id="showing-count" class="text-amber-600 font-bold"
+                  >0</span
+                >
+                dari
+                <span id="total-count" class="text-amber-600 font-bold">0</span>
+                produk</span
               >
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
               <!-- Sort -->
-              <div class="flex items-center space-x-2">
-                <label for="sort-select" class="text-sm font-medium text-gray-700">Urutkan:</label>
+              <div class="flex items-center gap-2 flex-1 sm:flex-initial">
+                <label
+                  for="sort-select"
+                  class="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap"
+                  >Urut:</label
+                >
                 <select
                   id="sort-select"
-                  class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  class="flex-1 sm:flex-initial px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                 >
                   <option value="created_at-desc">Terbaru</option>
                   <option value="created_at-asc">Terlama</option>
@@ -468,7 +512,7 @@
                 </select>
               </div>
               <!-- View Toggle -->
-              <div class="flex bg-gray-100 rounded-lg p-1">
+              <div class="flex bg-gray-100 rounded-lg p-1 flex-shrink-0">
                 <button
                   id="grid-view"
                   class="p-2 rounded-lg bg-amber-500 text-white transition-all duration-300"
@@ -489,18 +533,98 @@
 
           <!-- Loading State -->
           <div id="loading-state" class="hidden">
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4"
+            >
               <!-- Skeleton cards -->
-              <div class="loading-skeleton bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                <div class="loading-skeleton h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
-                <div class="p-4">
-                  <div class="loading-skeleton h-3 bg-gray-200 rounded-full mb-2 w-1/4"></div>
-                  <div class="loading-skeleton h-5 bg-gray-300 rounded mb-2 w-4/5"></div>
-                  <div class="loading-skeleton h-3 bg-gray-200 rounded w-full mb-3"></div>
-                  <div class="flex justify-between items-center">
-                    <div class="loading-skeleton h-6 bg-amber-200 rounded w-2/5"></div>
-                    <div class="loading-skeleton h-8 bg-amber-300 rounded w-8"></div>
-                  </div>
+              <div
+                class="loading-skeleton bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200"
+              >
+                <div
+                  class="loading-skeleton aspect-square bg-gradient-to-br from-gray-200 to-gray-300"
+                ></div>
+                <div class="p-2 sm:p-3">
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-2 w-full"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-3 w-3/4"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-4 bg-gray-300 rounded w-2/3"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="loading-skeleton bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200"
+              >
+                <div
+                  class="loading-skeleton aspect-square bg-gradient-to-br from-gray-200 to-gray-300"
+                ></div>
+                <div class="p-2 sm:p-3">
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-2 w-full"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-3 w-3/4"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-4 bg-gray-300 rounded w-2/3"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="loading-skeleton bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hidden sm:block"
+              >
+                <div
+                  class="loading-skeleton aspect-square bg-gradient-to-br from-gray-200 to-gray-300"
+                ></div>
+                <div class="p-2 sm:p-3">
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-2 w-full"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-3 w-3/4"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-4 bg-gray-300 rounded w-2/3"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="loading-skeleton bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hidden md:block"
+              >
+                <div
+                  class="loading-skeleton aspect-square bg-gradient-to-br from-gray-200 to-gray-300"
+                ></div>
+                <div class="p-2 sm:p-3">
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-2 w-full"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-3 w-3/4"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-4 bg-gray-300 rounded w-2/3"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="loading-skeleton bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hidden xl:block"
+              >
+                <div
+                  class="loading-skeleton aspect-square bg-gradient-to-br from-gray-200 to-gray-300"
+                ></div>
+                <div class="p-2 sm:p-3">
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-2 w-full"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-3 bg-gray-200 rounded mb-3 w-3/4"
+                  ></div>
+                  <div
+                    class="loading-skeleton h-4 bg-gray-300 rounded w-2/3"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -509,26 +633,30 @@
           <!-- Products Grid -->
           <div
             id="products-container"
-            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 mb-8"
           >
             <!-- Products will be loaded here -->
           </div>
 
           <!-- Empty State -->
-          <div id="empty-state" class="text-center py-16 hidden">
-            <div class="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div class="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-search text-2xl text-amber-600"></i>
+          <div id="empty-state" class="text-center py-12 sm:py-16 hidden">
+            <div
+              class="bg-white rounded-xl p-6 sm:p-8 shadow-md border border-gray-100"
+            >
+              <div
+                class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <i class="fas fa-search text-xl sm:text-2xl text-amber-600"></i>
               </div>
-              <h2 class="text-xl font-bold text-gray-800 mb-2">
+              <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">
                 Produk Tidak Ditemukan
               </h2>
-              <p class="text-gray-600 mb-6">
+              <p class="text-sm sm:text-base text-gray-600 mb-6">
                 Coba ubah kata kunci pencarian atau filter yang digunakan.
               </p>
               <button
                 id="clear-filters"
-                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-lg hover:from-amber-700 hover:to-orange-700 transition-all duration-300"
+                class="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 <i class="fas fa-refresh mr-2"></i>
                 Reset Filter
@@ -537,10 +665,12 @@
           </div>
 
           <!-- Pagination -->
-          <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div
+            class="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100"
+          >
             <div
               id="pagination-container"
-              class="flex justify-center items-center space-x-2"
+              class="flex justify-center items-center flex-wrap gap-2"
             >
               <!-- Pagination will be rendered here -->
             </div>
@@ -796,120 +926,6 @@
     <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script defer src="../assets/js/products.js"></script>
-
-    <!-- Enhanced Search & Filter Script -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
-        const mobileFilterOverlay = document.getElementById('mobile-filter-overlay');
-        const filterSidebar = document.getElementById('filter-sidebar');
-        const closeMobileFilter = document.getElementById('close-mobile-filter');
-
-        // Search elements
-        const headerSearch = document.getElementById('header-search');
-        const headerSearchBtn = document.getElementById('header-search-btn');
-        const mobileSearch = document.getElementById('mobile-search-input');
-        const mobileSearchBtn = document.getElementById('mobile-search-btn');
-        const sidebarSearch = document.getElementById('search-input');
-
-        function openMobileFilter() {
-          mobileFilterOverlay.classList.remove('hidden');
-          filterSidebar.classList.remove('hidden', '-translate-x-full', 'opacity-0');
-          filterSidebar.classList.add('translate-x-0', 'opacity-100');
-          document.body.style.overflow = 'hidden';
-        }
-
-        function closeMobileFilterFunc() {
-          filterSidebar.classList.add('-translate-x-full', 'opacity-0');
-          filterSidebar.classList.remove('translate-x-0', 'opacity-100');
-          setTimeout(() => {
-            mobileFilterOverlay.classList.add('hidden');
-            filterSidebar.classList.add('hidden');
-            document.body.style.overflow = '';
-          }, 300);
-        }
-
-        mobileFilterToggle.addEventListener('click', openMobileFilter);
-        closeMobileFilter.addEventListener('click', closeMobileFilterFunc);
-        mobileFilterOverlay.addEventListener('click', closeMobileFilterFunc);
-
-        // Global Search (Header/Mobile) - navigates to products page with search
-        function handleGlobalSearch() {
-          const query = headerSearch?.value || mobileSearch?.value;
-          if (query.trim()) {
-            // If already on products page, reload with search parameter
-            if (window.location.pathname.includes('products')) {
-              const url = new URL(window.location);
-              url.searchParams.set('search', query.trim());
-              window.location.href = url.toString();
-            } else {
-              // Navigate to products page with search
-              window.location.href = `/products?search=${encodeURIComponent(query.trim())}`;
-            }
-          }
-        }
-
-        // Sidebar Search (Filter) - filters current results
-        function handleSidebarSearch() {
-          const query = sidebarSearch?.value;
-          if (typeof window.filterProducts === 'function') {
-            // Call existing filter function if available
-            window.filterProducts({ search: query });
-          }
-          console.log('Filtering current results for:', query);
-        }
-
-        // Global search event listeners
-        headerSearchBtn?.addEventListener('click', handleGlobalSearch);
-        mobileSearchBtn?.addEventListener('click', handleGlobalSearch);
-
-        headerSearch?.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') handleGlobalSearch();
-        });
-
-        mobileSearch?.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') handleGlobalSearch();
-        });
-
-        // Sidebar search event listeners (with debounce for better UX)
-        let searchTimeout;
-        sidebarSearch?.addEventListener('input', function() {
-          clearTimeout(searchTimeout);
-          searchTimeout = setTimeout(handleSidebarSearch, 300);
-        });
-
-        // Handle radio button changes
-        document.querySelectorAll('input[name="category"]').forEach(radio => {
-          radio.addEventListener('change', function() {
-            // Update UI for selected radio button
-            document.querySelectorAll('input[name="category"]').forEach(r => {
-              const radioDiv = r.parentNode.querySelector('.w-4.h-4');
-              if (r.checked) {
-                radioDiv.classList.add('border-amber-500', 'bg-amber-500');
-                radioDiv.classList.remove('border-gray-300');
-                radioDiv.innerHTML = '<div class="w-2 h-2 bg-white rounded-full"></div>';
-              } else {
-                radioDiv.classList.remove('border-amber-500', 'bg-amber-500');
-                radioDiv.classList.add('border-gray-300');
-                radioDiv.innerHTML = '';
-              }
-            });
-
-            // Trigger filter if function exists
-            if (typeof window.filterProducts === 'function') {
-              window.filterProducts({ category: this.value });
-            }
-          });
-        });
-
-        // Auto-populate search from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchParam = urlParams.get('search');
-        if (searchParam) {
-          if (headerSearch) headerSearch.value = searchParam;
-          if (mobileSearch) mobileSearch.value = searchParam;
-        }
-      });
-    </script>
+    <script src="../assets/js/filter-sidebar.js"></script>
   </body>
 </html>

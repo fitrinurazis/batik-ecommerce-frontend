@@ -39,7 +39,6 @@ class NavbarManager {
     this.initializeCart();
 
     this.isInitialized = true;
-    console.log('Navbar initialized successfully');
   }
 
   /**
@@ -331,56 +330,39 @@ class NavbarManager {
    * Perform search functionality
    */
   performSearch(query) {
-    // Validate search query
     if (!this.validateSearchQuery(query)) {
       return;
     }
 
     const searchQuery = query.trim();
-    console.log('Performing search for:', searchQuery);
-
-    // Show loading feedback
     this.showSearchFeedback(true);
-
-    // Close mobile menus
     this.closeAllMenus();
 
-    // Get current path to determine navigation
     const currentPath = window.location.pathname;
     const isHomePage = currentPath === '/' || currentPath.endsWith('/index.html') || currentPath === '';
     const isProductsPage = currentPath.includes('products');
 
-    // Determine the correct URL based on current location
     let targetUrl;
 
     if (isProductsPage) {
-      // If already on products page, update URL with search parameter
       const url = new URL(window.location);
       url.searchParams.set('search', searchQuery);
       targetUrl = url.toString();
     } else if (isHomePage) {
-      // If on homepage, navigate to products page
-      targetUrl = `pages/products.html?search=${encodeURIComponent(searchQuery)}`;
+      targetUrl = `/pages/products.html?search=${encodeURIComponent(searchQuery)}`;
     } else {
-      // If on other pages, navigate to products page from root
       const baseUrl = window.location.origin;
       const pathSegments = currentPath.split('/');
 
-      // Find the root path by going up directories until we find the main folder
       if (pathSegments.includes('pages')) {
-        // We're in a subdirectory, go back to root
         const rootIndex = pathSegments.indexOf('pages');
-        const rootPath = pathSegments.slice(0, rootIndex).join('/') || '/';
+        const rootPath = pathSegments.slice(0, rootIndex).join('/');
         targetUrl = `${baseUrl}${rootPath}/pages/products.html?search=${encodeURIComponent(searchQuery)}`;
       } else {
-        // We're at root level
         targetUrl = `${baseUrl}/pages/products.html?search=${encodeURIComponent(searchQuery)}`;
       }
     }
 
-    console.log('Navigating to:', targetUrl);
-
-    // Add slight delay for better UX
     setTimeout(() => {
       window.location.href = targetUrl;
     }, 300);
@@ -390,10 +372,6 @@ class NavbarManager {
    * Handle search input changes (for autocomplete, etc.)
    */
   handleSearchInput(value) {
-    // Could be extended for autocomplete functionality
-    console.log('Search input changed:', value);
-
-    // Dispatch custom event for other components to listen
     window.dispatchEvent(new CustomEvent('searchInputChanged', {
       detail: { query: value }
     }));
@@ -444,10 +422,6 @@ class NavbarManager {
    * Show search error message
    */
   showSearchError(message) {
-    // You can implement toast notification or inline error display
-    console.warn('Search error:', message);
-
-    // If Toastify is available, use it
     if (typeof Toastify !== 'undefined') {
       Toastify({
         text: message,
@@ -458,7 +432,6 @@ class NavbarManager {
         stopOnFocus: true,
       }).showToast();
     } else {
-      // Fallback to alert
       alert(message);
     }
   }
@@ -575,6 +548,7 @@ class NavbarManager {
       return false;
     }
   }
+
 }
 
 // Initialize navbar when script loads

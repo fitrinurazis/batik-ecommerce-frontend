@@ -238,3 +238,120 @@
 * {
   transition: color 0.3s ease, background-color 0.3s ease;
 }
+
+/* ================================
+   HERO CAROUSEL STYLES
+   ================================ */
+
+/* Carousel container */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Carousel slides */
+.carousel-slide {
+  display: none;
+  width: 100%;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.carousel-slide.active {
+  display: block;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide out animation */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+
+.carousel-slide.fade-out {
+  animation: fadeOut 0.6s ease-in-out;
+}
+
+/* Carousel controls */
+.carousel-btn {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.carousel-btn:active {
+  transform: scale(0.95);
+}
+
+/* Hide carousel buttons on small screens */
+@media (max-width: 768px) {
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-prev {
+    left: 8px !important;
+  }
+
+  .carousel-next {
+    right: 8px !important;
+  }
+}
+
+/* Carousel indicators */
+.carousel-indicators {
+  display: flex;
+  gap: 8px;
+}
+
+.indicator {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator:hover {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.indicator.active {
+  background-color: white !important;
+  width: 48px;
+}
+
+/* Responsive carousel indicators */
+@media (max-width: 640px) {
+  .carousel-indicators {
+    bottom: 16px !important;
+  }
+
+  .indicator {
+    width: 32px !important;
+    height: 3px !important;
+  }
+
+  .indicator.active {
+    width: 40px !important;
+  }
+}

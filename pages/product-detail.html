@@ -1,432 +1,710 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detail Produk - Batik Nusantara</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-    <style>
-        .image-zoom {
-            overflow: hidden;
-        }
-        .image-zoom img {
-            transition: transform 0.3s ease;
-        }
-        .image-zoom:hover img {
-            transform: scale(1.1);
-        }
-
-        .thumbnail-active {
-            border: 2px solid #d97706;
-            opacity: 1;
-        }
-
-        .thumbnail-inactive {
-            border: 2px solid transparent;
-            opacity: 0.7;
-        }
-
-        .quantity-input::-webkit-outer-spin-button,
-        .quantity-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .quantity-input {
-            -moz-appearance: textfield;
-        }
-
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="../assets/css/product-detail.css" />
+  </head>
+  <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-amber-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="../index.html" class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors">
-                <i class="fas fa-tshirt text-amber-300"></i>
-                <span>Batik Nusantara</span>
-            </a>
+    <header
+      class="bg-amber-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm"
+    >
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a
+          href="/"
+          class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+        >
+          <i class="fas fa-tshirt text-amber-300"></i>
+          <span>Batik Nusantara</span>
+        </a>
 
-            <nav class="hidden md:flex space-x-8">
-                <a href="../index.html" class="hover:text-amber-200 transition-colors">Beranda</a>
-                <a href="products.html" class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300">Produk</a>
-                <a href="about.html" class="hover:text-amber-200 transition-colors">Tentang Kami</a>
-                <a href="contact.html" class="hover:text-amber-200 transition-colors">Kontak</a>
-            </nav>
-
-            <div class="flex items-center space-x-4">
-                <a href="cart.html" class="relative group">
-                    <i class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">0</span>
-                </a>
-                <button id="mobile-menu-button" class="md:hidden text-white hover:text-amber-200 transition-colors">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
+        <!-- Search Bar (Desktop) -->
+        <div class="hidden lg:flex flex-1 max-w-sm mx-8">
+          <div class="relative w-full">
+            <input
+              type="text"
+              id="header-search"
+              placeholder="Cari batik favorit Anda..."
+              class="w-full px-4 py-1 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+            />
+            <i
+              class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <button
+              id="header-search-btn"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors text-sm"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
         </div>
+
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="hover:text-amber-200 transition-colors">
+            Beranda
+          </a>
+          <a
+            href="/products"
+            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
+          >
+            Produk
+          </a>
+          <a href="/about" class="hover:text-amber-200 transition-colors">
+            Tentang Kami
+          </a>
+          <a href="/contact" class="hover:text-amber-200 transition-colors">
+            Kontak
+          </a>
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <!-- Mobile Search Button -->
+          <button
+            id="mobile-search-button"
+            class="lg:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-search text-xl"></i>
+          </button>
+
+          <!-- Cart Button -->
+          <a href="/cart" class="relative group">
+            <i
+              class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold animate-pulse"
+            >
+              0
+            </span>
+          </a>
+
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Search -->
+      <div id="mobile-search" class="md:hidden hidden bg-amber-900 px-4 py-3">
+        <div class="relative">
+          <input
+            type="text"
+            id="mobile-search-input"
+            placeholder="Cari batik favorit Anda..."
+            class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          />
+          <i
+            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          ></i>
+          <button
+            id="mobile-search-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors"
+          >
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+      >
+        <a
+          href="/"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Beranda
+        </a>
+        <a
+          href="/products"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
+        >
+          Produk
+        </a>
+        <a
+          href="/about"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+        >
+          Tentang Kami
+        </a>
+        <a
+          href="/contact"
+          class="block py-3 hover:text-amber-200 transition-colors"
+        >
+          Kontak
+        </a>
+      </div>
     </header>
 
     <!-- Breadcrumb -->
     <nav class="bg-white shadow-sm py-3">
-        <div class="container mx-auto px-4">
-            <ol class="flex items-center space-x-2 text-sm">
-                <li><a href="../index.html" class="text-amber-600 hover:text-amber-700">Beranda</a></li>
-                <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
-                <li><a href="products.html" class="text-amber-600 hover:text-amber-700">Produk</a></li>
-                <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
-                <li id="breadcrumb-product" class="text-gray-500">...</li>
-            </ol>
-        </div>
+      <div class="container mx-auto px-4">
+        <ol class="flex items-center space-x-2 text-sm">
+          <li>
+            <a href="/" class="text-amber-600 hover:text-amber-700">Beranda</a>
+          </li>
+          <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
+          <li>
+            <a href="/products" class="text-amber-600 hover:text-amber-700"
+              >Produk</a
+            >
+          </li>
+          <li><i class="fas fa-chevron-right text-gray-400 text-xs"></i></li>
+          <li id="breadcrumb-product" class="text-gray-500">...</li>
+        </ol>
+      </div>
     </nav>
 
     <!-- Product Detail Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Loading State -->
-        <div id="loading-state" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="space-y-4">
-                <div class="loading-skeleton h-96 rounded-lg"></div>
-                <div class="flex space-x-2">
-                    <div class="loading-skeleton h-20 w-20 rounded"></div>
-                    <div class="loading-skeleton h-20 w-20 rounded"></div>
-                    <div class="loading-skeleton h-20 w-20 rounded"></div>
+    <main class="container max-w-7xl mx-auto px-4 py-4 sm:py-6 lg:py-8">
+      <!-- Loading State -->
+      <div
+        id="loading-state"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8"
+      >
+        <div class="space-y-3 sm:space-y-4">
+          <div class="loading-skeleton aspect-square sm:h-96 rounded-lg"></div>
+          <div class="flex gap-2">
+            <div
+              class="loading-skeleton h-16 sm:h-20 w-16 sm:w-20 rounded"
+            ></div>
+            <div
+              class="loading-skeleton h-16 sm:h-20 w-16 sm:w-20 rounded"
+            ></div>
+            <div
+              class="loading-skeleton h-16 sm:h-20 w-16 sm:w-20 rounded"
+            ></div>
+          </div>
+        </div>
+        <div class="space-y-3 sm:space-y-4">
+          <div class="loading-skeleton h-6 sm:h-8 w-3/4 rounded"></div>
+          <div class="loading-skeleton h-5 sm:h-6 w-1/2 rounded"></div>
+          <div class="loading-skeleton h-10 sm:h-12 w-1/3 rounded"></div>
+          <div class="loading-skeleton h-24 sm:h-32 w-full rounded"></div>
+          <div class="loading-skeleton h-12 sm:h-16 w-full rounded"></div>
+        </div>
+      </div>
+
+      <!-- Product Content -->
+      <div id="product-content" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <!-- Product Images (Left Side) -->
+          <div class="lg:col-span-5">
+            <div class="sticky top-24">
+              <!-- Main Image -->
+              <div
+                class="relative bg-white rounded-xl shadow-lg overflow-hidden mb-4"
+              >
+                <div class="aspect-square relative group">
+                  <img
+                    id="main-image"
+                    src=""
+                    alt=""
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center'"
+                  />
+
+                  <!-- Zoom Overlay -->
+                  <div
+                    class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center"
+                  >
+                    <div
+                      class="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    >
+                      <i
+                        class="fas fa-search-plus text-white text-3xl drop-shadow-lg"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- Discount Badge -->
+                  <div
+                    id="discount-badge"
+                    class="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hidden"
+                  >
+                    <i class="fas fa-tag mr-1"></i>
+                    -<span id="discount-percent">0</span>%
+                  </div>
+
+                  <!-- Navigation Arrows (for multiple images) -->
+                  <button
+                    id="prev-image"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all hidden"
+                  >
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button
+                    id="next-image"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all hidden"
+                  >
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+
+                  <!-- Image Counter -->
+                  <div
+                    id="image-counter"
+                    class="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-xs"
+                  >
+                    <span id="current-image-index">1</span>/<span
+                      id="total-images"
+                      >1</span
+                    >
+                  </div>
                 </div>
+              </div>
+
+              <!-- Thumbnail Images -->
+              <div
+                id="thumbnail-container"
+                class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+              >
+                <!-- Thumbnails will be loaded dynamically -->
+              </div>
+
+              <!-- Share & Wishlist Buttons -->
+              <div class="flex gap-3 mt-4">
+                <button
+                  class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 hover:border-amber-600 text-gray-700 hover:text-amber-600 py-3 rounded-lg transition-all font-medium"
+                >
+                  <i class="fas fa-heart"></i>
+                  <span>Wishlist</span>
+                </button>
+                <button
+                  class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 hover:border-amber-600 text-gray-700 hover:text-amber-600 py-3 rounded-lg transition-all font-medium"
+                >
+                  <i class="fas fa-share-alt"></i>
+                  <span>Share</span>
+                </button>
+              </div>
             </div>
-            <div class="space-y-4">
-                <div class="loading-skeleton h-8 w-3/4 rounded"></div>
-                <div class="loading-skeleton h-6 w-1/2 rounded"></div>
-                <div class="loading-skeleton h-12 w-1/3 rounded"></div>
-                <div class="loading-skeleton h-32 w-full rounded"></div>
-                <div class="loading-skeleton h-16 w-full rounded"></div>
+          </div>
+
+          <!-- Product Info (Right Side) -->
+          <div class="lg:col-span-7">
+            <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8">
+              <!-- Product Title -->
+              <h1
+                id="product-name"
+                class="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight"
+              >
+                Loading...
+              </h1>
+
+              <!-- Rating & Category -->
+              <div
+                class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200"
+              >
+                <div class="flex items-center gap-2">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star text-sm"></i>
+                    <i class="fas fa-star text-sm"></i>
+                    <i class="fas fa-star text-sm"></i>
+                    <i class="fas fa-star text-sm"></i>
+                    <i class="fas fa-star text-gray-300 text-sm"></i>
+                  </div>
+                  <span class="text-sm text-gray-600">4.0</span>
+                  <span class="text-gray-400">|</span>
+                  <span class="text-sm text-gray-600">25 Terjual</span>
+                </div>
+                <span
+                  id="product-category"
+                  class="bg-amber-100 text-amber-800 px-3 py-1 rounded-md text-xs font-semibold"
+                >
+                  Batik
+                </span>
+              </div>
+
+              <!-- Price Section -->
+              <div class="mb-6 pb-6 border-b border-gray-200">
+                <div class="flex items-baseline gap-3 mb-2">
+                  <span
+                    id="current-price"
+                    class="text-3xl lg:text-4xl font-bold text-gray-900"
+                  >
+                    Rp 0
+                  </span>
+                  <span
+                    id="original-price"
+                    class="text-xl text-gray-400 line-through hidden"
+                  >
+                    Rp 0
+                  </span>
+                </div>
+                <div
+                  id="savings"
+                  class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-3 py-1 rounded-md text-sm font-medium hidden"
+                >
+                  <i class="fas fa-bolt"></i>
+                  <span>Hemat Rp <span id="savings-amount">0</span></span>
+                </div>
+              </div>
+
+              <!-- Short Description -->
+              <div class="mb-6 pb-6 border-b border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-700 mb-2">
+                  Deskripsi Singkat
+                </h3>
+                <p
+                  id="product-description"
+                  class="text-gray-600 text-sm leading-relaxed line-clamp-3"
+                >
+                  Loading...
+                </p>
+              </div>
+
+              <!-- Stock Info -->
+              <div id="stock-info" class="mb-6 pb-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-gray-700">Stok</span>
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center text-green-600 text-sm">
+                      <i class="fas fa-check-circle mr-2"></i>
+                      <span
+                        ><span id="stock-count" class="font-semibold">0</span>
+                        tersedia</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quantity Selector -->
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Kuantitas</span
+                  >
+                  <div class="flex items-center gap-3">
+                    <button
+                      id="decrease-qty"
+                      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <i class="fas fa-minus text-xs text-gray-600"></i>
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity"
+                      value="1"
+                      min="1"
+                      max="999"
+                      class="quantity-input w-16 text-center py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                    <button
+                      id="increase-qty"
+                      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <i class="fas fa-plus text-xs text-gray-600"></i>
+                    </button>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">
+                  Subtotal:
+                  <span id="subtotal-amount" class="font-semibold text-gray-900"
+                    >Rp 0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-3 mb-6">
+                <button
+                  id="add-to-cart-btn"
+                  class="flex-1 bg-amber-50 border-2 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <i class="fas fa-cart-plus"></i>
+                  <span>+ Keranjang</span>
+                </button>
+                <button
+                  id="buy-now-btn"
+                  class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2"
+                >
+                  <i class="fas fa-shopping-bag"></i>
+                  <span>Beli Sekarang</span>
+                </button>
+              </div>
+
+              <!-- Additional Info -->
+              <div class="bg-gray-50 rounded-xl p-4">
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                  <div class="flex items-start gap-2 text-gray-600">
+                    <i class="fas fa-shield-alt text-green-600 mt-0.5"></i>
+                    <span>Garansi 100% Original</span>
+                  </div>
+                  <div class="flex items-start gap-2 text-gray-600">
+                    <i class="fas fa-truck text-blue-600 mt-0.5"></i>
+                    <span>Gratis Ongkir</span>
+                  </div>
+                  <div class="flex items-start gap-2 text-gray-600">
+                    <i class="fas fa-sync-alt text-amber-600 mt-0.5"></i>
+                    <span>Retur 7 Hari</span>
+                  </div>
+                  <div class="flex items-start gap-2 text-gray-600">
+                    <i class="fas fa-headset text-purple-600 mt-0.5"></i>
+                    <span>Support 24/7</span>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
 
-        <!-- Product Content -->
-        <div id="product-content" class="hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Product Images -->
-                <div class="space-y-4">
-                    <!-- Main Image -->
-                    <div class="image-zoom relative bg-white rounded-lg shadow-lg overflow-hidden">
-                        <img id="main-image"
-                             src=""
-                             alt=""
-                             class="w-full h-96 object-cover"
-                             onerror="this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center'">
+        <!-- Product Tabs -->
+        <div class="mt-8 sm:mt-12 lg:mt-16">
+          <div class="border-b border-gray-200">
+            <nav class="flex gap-4 sm:gap-6 lg:gap-8 overflow-x-auto">
+              <button
+                class="tab-button active py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap"
+                data-tab="description"
+              >
+                Deskripsi
+              </button>
+              <button
+                class="tab-button py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap"
+                data-tab="specifications"
+              >
+                Spesifikasi
+              </button>
+              <button
+                class="tab-button py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap"
+                data-tab="reviews"
+              >
+                Ulasan (25)
+              </button>
+            </nav>
+          </div>
 
-                        <!-- Badge -->
-                        <div id="discount-badge" class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold hidden">
-                            -<span id="discount-percent">0</span>%
-                        </div>
-
-                        <!-- Stock Status -->
-                        <div id="stock-status" class="absolute top-4 right-4"></div>
-                    </div>
-
-                    <!-- Thumbnail Images -->
-                    <div id="thumbnail-container" class="flex space-x-2 overflow-x-auto">
-                        <!-- Thumbnails will be loaded dynamically -->
-                    </div>
-                </div>
-
-                <!-- Product Info -->
-                <div class="space-y-6">
-                    <!-- Product Title and Category -->
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span id="product-category" class="inline-block bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
-                                Batik
-                            </span>
-                            <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star text-gray-300"></i>
-                                <span class="ml-2 text-gray-600 text-sm">(4.0) 25 ulasan</span>
-                            </div>
-                        </div>
-                        <h1 id="product-name" class="text-3xl font-bold text-gray-900 mb-2">
-                            Loading...
-                        </h1>
-                        <p id="product-description" class="text-gray-600 text-lg leading-relaxed">
-                            Loading...
-                        </p>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="border-t border-gray-200 pt-6">
-                        <div class="flex items-baseline space-x-4">
-                            <span id="current-price" class="text-4xl font-bold text-amber-600">
-                                Rp 0
-                            </span>
-                            <span id="original-price" class="text-xl text-gray-500 line-through hidden">
-                                Rp 0
-                            </span>
-                        </div>
-                        <div id="savings" class="text-green-600 font-medium mt-1 hidden">
-                            Hemat Rp <span id="savings-amount">0</span>
-                        </div>
-                    </div>
-
-                    <!-- Stock Info -->
-                    <div id="stock-info" class="border-t border-gray-200 pt-6">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center text-green-600">
-                                <i class="fas fa-check-circle mr-2"></i>
-                                <span>Tersedia <span id="stock-count" class="font-semibold">0</span> pcs</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Add to Cart Section -->
-                    <div class="border-t border-gray-200 pt-6">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <label class="font-medium text-gray-700">Jumlah:</label>
-                            <div class="flex items-center border border-gray-300 rounded-lg">
-                                <button id="decrease-qty" class="px-3 py-2 hover:bg-gray-100 transition-colors">
-                                    <i class="fas fa-minus text-sm"></i>
-                                </button>
-                                <input type="number"
-                                       id="quantity"
-                                       value="1"
-                                       min="1"
-                                       max="999"
-                                       class="quantity-input w-16 text-center py-2 border-none focus:ring-0 focus:outline-none">
-                                <button id="increase-qty" class="px-3 py-2 hover:bg-gray-100 transition-colors">
-                                    <i class="fas fa-plus text-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button id="add-to-cart-btn"
-                                    class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
-                                <i class="fas fa-cart-plus mr-2"></i>
-                                Tambah ke Keranjang
-                            </button>
-                            <button id="buy-now-btn"
-                                    class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
-                                <i class="fas fa-bolt mr-2"></i>
-                                Beli Sekarang
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Additional Info -->
-                    <div class="border-t border-gray-200 pt-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div class="flex items-center text-gray-600">
-                                <i class="fas fa-truck mr-2 text-amber-600"></i>
-                                <span>Gratis ongkir seluruh Indonesia</span>
-                            </div>
-                            <div class="flex items-center text-gray-600">
-                                <i class="fas fa-undo mr-2 text-amber-600"></i>
-                                <span>Garansi pengembalian 7 hari</span>
-                            </div>
-                            <div class="flex items-center text-gray-600">
-                                <i class="fas fa-certificate mr-2 text-amber-600"></i>
-                                <span>Batik asli handmade</span>
-                            </div>
-                            <div class="flex items-center text-gray-600">
-                                <i class="fas fa-headset mr-2 text-amber-600"></i>
-                                <span>Customer service 24/7</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div class="py-6 sm:py-8">
+            <!-- Description Tab -->
+            <div id="tab-description" class="tab-content">
+              <div class="prose max-w-none">
+                <p
+                  id="full-description"
+                  class="text-gray-600 leading-relaxed text-sm sm:text-base"
+                >
+                  Loading...
+                </p>
+              </div>
             </div>
 
-            <!-- Product Tabs -->
-            <div class="mt-16">
-                <div class="border-b border-gray-200">
-                    <nav class="flex space-x-8">
-                        <button class="tab-button active py-4 px-1 border-b-2 font-medium text-sm" data-tab="description">
-                            Deskripsi
-                        </button>
-                        <button class="tab-button py-4 px-1 border-b-2 font-medium text-sm" data-tab="specifications">
-                            Spesifikasi
-                        </button>
-                        <button class="tab-button py-4 px-1 border-b-2 font-medium text-sm" data-tab="reviews">
-                            Ulasan (25)
-                        </button>
-                    </nav>
+            <!-- Specifications Tab -->
+            <div id="tab-specifications" class="tab-content hidden">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                  <h3
+                    class="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base"
+                  >
+                    Detail Produk
+                  </h3>
+                  <div class="space-y-2 sm:space-y-3 text-xs sm:text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Kategori:</span>
+                      <span id="spec-category" class="font-medium">Batik</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Material:</span>
+                      <span class="font-medium">Katun Premium</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Teknik:</span>
+                      <span class="font-medium">Batik Tulis</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">Asal:</span>
+                      <span class="font-medium">Yogyakarta</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="py-8">
-                    <!-- Description Tab -->
-                    <div id="tab-description" class="tab-content">
-                        <div class="prose max-w-none">
-                            <p id="full-description" class="text-gray-600 leading-relaxed">
-                                Loading...
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Specifications Tab -->
-                    <div id="tab-specifications" class="tab-content hidden">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-white p-6 rounded-lg shadow">
-                                <h3 class="font-semibold text-gray-900 mb-4">Detail Produk</h3>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Kategori:</span>
-                                        <span id="spec-category" class="font-medium">Batik</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Material:</span>
-                                        <span class="font-medium">Katun Premium</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Teknik:</span>
-                                        <span class="font-medium">Batik Tulis</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Asal:</span>
-                                        <span class="font-medium">Yogyakarta</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white p-6 rounded-lg shadow">
-                                <h3 class="font-semibold text-gray-900 mb-4">Perawatan</h3>
-                                <ul class="space-y-2 text-sm text-gray-600">
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
-                                        Cuci dengan air dingin
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
-                                        Jangan gunakan pemutih
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
-                                        Setrika pada suhu rendah
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
-                                        Simpan di tempat kering
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reviews Tab -->
-                    <div id="tab-reviews" class="tab-content hidden">
-                        <div class="space-y-6">
-                            <!-- Review Summary -->
-                            <div class="bg-white p-6 rounded-lg shadow">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center">
-                                        <div class="flex text-yellow-400 text-2xl mr-4">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star text-gray-300"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-3xl font-bold">4.0</div>
-                                            <div class="text-gray-500">dari 25 ulasan</div>
-                                        </div>
-                                    </div>
-                                    <button class="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors">
-                                        Tulis Ulasan
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Sample Reviews -->
-                            <div class="space-y-4">
-                                <div class="bg-white p-6 rounded-lg shadow">
-                                    <div class="flex items-start justify-between mb-3">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                                S
-                                            </div>
-                                            <div>
-                                                <div class="font-medium">Sari Indah</div>
-                                                <div class="text-sm text-gray-500">2 hari yang lalu</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex text-yellow-400">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <p class="text-gray-600">
-                                        Batik yang sangat bagus! Kualitas kain lembut dan motifnya sangat indah. Pengiriman juga cepat. Sangat puas dengan pembelian ini.
-                                    </p>
-                                </div>
-
-                                <div class="bg-white p-6 rounded-lg shadow">
-                                    <div class="flex items-start justify-between mb-3">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                                B
-                                            </div>
-                                            <div>
-                                                <div class="font-medium">Budi Santoso</div>
-                                                <div class="text-sm text-gray-500">1 minggu yang lalu</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex text-yellow-400">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                    <p class="text-gray-600">
-                                        Produk sesuai dengan gambar. Packaging rapih dan aman. Hanya saja pengiriman agak lama, tapi overall puas.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                  <h3
+                    class="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base"
+                  >
+                    Perawatan
+                  </h3>
+                  <ul class="space-y-2 text-xs sm:text-sm text-gray-600">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      Cuci dengan air dingin
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      Jangan gunakan pemutih
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      Setrika pada suhu rendah
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      Simpan di tempat kering
+                    </li>
+                  </ul>
                 </div>
+              </div>
             </div>
+
+            <!-- Reviews Tab -->
+            <div id="tab-reviews" class="tab-content hidden">
+              <div class="space-y-4 sm:space-y-6">
+                <!-- Review Summary -->
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4"
+                  >
+                    <div class="flex items-center">
+                      <div
+                        class="flex text-yellow-400 text-lg sm:text-2xl mr-3 sm:mr-4"
+                      >
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star text-gray-300"></i>
+                      </div>
+                      <div>
+                        <div class="text-2xl sm:text-3xl font-bold">4.0</div>
+                        <div class="text-gray-500 text-xs sm:text-sm">
+                          dari 25 ulasan
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="bg-amber-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
+                    >
+                      Tulis Ulasan
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Sample Reviews -->
+                <div class="space-y-3 sm:space-y-4">
+                  <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                    <div class="flex items-start justify-between mb-3 gap-2">
+                      <div
+                        class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0"
+                      >
+                        <div
+                          class="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                        >
+                          S
+                        </div>
+                        <div class="min-w-0">
+                          <div
+                            class="font-medium text-sm sm:text-base truncate"
+                          >
+                            Sari Indah
+                          </div>
+                          <div class="text-xs sm:text-sm text-gray-500">
+                            2 hari yang lalu
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="flex text-yellow-400 text-xs sm:text-sm flex-shrink-0"
+                      >
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                      </div>
+                    </div>
+                    <p class="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                      Batik yang sangat bagus! Kualitas kain lembut dan motifnya
+                      sangat indah. Pengiriman juga cepat. Sangat puas dengan
+                      pembelian ini.
+                    </p>
+                  </div>
+
+                  <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                    <div class="flex items-start justify-between mb-3 gap-2">
+                      <div
+                        class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0"
+                      >
+                        <div
+                          class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
+                        >
+                          B
+                        </div>
+                        <div class="min-w-0">
+                          <div
+                            class="font-medium text-sm sm:text-base truncate"
+                          >
+                            Budi Santoso
+                          </div>
+                          <div class="text-xs sm:text-sm text-gray-500">
+                            1 minggu yang lalu
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="flex text-yellow-400 text-xs sm:text-sm flex-shrink-0"
+                      >
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star text-gray-300"></i>
+                      </div>
+                    </div>
+                    <p class="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                      Produk sesuai dengan gambar. Packaging rapih dan aman.
+                      Hanya saja pengiriman agak lama, tapi overall puas.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </main>
 
     <!-- Related Products -->
-    <section class="bg-white py-16">
-        <div class="container mx-auto px-4">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Produk Terkait</h2>
-            <div id="related-products" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Related products will be loaded here -->
-            </div>
+    <section class="bg-white py-12 sm:py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
+          Produk Terkait
+        </h2>
+        <div
+          id="related-products"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4"
+        >
+          <!-- Related products will be loaded here -->
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-amber-900 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <div class="flex items-center justify-center space-x-2 mb-4">
-                    <i class="fas fa-tshirt text-2xl text-amber-300"></i>
-                    <span class="text-2xl font-bold">Batik Nusantara</span>
-                </div>
-                <p class="text-amber-200">Preserving Indonesian Heritage Through Beautiful Batik</p>
-            </div>
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-4">
+            <i class="fas fa-tshirt text-2xl text-amber-300"></i>
+            <span class="text-2xl font-bold">Batik Nusantara</span>
+          </div>
+          <p class="text-amber-200">
+            Preserving Indonesian Heritage Through Beautiful Batik
+          </p>
         </div>
+      </div>
     </footer>
 
     <!-- Scripts -->
@@ -435,6 +713,5 @@
     <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
     <script defer src="../assets/js/product-detail.js"></script>
-
-</body>
+  </body>
 </html>

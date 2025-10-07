@@ -9,32 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      .sidebar {
-        width: 250px;
-        transition: all 0.3s;
-      }
-
-      @media (max-width: 768px) {
-        .sidebar {
-          width: 0;
-          overflow: hidden;
-        }
-
-        .sidebar.open {
-          width: 250px;
-        }
-
-        .content {
-          margin-left: 0 !important;
-        }
-      }
-
-      .content {
-        margin-left: 250px;
-        transition: all 0.3s;
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
   </head>
   <body class="bg-gray-100 min-h-screen">
     <!-- Alert Container -->
@@ -293,39 +268,6 @@
     <script type="module" src="../assets/js/main.js"></script>
     <script defer src="../assets/js/admin-layout.js"></script>
     <script defer src="../assets/js/dashboard.js"></script>
-    <script>
-      // Ensure dashboard initialization works by adding fallback
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Dashboard DOM loaded, checking for initialization...');
-
-        // Wait for dependencies
-        function checkAndInit() {
-          if (typeof window.ApiService !== 'undefined' &&
-              typeof window.Utils !== 'undefined' &&
-              typeof window.AuthManager !== 'undefined') {
-            console.log('Dependencies loaded for dashboard');
-
-            // If dashboard didn't initialize for some reason, force it
-            setTimeout(() => {
-              if (typeof initDashboard === 'function') {
-                console.log('Dashboard function available');
-              } else {
-                console.log('Dashboard function not available, retrying...');
-                setTimeout(checkAndInit, 500);
-              }
-            }, 1000);
-          } else {
-            console.log('Waiting for dependencies...', {
-              ApiService: typeof window.ApiService,
-              Utils: typeof window.Utils,
-              AuthManager: typeof window.AuthManager
-            });
-            setTimeout(checkAndInit, 100);
-          }
-        }
-
-        checkAndInit();
-      });
-    </script>
+    <script defer src="../assets/js/dashboard-home.js"></script>
   </body>
 </html>

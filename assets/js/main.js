@@ -307,6 +307,26 @@ class ApiService {
     }
   }
 
+  static async uploadProductImages(files) {
+    try {
+      const formData = new FormData();
+
+      // Append multiple files with key 'images[]'
+      for (let i = 0; i < files.length; i++) {
+        formData.append("images", files[i]);
+      }
+
+      const response = await axios.post("/upload/product-images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   static async testEmailConnection() {
     try {
       const response = await axios.post("/email/test-connection");

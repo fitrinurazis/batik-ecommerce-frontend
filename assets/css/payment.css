@@ -1,0 +1,45 @@
+.step-indicator {
+  position: relative;
+}
+
+.step-indicator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 100px;
+  height: 2px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+}
+
+.step-indicator.active::after {
+  background: #10b981;
+}
+
+.step-indicator.completed::after {
+  background: #10b981;
+}
+
+.step-indicator:last-child::after {
+  display: none;
+}
+
+.upload-area {
+  border: 2px dashed #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: #d97706;
+  background-color: #fef3c7;
+}
+
+.upload-area.drag-over {
+  border-color: #d97706;
+  background-color: #fef3c7;
+}
+
+.countdown {
+  font-variant-numeric: tabular-nums;
+}

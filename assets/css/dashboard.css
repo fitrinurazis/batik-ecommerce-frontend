@@ -1,0 +1,27 @@
+// Dashboard Home
+.sidebar {
+  width: 250px;
+  transition: all 0.3s;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+  }
+
+  .sidebar.open {
+    width: 250px;
+  }
+
+  .content {
+    margin-left: 0 !important;
+  }
+}
+
+.content {
+  margin-left: 250px;
+  transition: all 0.3s;
+}
+
+// Dashboard Product

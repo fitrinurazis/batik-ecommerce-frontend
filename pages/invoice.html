@@ -1,173 +1,414 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invoice - Batik Nusantara</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body class="bg-gray-50">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-amber-800 text-white shadow-md">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="../index.html" class="text-2xl font-bold">Batik Nusantara</a>
-            <nav class="hidden md:flex space-x-6">
-                <a href="../index.html" class="hover:text-amber-200 transition">Beranda</a>
-                <a href="index.html#produk" class="hover:text-amber-200 transition">Produk</a>
-                <a href="index.html#tentang" class="hover:text-amber-200 transition">Tentang Kami</a>
-                <a href="index.html#kontak" class="hover:text-amber-200 transition">Kontak</a>
-            </nav>
-            <div class="flex items-center space-x-4">
-                <a href="cart.html" class="relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">0</span>
-                </a>
-                <button id="mobile-menu-button" class="md:hidden text-white">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-            </div>
+    <header class="bg-amber-800 text-white shadow-md sticky top-0 z-50">
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <a href="/" class="text-2xl font-bold flex items-center space-x-2">
+          <i class="fas fa-tshirt text-amber-300"></i>
+          <span>Batik Nusantara</span>
+        </a>
+        <nav class="hidden md:flex space-x-6">
+          <a href="/" class="hover:text-amber-200 transition">Beranda</a>
+          <a href="/products" class="hover:text-amber-200 transition">Produk</a>
+          <a href="/about" class="hover:text-amber-200 transition"
+            >Tentang Kami</a
+          >
+          <a href="/contact" class="hover:text-amber-200 transition">Kontak</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <a href="/cart" class="relative group">
+            <i
+              class="fas fa-shopping-cart text-xl group-hover:text-amber-200 transition-colors"
+            ></i>
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold"
+              >0</span
+            >
+          </a>
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white hover:text-amber-200 transition-colors"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-amber-900 px-4 py-2">
-            <a href="../index.html" class="block py-2 hover:text-amber-200 transition">Beranda</a>
-            <a href="index.html#produk" class="block py-2 hover:text-amber-200 transition">Produk</a>
-            <a href="index.html#tentang" class="block py-2 hover:text-amber-200 transition">Tentang Kami</a>
-            <a href="index.html#kontak" class="block py-2 hover:text-amber-200 transition">Kontak</a>
-        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+      >
+        <a
+          href="/"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+          >Beranda</a
+        >
+        <a
+          href="/products"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+          >Produk</a
+        >
+        <a
+          href="/about"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
+          >Tentang Kami</a
+        >
+        <a
+          href="/contact"
+          class="block py-3 hover:text-amber-200 transition-colors"
+          >Kontak</a
+        >
+      </div>
     </header>
 
     <!-- Invoice Section -->
     <section class="py-12">
-        <div class="container mx-auto px-4">
-            <div class="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <h1 class="text-2xl font-bold text-amber-800">INVOICE</h1>
-                        <p id="invoice-id" class="text-gray-600">INV-12345</p>
-                    </div>
-                    <div class="text-right">
-                        <h2 class="text-xl font-bold">Batik Nusantara</h2>
-                        <p class="text-gray-600">Jl. Batik Nusantara No. 123</p>
-                        <p class="text-gray-600">Yogyakarta, Indonesia</p>
-                        <p class="text-gray-600">info@batiknusantara.com</p>
-                    </div>
-                </div>
-                
-                <div class="flex flex-col md:flex-row justify-between mb-8">
-                    <div>
-                        <h3 class="font-semibold text-gray-700 mb-2">Tagihan Kepada:</h3>
-                        <p id="customer-name" class="font-medium">John Doe</p>
-                        <p id="customer-address" class="text-gray-600">Jl. Contoh No. 123</p>
-                        <p id="customer-city" class="text-gray-600">Jakarta, 12345</p>
-                        <p id="customer-email" class="text-gray-600">john@example.com</p>
-                    </div>
-                    <div class="mt-4 md:mt-0">
-                        <h3 class="font-semibold text-gray-700 mb-2">Detail Pesanan:</h3>
-                        <p class="flex justify-between"><span class="text-gray-600 mr-4">Tanggal Pesanan:</span> <span id="order-date">01 Jan 2023</span></p>
-                        <p class="flex justify-between"><span class="text-gray-600 mr-4">Status Pembayaran:</span> <span id="payment-status" class="text-yellow-600 font-medium">Menunggu Pembayaran</span></p>
-                        <p class="flex justify-between"><span class="text-gray-600 mr-4">Metode Pembayaran:</span> <span>Transfer Bank</span></p>
-                    </div>
-                </div>
-                
-                <div class="border rounded-lg overflow-hidden mb-8">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="py-3 px-4 text-left">Produk</th>
-                                <th class="py-3 px-4 text-center">Jumlah</th>
-                                <th class="py-3 px-4 text-right">Harga</th>
-                                <th class="py-3 px-4 text-right">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoice-items">
-                            <!-- Invoice items will be loaded here via JavaScript -->
-                            <tr>
-                                <td colspan="4" class="py-4 text-center text-gray-500">Memuat data pesanan...</td>
-                            </tr>
-                        </tbody>
-                        <tfoot class="border-t">
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="py-3 px-4 text-right font-medium">Subtotal</td>
-                                <td id="subtotal" class="py-3 px-4 text-right">Rp 0</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"></td>
-                                <td class="py-3 px-4 text-right font-medium">Pengiriman</td>
-                                <td id="shipping" class="py-3 px-4 text-right">Rp 0</td>
-                            </tr>
-                            <tr class="bg-gray-50">
-                                <td colspan="2"></td>
-                                <td class="py-3 px-4 text-right font-bold">Total</td>
-                                <td id="total" class="py-3 px-4 text-right font-bold">Rp 0</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                
-                <div class="bg-amber-50 p-4 rounded-lg mb-8">
-                    <h3 class="font-semibold text-amber-800 mb-2">Instruksi Pembayaran:</h3>
-                    <p class="mb-2">Silakan transfer total pembayaran ke rekening berikut:</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p><span class="font-medium">Bank:</span> Bank Mandiri</p>
-                            <p><span class="font-medium">No. Rekening:</span> 1234567890</p>
-                            <p><span class="font-medium">Atas Nama:</span> PT Batik Nusantara</p>
-                        </div>
-                        <div>
-                            <p class="mb-2">Setelah melakukan pembayaran, silakan konfirmasi melalui:</p>
-                            <p><a href="https://wa.me/6281234567890" class="text-amber-800 hover:underline"><i class="fab fa-whatsapp mr-1"></i> +62 812-3456-7890</a></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex justify-between">
-                    <button onclick="window.print()" class="btn-secondary flex items-center">
-                        <i class="fas fa-print mr-2"></i> Cetak Invoice
-                    </button>
-                    <a href="../index.html" class="btn-primary">Kembali ke Beranda</a>
-                </div>
+      <div class="container mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+          <div class="flex justify-between items-start mb-8">
+            <div>
+              <h1 class="text-2xl font-bold text-amber-800">INVOICE</h1>
+              <p id="invoice-id" class="text-gray-600">INV-12345</p>
             </div>
+            <div class="text-right">
+              <h2 class="text-xl font-bold">Batik Nusantara</h2>
+              <p class="text-gray-600">Jl. Batik Nusantara No. 123</p>
+              <p class="text-gray-600">Yogyakarta, Indonesia</p>
+              <p class="text-gray-600">info@batiknusantara.com</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col md:flex-row justify-between mb-8">
+            <div>
+              <h3 class="font-semibold text-gray-700 mb-2">Tagihan Kepada:</h3>
+              <p id="customer-name" class="font-medium">John Doe</p>
+              <p id="customer-address" class="text-gray-600">
+                Jl. Contoh No. 123
+              </p>
+              <p id="customer-city" class="text-gray-600">Jakarta, 12345</p>
+              <p id="customer-email" class="text-gray-600">john@example.com</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+              <h3 class="font-semibold text-gray-700 mb-2">Detail Pesanan:</h3>
+              <p class="flex justify-between">
+                <span class="text-gray-600 mr-4">Tanggal Pesanan:</span>
+                <span id="order-date">01 Jan 2023</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="text-gray-600 mr-4">Status Pembayaran:</span>
+                <span id="payment-status" class="text-yellow-600 font-medium"
+                  >Menunggu Pembayaran</span
+                >
+              </p>
+              <p class="flex justify-between">
+                <span class="text-gray-600 mr-4">Metode Pembayaran:</span>
+                <span>Transfer Bank</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="border rounded-lg overflow-hidden mb-8">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="py-3 px-4 text-left">Produk</th>
+                  <th class="py-3 px-4 text-center">Jumlah</th>
+                  <th class="py-3 px-4 text-right">Harga</th>
+                  <th class="py-3 px-4 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody id="invoice-items">
+                <!-- Invoice items will be loaded here via JavaScript -->
+                <tr>
+                  <td colspan="4" class="py-4 text-center text-gray-500">
+                    Memuat data pesanan...
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="border-t">
+                <tr>
+                  <td colspan="2"></td>
+                  <td class="py-3 px-4 text-right font-medium">Subtotal</td>
+                  <td id="subtotal" class="py-3 px-4 text-right">Rp 0</td>
+                </tr>
+                <tr>
+                  <td colspan="2"></td>
+                  <td class="py-3 px-4 text-right font-medium">Pengiriman</td>
+                  <td id="shipping" class="py-3 px-4 text-right">Rp 0</td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td colspan="2"></td>
+                  <td class="py-3 px-4 text-right font-bold">Total</td>
+                  <td id="total" class="py-3 px-4 text-right font-bold">
+                    Rp 0
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="bg-amber-50 p-4 rounded-lg mb-8">
+            <h3 class="font-semibold text-amber-800 mb-2">
+              Instruksi Pembayaran:
+            </h3>
+            <p class="mb-2">
+              Silakan transfer total pembayaran ke rekening berikut:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p><span class="font-medium">Bank:</span> Bank Mandiri</p>
+                <p><span class="font-medium">No. Rekening:</span> 1234567890</p>
+                <p>
+                  <span class="font-medium">Atas Nama:</span> PT Batik Nusantara
+                </p>
+              </div>
+              <div>
+                <p class="mb-2">
+                  Setelah melakukan pembayaran, silakan konfirmasi melalui:
+                </p>
+                <p>
+                  <a
+                    href="https://wa.me/6281234567890"
+                    class="text-amber-800 hover:underline"
+                    ><i class="fab fa-whatsapp mr-1"></i> +62 812-3456-7890</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between">
+            <button
+              onclick="window.print()"
+              class="btn-secondary flex items-center"
+            >
+              <i class="fas fa-print mr-2"></i> Cetak Invoice
+            </button>
+            <a href="../index.html" class="btn-primary">Kembali ke Beranda</a>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Footer (hidden when printing) -->
-    <footer class="bg-amber-900 text-white py-8 print:hidden">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between">
-                <div class="mb-6 md:mb-0">
-                    <h3 class="text-xl font-bold mb-4">Batik Nusantara</h3>
-                    <p class="text-amber-200">Melestarikan keindahan batik Indonesia</p>
-                </div>
-                <div class="mb-6 md:mb-0">
-                    <h4 class="text-lg font-semibold mb-3">Tautan Cepat</h4>
-                    <ul>
-                        <li class="mb-2"><a href="../index.html" class="text-amber-200 hover:text-white transition">Beranda</a></li>
-                        <li class="mb-2"><a href="index.html#produk" class="text-amber-200 hover:text-white transition">Produk</a></li>
-                        <li class="mb-2"><a href="index.html#tentang" class="text-amber-200 hover:text-white transition">Tentang Kami</a></li>
-                        <li><a href="index.html#kontak" class="text-amber-200 hover:text-white transition">Kontak</a></li>
-                    </ul>
-                </div>
+    <footer
+      class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 text-white relative overflow-hidden"
+    >
+      <!-- Background pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div
+          class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Im0yMCAyMGMwLTExLjA0NiA4Ljk1NC0yMCAyMC0yMHMyMCA4Ljk1NCAyMCAyMC04Ljk1NCAyMC0yMCAyMC0yMC04Ljk1NC0yMC0yMHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] bg-repeat"
+        ></div>
+      </div>
+
+      <!-- Decorative elements -->
+      <div
+        class="absolute top-0 right-0 w-40 h-40 bg-amber-600/20 rounded-full -translate-y-20 translate-x-20"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
+      ></div>
+
+      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
+        <!-- Main Footer Content -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <!-- Brand Section -->
+          <div class="lg:col-span-2">
+            <div class="flex items-center space-x-3 mb-6">
+              <div
+                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center"
+              >
+                <i class="fas fa-tshirt text-white text-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold">Batik Nusantara</h3>
+                <p class="text-amber-200 text-sm">Warisan Budaya Indonesia</p>
+              </div>
+            </div>
+
+            <p class="text-amber-100 mb-6 leading-relaxed max-w-md">
+              Melestarikan keindahan dan keunikan batik Indonesia dengan koleksi
+              berkualitas tinggi yang memadukan tradisi dan modernitas untuk
+              generasi masa kini.
+            </p>
+
+            <!-- Social Media -->
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-facebook-f text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-instagram text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-whatsapp text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+              <a
+                href="#"
+                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+              >
+                <i
+                  class="fab fa-tiktok text-white group-hover:scale-110 transition-transform"
+                ></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-link text-amber-400 mr-2"></i>
+              Tautan Cepat
+            </h4>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="index.html"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Beranda
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/products"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Produk
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Tentang Kami
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  class="text-amber-200 hover:text-white transition-colors flex items-center group"
+                >
+                  <i
+                    class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform"
+                  ></i>
+                  Kontak
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h4 class="text-lg font-bold mb-6 flex items-center">
+              <i class="fas fa-phone text-amber-400 mr-2"></i>
+              Hubungi Kami
+            </h4>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <i class="fas fa-map-marker-alt text-amber-400 mt-1"></i>
                 <div>
-                    <h4 class="text-lg font-semibold mb-3">Berlangganan</h4>
-                    <p class="text-amber-200 mb-3">Dapatkan info terbaru dan penawaran spesial</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Email Anda" class="px-4 py-2 rounded-l-lg focus:outline-none text-gray-800">
-                        <button class="bg-amber-700 px-4 py-2 rounded-r-lg hover:bg-amber-600 transition">Daftar</button>
-                    </div>
+                  <p class="text-amber-100 text-sm">
+                    Jl. Batik Indonesia No. 123<br />
+                    Yogyakarta, Indonesia 55161
+                  </p>
                 </div>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-phone text-amber-400"></i>
+                <p class="text-amber-100">+62 274 123 456</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-envelope text-amber-400"></i>
+                <p class="text-amber-100">info@batiknusantara.com</p>
+              </div>
             </div>
-            <div class="border-t border-amber-800 mt-8 pt-6 text-center text-amber-200">
-                <p>&copy; 2023 Batik Nusantara. Hak Cipta Dilindungi.</p>
-            </div>
+          </div>
         </div>
+
+        <!-- Bottom Section -->
+        <div class="border-t border-amber-700/50 pt-8">
+          <div
+            class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+          >
+            <div class="text-amber-200 text-center md:text-left">
+              <p>
+                &copy; 2024 Batik Nusantara. Hak Cipta Dilindungi Undang-Undang.
+              </p>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="flex items-center space-x-4">
+              <span class="text-amber-200 text-sm">Pembayaran Aman:</span>
+              <div class="flex space-x-2">
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-blue-600">VISA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-white rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-red-600">MC</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-blue-600 to-blue-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">BCA</span>
+                </div>
+                <div
+                  class="w-8 h-5 bg-gradient-to-r from-green-600 to-green-400 rounded flex items-center justify-center"
+                >
+                  <span class="text-xs font-bold text-white">GP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
 
-    
-    
     <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
-</body>
+  </body>
 </html>

@@ -17,7 +17,7 @@
       class="bg-amber-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm"
     >
       <div
-        class="container mx-auto px-4 py-4 flex justify-between items-center"
+        class="container max-w-[1200px] mx-auto px-4 py-4 flex justify-between items-center"
       >
         <a
           href="/"
@@ -28,13 +28,13 @@
         </a>
 
         <!-- Search Bar (Desktop) -->
-        <div class="hidden lg:flex flex-1 max-w-md mx-8">
+        <div class="hidden lg:flex flex-1 max-w-sm mx-8">
           <div class="relative w-full">
             <input
               type="text"
               id="header-search"
               placeholder="Cari batik favorit Anda..."
-              class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
+              class="w-full px-4 py-1 pl-10 pr-12 text-gray-800 bg-white rounded-full border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
             />
             <i
               class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -49,27 +49,18 @@
         </div>
 
         <nav class="hidden md:flex space-x-8">
-          <a
-            href="/"
-            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
-          >
+          <a href="/" class="hover:text-amber-200 transition-colors">
             Beranda
           </a>
-          <a
-            href="/products"
-            class="hover:text-amber-200 transition-colors"
-          >
+          <a href="/products" class="hover:text-amber-200 transition-colors">
             Produk
           </a>
-          <a
-            href="/about"
-            class="hover:text-amber-200 transition-colors"
-          >
+          <a href="/about" class="hover:text-amber-200 transition-colors">
             Tentang Kami
           </a>
           <a
             href="/contact"
-            class="hover:text-amber-200 transition-colors"
+            class="hover:text-amber-200 transition-colors font-semibold border-b-2 border-amber-300"
           >
             Kontak
           </a>
@@ -112,11 +103,17 @@
             type="text"
             id="mobile-search-input"
             placeholder="Cari batik favorit Anda..."
-            class="w-full px-4 py-2 pl-10 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
+            class="w-full px-4 py-2 pl-10 pr-12 text-gray-800 bg-white rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-300"
           />
           <i
             class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
           ></i>
+          <button
+            id="mobile-search-btn"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 transition-colors"
+          >
+            <i class="fas fa-search"></i>
+          </button>
         </div>
       </div>
 
@@ -127,7 +124,7 @@
       >
         <a
           href="/"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
+          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
         >
           Beranda
         </a>
@@ -145,74 +142,85 @@
         </a>
         <a
           href="/contact"
-          class="block py-3 hover:text-amber-200 transition-colors"
+          class="block py-3 hover:text-amber-200 transition-colors font-semibold"
         >
           Kontak
         </a>
       </div>
     </header>
 
-    <!-- Page Title -->
-    <section class="bg-amber-700 text-white py-8">
-      <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-bold">Kontak Kami</h1>
-        <p class="mt-2">Hubungi kami untuk pertanyaan, saran, atau kerjasama</p>
-      </div>
-    </section>
-
     <!-- Contact Section -->
     <section class="py-16">
-      <div class="container mx-auto px-4">
+      <div class="container max-w-[1200px] mx-auto px-4">
         <div class="flex flex-col md:flex-row">
           <!-- Contact Form -->
           <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
             <h2 class="text-2xl font-bold mb-6 text-amber-800">Kirim Pesan</h2>
-            <form>
+            <form id="contact-form">
               <div class="mb-4">
                 <label for="name" class="block text-gray-700 mb-2"
-                  >Nama Lengkap</label
+                  >Nama Lengkap <span class="text-red-500">*</span></label
                 >
                 <input
                   type="text"
                   id="name"
+                  name="name"
+                  required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500"
+                  placeholder="Masukkan nama lengkap"
                 />
               </div>
               <div class="mb-4">
                 <label for="email" class="block text-gray-700 mb-2"
-                  >Email</label
+                  >Email <span class="text-red-500">*</span></label
                 >
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500"
+                  placeholder="nama@email.com"
                 />
               </div>
               <div class="mb-4">
                 <label for="subject" class="block text-gray-700 mb-2"
-                  >Subjek</label
+                  >Subjek <span class="text-red-500">*</span></label
                 >
-                <input
-                  type="text"
+                <select
                   id="subject"
+                  name="subject"
+                  required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500"
-                />
+                >
+                  <option value="">Pilih subjek</option>
+                  <option value="Pertanyaan">Pertanyaan</option>
+                  <option value="Saran">Saran</option>
+                  <option value="Keluhan">Keluhan</option>
+                  <option value="Kerjasama">Kerjasama</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
               </div>
               <div class="mb-6">
                 <label for="message" class="block text-gray-700 mb-2"
-                  >Pesan</label
+                  >Pesan <span class="text-red-500">*</span></label
                 >
                 <textarea
                   id="message"
+                  name="message"
+                  required
                   rows="5"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 resize-none"
+                  placeholder="Tulis pesan Anda di sini..."
                 ></textarea>
               </div>
               <button
                 type="submit"
-                class="bg-amber-700 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition"
+                id="submit-btn"
+                class="bg-amber-700 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition flex items-center space-x-2"
               >
-                Kirim Pesan
+                <i class="fas fa-paper-plane"></i>
+                <span>Kirim Pesan</span>
               </button>
             </form>
           </div>
@@ -233,7 +241,7 @@
                 <i
                   class="fas fa-map-marker-alt text-amber-600 mt-1 mr-3 text-xl"
                 ></i>
-                <p class="text-gray-700">
+                <p id="shop-address-display" class="text-gray-700">
                   Jl. Batik Nusantara No. 123<br />
                   Yogyakarta, Indonesia 55281
                 </p>
@@ -244,15 +252,15 @@
               <h3 class="text-lg font-semibold mb-3 text-amber-700">Kontak</h3>
               <div class="flex items-center mb-3">
                 <i class="fas fa-phone text-amber-600 mr-3 text-xl"></i>
-                <p class="text-gray-700">+62 274 123456</p>
+                <p id="shop-phone-display" class="text-gray-700">+62 274 123456</p>
               </div>
               <div class="flex items-center mb-3">
                 <i class="fas fa-envelope text-amber-600 mr-3 text-xl"></i>
-                <p class="text-gray-700">info@batiknusantara.com</p>
+                <p id="shop-email-display" class="text-gray-700">info@batiknusantara.com</p>
               </div>
-              <div class="flex items-center">
-                <i class="fas fa-globe text-amber-600 mr-3 text-xl"></i>
-                <p class="text-gray-700">www.batiknusantara.com</p>
+              <div id="shop-whatsapp-container" class="flex items-center mb-3">
+                <i class="fab fa-whatsapp text-amber-600 mr-3 text-xl"></i>
+                <a id="shop-whatsapp-display" href="#" class="text-gray-700 hover:text-amber-600">+62 812 3456 789</a>
               </div>
             </div>
 
@@ -277,48 +285,31 @@
               </h3>
               <div class="flex space-x-4">
                 <a
+                  id="social-facebook"
                   href="#"
                   class="bg-amber-100 text-amber-800 p-3 rounded-full hover:bg-amber-200 transition"
+                  style="display: none;"
                 >
                   <i class="fab fa-facebook-f"></i>
                 </a>
                 <a
+                  id="social-instagram"
                   href="#"
                   class="bg-amber-100 text-amber-800 p-3 rounded-full hover:bg-amber-200 transition"
+                  style="display: none;"
                 >
                   <i class="fab fa-instagram"></i>
                 </a>
                 <a
+                  id="social-whatsapp"
                   href="#"
                   class="bg-amber-100 text-amber-800 p-3 rounded-full hover:bg-amber-200 transition"
+                  style="display: none;"
                 >
-                  <i class="fab fa-twitter"></i>
-                </a>
-                <a
-                  href="#"
-                  class="bg-amber-100 text-amber-800 p-3 rounded-full hover:bg-amber-200 transition"
-                >
-                  <i class="fab fa-youtube"></i>
+                  <i class="fab fa-whatsapp"></i>
                 </a>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Map Section -->
-    <section class="py-8 bg-amber-50">
-      <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold mb-6 text-amber-800 text-center">
-          Lokasi Kami
-        </h2>
-        <div class="bg-gray-300 h-96 rounded-lg overflow-hidden">
-          <!-- Placeholder for map -->
-          <div
-            class="w-full h-full flex items-center justify-center bg-amber-100"
-          >
-            <p class="text-amber-800 text-lg">Peta Lokasi Toko</p>
           </div>
         </div>
       </div>
@@ -343,40 +334,7 @@
         class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
       ></div>
 
-      <div class="container mx-auto px-4 py-16 relative">
-        <!-- Newsletter Section -->
-        <div class="text-center mb-16">
-          <div class="max-w-2xl mx-auto">
-            <h3 class="text-2xl md:text-3xl font-bold mb-4">
-              Tetap Terhubung Dengan Kami
-            </h3>
-            <p class="text-amber-100 mb-8 text-lg">
-              Dapatkan info terbaru tentang koleksi batik terbaru dan penawaran
-              ekslusif langsung di inbox Anda
-            </p>
-
-            <!-- Newsletter Form -->
-            <form id="newsletter-form" class="max-w-md mx-auto">
-              <div class="flex gap-2">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Masukkan alamat email Anda..."
-                  class="flex-1 px-6 py-4 rounded-full bg-white/10 border border-amber-600/30 text-white placeholder-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent backdrop-blur-sm"
-                  required
-                />
-                <button
-                  type="submit"
-                  class="px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-full hover:from-amber-700 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg flex items-center"
-                >
-                  <span class="hidden sm:inline">Berlangganan</span>
-                  <i class="fas fa-paper-plane sm:ml-2"></i>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
+      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <!-- Brand Section -->
@@ -445,7 +403,7 @@
             <ul class="space-y-3">
               <li>
                 <a
-                  href="/"
+                  href="index.html"
                   class="text-amber-200 hover:text-white transition-colors flex items-center group"
                 >
                   <i
@@ -500,7 +458,7 @@
               <div class="flex items-start space-x-3">
                 <i class="fas fa-map-marker-alt text-amber-400 mt-1"></i>
                 <div>
-                  <p class="text-amber-100 text-sm">
+                  <p id="footer-address" class="text-amber-100 text-sm">
                     Jl. Batik Indonesia No. 123<br />
                     Yogyakarta, Indonesia 55161
                   </p>
@@ -508,11 +466,11 @@
               </div>
               <div class="flex items-center space-x-3">
                 <i class="fas fa-phone text-amber-400"></i>
-                <p class="text-amber-100">+62 274 123 456</p>
+                <p id="footer-phone" class="text-amber-100">+62 274 123 456</p>
               </div>
               <div class="flex items-center space-x-3">
                 <i class="fas fa-envelope text-amber-400"></i>
-                <p class="text-amber-100">info@batiknusantara.com</p>
+                <p id="footer-email" class="text-amber-100">info@batiknusantara.com</p>
               </div>
             </div>
           </div>
@@ -560,7 +518,205 @@
       </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
+    <script>
+      const contactForm = document.getElementById('contact-form');
+      const submitBtn = document.getElementById('submit-btn');
+      let adminEmail = '';
+
+      async function loadSettings() {
+        try {
+          const response = await axios.get('http://localhost:3000/api/settings');
+
+          const groupedSettings = {};
+          if (Array.isArray(response.data)) {
+            response.data.forEach(setting => {
+              if (!groupedSettings[setting.category]) {
+                groupedSettings[setting.category] = {};
+              }
+              groupedSettings[setting.category][setting.key] = setting.value;
+            });
+          }
+
+          adminEmail = groupedSettings?.notification?.admin_email || '';
+
+          updateContactInfo(groupedSettings);
+        } catch (error) {
+          console.error('Error loading settings:', error);
+        }
+      }
+
+      function updateContactInfo(settings) {
+        console.log('=== Contact Info Update ===');
+        console.log('Full settings:', settings);
+
+        const shop = settings?.shop || settings?.general || {};
+        console.log('Shop settings:', shop);
+        console.log('Shop address:', shop.shop_address);
+        console.log('Shop phone:', shop.shop_phone);
+        console.log('Shop email:', shop.shop_email);
+        console.log('Shop whatsapp:', shop.shop_whatsapp);
+        console.log('Shop facebook:', shop.shop_facebook);
+        console.log('Shop instagram:', shop.shop_instagram);
+
+        if (shop.shop_address) {
+          const addressEl = document.getElementById('shop-address-display');
+          if (addressEl) {
+            addressEl.innerHTML = shop.shop_address.replace(/\n/g, '<br>');
+          }
+
+          const footerAddressEl = document.getElementById('footer-address');
+          if (footerAddressEl) {
+            footerAddressEl.innerHTML = shop.shop_address.replace(/\n/g, '<br>');
+          }
+        }
+
+        if (shop.shop_phone) {
+          const phoneEl = document.getElementById('shop-phone-display');
+          if (phoneEl) {
+            phoneEl.textContent = shop.shop_phone;
+          }
+
+          const footerPhoneEl = document.getElementById('footer-phone');
+          if (footerPhoneEl) {
+            footerPhoneEl.textContent = shop.shop_phone;
+          }
+        }
+
+        if (shop.shop_email) {
+          const emailEl = document.getElementById('shop-email-display');
+          if (emailEl) {
+            emailEl.textContent = shop.shop_email;
+          }
+
+          const footerEmailEl = document.getElementById('footer-email');
+          if (footerEmailEl) {
+            footerEmailEl.textContent = shop.shop_email;
+          }
+        }
+
+        if (shop.shop_whatsapp) {
+          const waContainer = document.getElementById('shop-whatsapp-container');
+          const waEl = document.getElementById('shop-whatsapp-display');
+          if (waEl && waContainer) {
+            waContainer.style.display = 'flex';
+            const waNumber = shop.shop_whatsapp.replace(/\D/g, '');
+            waEl.href = `https://wa.me/${waNumber}`;
+            waEl.textContent = shop.shop_whatsapp;
+          }
+        } else {
+          const waContainer = document.getElementById('shop-whatsapp-container');
+          if (waContainer) {
+            waContainer.style.display = 'none';
+          }
+        }
+
+        if (shop.shop_facebook) {
+          const fbEl = document.getElementById('social-facebook');
+          if (fbEl) {
+            fbEl.style.display = 'block';
+            const fbUrl = shop.shop_facebook.startsWith('http')
+              ? shop.shop_facebook
+              : `https://facebook.com/${shop.shop_facebook}`;
+            fbEl.href = fbUrl;
+          }
+        }
+
+        if (shop.shop_instagram) {
+          const igEl = document.getElementById('social-instagram');
+          if (igEl) {
+            igEl.style.display = 'block';
+            const igUsername = shop.shop_instagram.replace('@', '');
+            const igUrl = shop.shop_instagram.startsWith('http')
+              ? shop.shop_instagram
+              : `https://instagram.com/${igUsername}`;
+            igEl.href = igUrl;
+          }
+        }
+
+        if (shop.shop_whatsapp) {
+          const waEl = document.getElementById('social-whatsapp');
+          if (waEl) {
+            waEl.style.display = 'block';
+            const waNumber = shop.shop_whatsapp.replace(/\D/g, '');
+            waEl.href = `https://wa.me/${waNumber}`;
+          }
+        }
+      }
+
+      loadSettings();
+
+      if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+
+          const name = document.getElementById('name').value.trim();
+          const email = document.getElementById('email').value.trim();
+          const subject = document.getElementById('subject').value;
+          const message = document.getElementById('message').value.trim();
+
+          if (!name || !email || !subject || !message) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Peringatan',
+              text: 'Mohon lengkapi semua field yang wajib diisi!',
+              confirmButtonColor: '#d97706'
+            });
+            return;
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Email Tidak Valid',
+              text: 'Mohon masukkan alamat email yang valid!',
+              confirmButtonColor: '#d97706'
+            });
+            return;
+          }
+
+          const originalBtnContent = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...';
+
+          try {
+            const response = await axios.post('http://localhost:3000/api/email/contact', {
+              name: name,
+              email: email,
+              subject: subject,
+              message: message,
+              to: adminEmail
+            });
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Pesan Terkirim!',
+              text: 'Terima kasih atas pesan Anda. Tim kami akan segera menghubungi Anda.',
+              confirmButtonColor: '#d97706'
+            });
+
+            contactForm.reset();
+          } catch (error) {
+            console.error('Error sending message:', error);
+
+            const errorMessage = error.response?.data?.message || 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.';
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal Mengirim',
+              text: errorMessage,
+              confirmButtonColor: '#d97706'
+            });
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+          }
+        });
+      }
+    </script>
   </body>
 </html>
