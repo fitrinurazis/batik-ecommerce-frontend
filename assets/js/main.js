@@ -389,6 +389,46 @@ class ApiService {
     }
   }
 
+  // Generic HTTP methods
+  static async get(url, config = {}) {
+    try {
+      const response = await axios.get(url, config);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async post(url, data = {}, isFormData = false) {
+    try {
+      const config = isFormData ? {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      } : {};
+      const response = await axios.post(url, data, config);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async put(url, data = {}) {
+    try {
+      const response = await axios.put(url, data);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  static async delete(url, config = {}) {
+    try {
+      const response = await axios.delete(url, config);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   static handleError(error) {
     if (error.response) {
       const message =

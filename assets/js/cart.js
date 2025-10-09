@@ -162,7 +162,7 @@ function createCartItemElement(cartItem, product, index) {
   const totalPrice = discountedPrice * quantity;
 
   div.innerHTML = `
-        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+        <div class="flex md:flex-row gap-5 md:space-y-0 md:space-x-6">
             <!-- Product Image -->
             <div class="flex-shrink-0">
                 <div class="w-24 h-24 md:w-32 md:h-32 bg-gray-200 rounded-lg overflow-hidden cursor-pointer" onclick="viewProduct(${
@@ -178,18 +178,15 @@ function createCartItemElement(cartItem, product, index) {
             <div class="flex-1">
                 <div class="flex flex-col md:flex-row md:justify-between">
                     <!-- Product Info -->
-                    <div class="flex-1 mb-4 md:mb-0">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-1 cursor-pointer hover:text-amber-600 transition-colors"
+                    <div class="flex-1 md:mb-0">
+                        <h3 class="text-md font-semibold text-gray-900  cursor-pointer hover:text-amber-600 transition-colors"
                             onclick="viewProduct(${product.id})">
                             ${product.name}
                         </h3>
-                        <p class="text-gray-600 text-sm mb-2">${
-                          product.category || "Batik"
-                        }</p>
 
                         <!-- Price -->
                         <div class="flex items-baseline space-x-2">
-                            <span class="text-lg font-bold text-amber-600">
+                            <span class="text-md font-bold text-amber-600">
                                 ${formatCurrency(discountedPrice)}
                             </span>
                             ${
@@ -207,7 +204,7 @@ function createCartItemElement(cartItem, product, index) {
                         </div>
 
                         <!-- Stock Info -->
-                        <div class="mt-2">
+                        <div class="hidden lg:block"> >
                             ${
                               product.stock > 0
                                 ? `
@@ -235,7 +232,7 @@ function createCartItemElement(cartItem, product, index) {
                                 <button onclick="updateQuantity(${index}, ${
     quantity - 1
   })"
-                                        class="px-3 py-2 hover:bg-gray-100 transition-colors ${
+                                        class="lg:px-3 lg:py-2 hover:bg-gray-100 transition-colors ${
                                           quantity <= 1
                                             ? "opacity-50 cursor-not-allowed"
                                             : ""
@@ -246,12 +243,12 @@ function createCartItemElement(cartItem, product, index) {
                                 <input type="number" value="${quantity}" min="1" max="${
     product.stock || 999
   }"
-                                       class="quantity-input w-16 text-center py-2 border-none focus:ring-0 focus:outline-none"
+                                       class="quantity-input w-10 lg:w-16 text-center lg:py-2 border-none focus:ring-0 focus:outline-none"
                                        onchange="updateQuantity(${index}, this.value)">
                                 <button onclick="updateQuantity(${index}, ${
     quantity + 1
   })"
-                                        class="px-3 py-2 hover:bg-gray-100 transition-colors ${
+                                        class="lg:px-3 lg:py-2 hover:bg-gray-100 transition-colors ${
                                           quantity >= (product.stock || 999)
                                             ? "opacity-50 cursor-not-allowed"
                                             : ""
@@ -449,6 +446,28 @@ function updateCartCount() {
   }
 }
 
+function animateCartIcon() {
+  const cartIcon = document.querySelector('.fa-shopping-cart');
+  const cartCount = document.getElementById('cart-count');
+
+  if (cartIcon) {
+    // Add bounce animation to cart icon
+    cartIcon.classList.add('animate-bounce');
+    setTimeout(() => {
+      cartIcon.classList.remove('animate-bounce');
+    }, 1000);
+  }
+
+  if (cartCount) {
+    // Add scale animation to cart count
+    cartCount.style.transform = 'scale(1.5)';
+    cartCount.style.transition = 'transform 0.3s ease';
+    setTimeout(() => {
+      cartCount.style.transform = 'scale(1)';
+    }, 300);
+  }
+}
+
 async function loadRecommendedProducts() {
   try {
     if (typeof window.ApiService !== "undefined") {
@@ -482,7 +501,8 @@ function renderRecommendedProducts(products) {
 
 function createRecommendedProductCard(product) {
   const card = document.createElement("div");
-  card.className = 'product-card bg-white rounded-lg shadow-sm hover:shadow-lg overflow-hidden border border-gray-200 cursor-pointer group';
+  card.className =
+    "product-card bg-white rounded-lg shadow-sm hover:shadow-lg overflow-hidden border border-gray-200 cursor-pointer group";
 
   // Handle image URL
   let imageUrl = product.image_url || product.imageUrl;
@@ -504,17 +524,25 @@ function createRecommendedProductCard(product) {
                  class="product-image"
                  onerror="this.src='${fallbackImage}'">
 
-            ${hasDiscount ? `
+            ${
+              hasDiscount
+                ? `
                 <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold z-10">
                     ${Math.round(discount)}%
                 </div>
-            ` : ''}
+            `
+                : ""
+            }
 
-            ${product.stock === 0 ? `
+            ${
+              product.stock === 0
+                ? `
                 <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
                     <span class="text-white font-bold text-xs sm:text-sm px-3 py-1.5 bg-red-600 rounded">HABIS</span>
                 </div>
-            ` : ''}
+            `
+                : ""
+            }
         </div>
 
         <div class="product-content p-2 sm:p-3">
@@ -524,22 +552,30 @@ function createRecommendedProductCard(product) {
 
             <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-1.5">
-                    ${hasDiscount ? `
+                    ${
+                      hasDiscount
+                        ? `
                         <span class="text-[10px] sm:text-xs text-gray-400 line-through">
                             ${formatCurrency(price)}
                         </span>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                 </div>
                 <span class="text-sm sm:text-base font-bold text-gray-900">
                     ${formatCurrency(discountedPrice)}
                 </span>
             </div>
 
-            ${product.stock > 0 && product.stock <= 5 ? `
+            ${
+              product.stock > 0 && product.stock <= 5
+                ? `
                 <div class="mt-2 text-[10px] sm:text-xs text-orange-600 font-medium">
                     <i class="fas fa-fire text-orange-500 mr-1"></i>Stok terbatas
                 </div>
-            ` : ''}
+            `
+                : ""
+            }
         </div>
     `;
 
@@ -574,12 +610,13 @@ function addToCartFromRecommendation(productId) {
   saveCartToStorage();
   updateCartCount();
 
+  // Add animation
+  animateCartIcon();
+
   // If we're on cart page, refresh
   if (window.location.pathname.includes("cart")) {
     initializeCart();
   }
-
-  showSuccess("Produk berhasil ditambahkan ke keranjang!");
 }
 
 function initEventListeners() {

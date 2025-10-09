@@ -9,32 +9,12 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      .bg-batik {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
-        background-size: cover;
-        background-position: center;
-        position: relative;
-      }
-
-      .bg-batik::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image:
-          radial-gradient(circle at 25px 25px, rgba(255,255,255,0.1) 2px, transparent 2px),
-          radial-gradient(circle at 75px 75px, rgba(255,255,255,0.05) 1px, transparent 1px);
-        background-size: 50px 50px, 100px 100px;
-        background-position: 0 0, 50px 50px;
-        opacity: 0.3;
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin-login.css" />
   </head>
   <body class="bg-gray-100 h-screen flex items-center justify-center bg-batik">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative z-10">
+    <div
+      class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative z-10"
+    >
       <div class="text-center mb-8">
         <h1 class="text-2xl font-bold text-amber-800">Admin Panel</h1>
         <p class="text-gray-600">Batik Nusantara</p>
@@ -120,8 +100,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/admin-login.js"></script>
-</body>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script type="module" src="../assets/js/admin-login.js"></script>
+  </body>
 </html>

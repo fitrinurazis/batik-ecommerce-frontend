@@ -3,15 +3,21 @@
   "version": "1.0.0",
   "description": "Frontend untuk Batik Nusantara E-commerce",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
+    "clean": "node -e \"const fs=require('fs');const path='./dist';if(fs.existsSync(path)){fs.rmSync(path,{recursive:true,force:true});console.log('Cleaned dist folder')}\"",
+    "prebuild": "npm run clean",
     "build": "vite build",
-    "preview": "vite preview",
-    "serve": "vite preview --port 3001"
+    "postbuild": "node -e \"console.log('✅ Build completed successfully!')\"",
+    "preview": "vite preview --port 3001",
+    "serve": "node serve-dist.js",
+    "serve:static": "vite preview --port 3001"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^5.0.0",
+    "terser": "^5.44.0",
     "vite": "^5.0.0",
     "vite-plugin-remove-console": "^2.2.0"
   },

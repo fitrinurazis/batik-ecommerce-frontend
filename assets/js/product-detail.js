@@ -513,15 +513,12 @@ function addToCart(productId, quantity) {
         // Save cart
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Update cart count in header
+        // Update cart count in header with animation
         updateCartCount();
-
-        // Show success message
-        showSuccess(`${currentProduct.name} berhasil ditambahkan ke keranjang!`);
+        animateCartIcon();
 
     } catch (error) {
         console.error('Error adding to cart:', error);
-        showError('Gagal menambahkan ke keranjang');
     }
 }
 
@@ -699,6 +696,37 @@ function updateCartCount() {
         }
     } catch (error) {
         console.error('Error updating cart count:', error);
+    }
+}
+
+function animateCartIcon() {
+    const cartIcon = document.querySelector('.fa-shopping-cart');
+    const cartCount = document.getElementById('cart-count');
+
+    if (cartIcon) {
+        // Add bounce animation to cart icon
+        cartIcon.classList.add('animate-bounce');
+        setTimeout(() => {
+            cartIcon.classList.remove('animate-bounce');
+        }, 1000);
+    }
+
+    if (cartCount) {
+        // Add scale animation to cart count
+        cartCount.style.transform = 'scale(1.5)';
+        cartCount.style.transition = 'transform 0.3s ease';
+        setTimeout(() => {
+            cartCount.style.transform = 'scale(1)';
+        }, 300);
+    }
+
+    // Add button click animation
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    if (addToCartBtn) {
+        addToCartBtn.classList.add('animate-pulse');
+        setTimeout(() => {
+            addToCartBtn.classList.remove('animate-pulse');
+        }, 500);
     }
 }
 

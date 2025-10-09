@@ -574,8 +574,8 @@ function addToCart(productId) {
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
 
-    // Show success modal
-    showCartSuccessModal();
+    // Add animation
+    animateCartIcon();
 }
 
 function showCartSuccessModal() {
@@ -595,6 +595,28 @@ function updateCartCount() {
     const cartCountEl = document.getElementById('cart-count');
     if (cartCountEl) {
         cartCountEl.textContent = totalItems;
+    }
+}
+
+function animateCartIcon() {
+    const cartIcon = document.querySelector('.fa-shopping-cart');
+    const cartCount = document.getElementById('cart-count');
+
+    if (cartIcon) {
+        // Add bounce animation to cart icon
+        cartIcon.classList.add('animate-bounce');
+        setTimeout(() => {
+            cartIcon.classList.remove('animate-bounce');
+        }, 1000);
+    }
+
+    if (cartCount) {
+        // Add scale animation to cart count
+        cartCount.style.transform = 'scale(1.5)';
+        cartCount.style.transition = 'transform 0.3s ease';
+        setTimeout(() => {
+            cartCount.style.transform = 'scale(1)';
+        }, 300);
     }
 }
 

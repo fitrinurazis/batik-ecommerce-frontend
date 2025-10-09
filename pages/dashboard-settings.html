@@ -9,32 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      .sidebar {
-        width: 250px;
-        transition: all 0.3s;
-      }
-
-      @media (max-width: 768px) {
-        .sidebar {
-          width: 0;
-          overflow: hidden;
-        }
-
-        .sidebar.open {
-          width: 250px;
-        }
-
-        .content {
-          margin-left: 0 !important;
-        }
-      }
-
-      .content {
-        margin-left: 250px;
-        transition: all 0.3s;
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
   </head>
   <body class="bg-gray-100 min-h-screen">
     <!-- Alert Container -->
@@ -165,8 +140,18 @@
         </button>
 
         <div class="flex items-center space-x-4">
-          <button class="text-gray-600 hover:text-amber-800">
-            <i class="fas fa-bell text-xl"></i>
+          <a
+            href="../index.html"
+            target="_blank"
+            class="text-amber-800 hover:text-amber-600 transition"
+          >
+            <i class="fas fa-external-link-alt mr-1"></i> Lihat Website
+          </a>
+          <button
+            id="logout-btn"
+            class="text-amber-800 hover:text-amber-600 transition"
+          >
+            <i class="fas fa-sign-out-alt text-xl"></i>
           </button>
         </div>
       </div>
@@ -1438,13 +1423,13 @@
     </div>
 
     <!-- JavaScript Files -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/admin-layout.js"></script>
-    <script src="../assets/js/payment-accounts.js"></script>
-    <script src="../assets/js/settings.js"></script>
-    <script src="../assets/js/whatsapp-settings.js"></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script type="module" src="../assets/js/admin-layout.js"></script>
+    <script type="module" src="../assets/js/payment-accounts.js"></script>
+    <script type="module" src="../assets/js/settings.js"></script>
+    <script type="module" src="../assets/js/whatsapp-settings.js"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {

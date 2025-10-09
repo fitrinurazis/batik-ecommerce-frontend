@@ -14,6 +14,7 @@
       href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
     />
     <link rel="stylesheet" href="../assets/css/cart.css" />
+    <link rel="stylesheet" href="../assets/css/social-icons.css" />
   </head>
   <body class="bg-gray-50">
     <!-- Header -->
@@ -25,10 +26,17 @@
       >
         <a
           href="/"
-          class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+          class="text-xl sm:text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
         >
-          <i class="fas fa-tshirt text-amber-300"></i>
-          <span>Batik Nusantara</span>
+          <img
+            id="site-logo"
+            src=""
+            alt="Logo"
+            class="h-8 w-8 object-contain hidden"
+            onerror="this.style.display='none'; document.getElementById('site-logo-icon').style.display='block';"
+          />
+          <i id="site-logo-icon" class="fas fa-tshirt text-amber-300"></i>
+          <span id="site-title">Batik Nusantara</span>
         </a>
 
         <!-- Search Bar (Desktop) -->
@@ -121,32 +129,47 @@
       <!-- Mobile Menu -->
       <div
         id="mobile-menu"
-        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+        class="md:hidden hidden bg-gradient-to-b from-amber-900 to-amber-950 border-t border-amber-700 shadow-lg"
       >
-        <a
-          href="/"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
-        >
-          Beranda
-        </a>
-        <a
-          href="/products"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
-        >
-          Produk
-        </a>
-        <a
-          href="/about"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
-        >
-          Tentang Kami
-        </a>
-        <a
-          href="/contact"
-          class="block py-3 hover:text-amber-200 transition-colors"
-        >
-          Kontak
-        </a>
+        <nav class="px-4 py-3 space-y-1">
+          <a
+            href="/"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-home text-amber-300 w-5"></i>
+            <span class="text-white">Beranda</span>
+          </a>
+          <a
+            href="/products"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-shopping-bag text-amber-300 w-5"></i>
+            <span class="text-white">Produk</span>
+          </a>
+          <a
+            href="/about"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-info-circle text-amber-300 w-5"></i>
+            <span class="text-white">Tentang Kami</span>
+          </a>
+          <a
+            href="/contact"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-envelope text-amber-300 w-5"></i>
+            <span class="text-white">Kontak</span>
+          </a>
+        </nav>
+        <!-- Divider -->
+        <div class="border-t border-amber-700 my-2"></div>
+        <!-- Additional Info -->
+        <div class="px-4 py-3 text-center">
+          <p class="text-amber-200 text-xs mb-2">
+            <i class="fas fa-shield-alt mr-1"></i>
+            Belanja Aman & Terpercaya
+          </p>
+        </div>
       </div>
     </header>
 
@@ -166,7 +189,9 @@
     <!-- Main Content -->
     <main class="container max-w-[1200px] mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+        <h1
+          class="lg:text-3xl text-xl font-bold text-gray-900 flex items-center"
+        >
           <i class="fas fa-shopping-cart text-amber-600 mr-3"></i>
           Keranjang Belanja
         </h1>
@@ -175,7 +200,7 @@
           class="text-red-600 hover:text-red-700 transition-colors text-sm font-medium hidden"
         >
           <i class="fas fa-trash mr-1"></i>
-          Kosongkan Keranjang
+          Hapus Semua
         </button>
       </div>
 
@@ -290,7 +315,6 @@
         </div>
       </div>
 
-      <!-- Empty Cart Message -->
       <!-- Empty Cart -->
       <div id="empty-cart" class="text-center py-16 hidden">
         <div class="mb-8">
@@ -347,62 +371,95 @@
         class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
       ></div>
 
-      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-12 md:py-16 relative"
+      >
         <!-- Main Footer Content -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-8 md:mb-12"
+        >
           <!-- Brand Section -->
           <div class="lg:col-span-2">
             <div class="flex items-center space-x-3 mb-6">
               <div
-                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center"
+                id="footer-logo-container"
+                class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden"
               >
-                <i class="fas fa-tshirt text-white text-xl"></i>
+                <img
+                  id="footer-logo"
+                  src=""
+                  alt="Logo"
+                  class="w-full h-full object-contain p-1 hidden"
+                />
+                <i
+                  id="footer-logo-icon"
+                  class="fas fa-tshirt text-white text-xl"
+                ></i>
               </div>
               <div>
-                <h3 class="text-2xl font-bold">Batik Nusantara</h3>
-                <p class="text-amber-200 text-sm">Warisan Budaya Indonesia</p>
+                <h3 id="footer-title" class="text-2xl font-bold">
+                  Batik Nusantara
+                </h3>
+                <p id="footer-tagline" class="text-amber-200 text-sm">
+                  Warisan Budaya Indonesia
+                </p>
               </div>
             </div>
 
-            <p class="text-amber-100 mb-6 leading-relaxed max-w-md">
+            <p
+              id="footer-description"
+              class="text-amber-100 mb-6 leading-relaxed max-w-md"
+            >
               Melestarikan keindahan dan keunikan batik Indonesia dengan koleksi
               berkualitas tinggi yang memadukan tradisi dan modernitas untuk
               generasi masa kini.
             </p>
 
             <!-- Social Media -->
-            <div class="flex space-x-4">
+            <div class="flex flex-wrap items-center gap-3">
               <a
+                id="footer-social-facebook"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="Facebook"
               >
-                <i
-                  class="fab fa-facebook-f text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-facebook-f text-white text-base"></i>
               </a>
               <a
+                id="footer-social-instagram"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="Instagram"
               >
-                <i
-                  class="fab fa-instagram text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-instagram text-white text-base"></i>
               </a>
               <a
+                id="footer-social-whatsapp"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-green-500 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="WhatsApp"
               >
-                <i
-                  class="fab fa-whatsapp text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-whatsapp text-white text-base"></i>
               </a>
               <a
+                id="footer-social-tiktok"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-black transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="TikTok"
               >
-                <i
-                  class="fab fa-tiktok text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-tiktok text-white text-base"></i>
               </a>
             </div>
           </div>
@@ -416,7 +473,7 @@
             <ul class="space-y-3">
               <li>
                 <a
-                  href="index.html"
+                  href="/"
                   class="text-amber-200 hover:text-white transition-colors flex items-center group"
                 >
                   <i
@@ -564,10 +621,17 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="../assets/js/navbar.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script type="module" src="../assets/js/navbar.js"></script>
     <script type="module" src="../assets/js/main.js"></script>
-    <script defer src="../assets/js/cart.js"></script>
+    <script type="module" defer src="../assets/js/cart.js"></script>
+    <script type="module" src="../assets/js/site-settings.js"></script>
   </body>
 </html>

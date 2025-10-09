@@ -43,9 +43,6 @@ class WhatsAppManager {
 
                 // Show success notification
                 Utils.showAlert('🎉 WhatsApp berhasil terhubung! Anda sekarang dapat mengirim notifikasi otomatis.', 'success');
-
-                // Play success sound (optional)
-                this.playSuccessSound();
             }
 
             this.wasConnected = newStatus.isReady;
@@ -69,17 +66,6 @@ class WhatsAppManager {
                 statusBtn.disabled = false;
                 statusBtn.innerHTML = '<i class="fas fa-info-circle mr-1"></i> Check Status';
             }
-        }
-    }
-
-    // Play success sound
-    playSuccessSound() {
-        try {
-            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ0PVKvn7qldFgxDm97xwGwkBi6EzvLZiTcIGmS47OihUhALTqXi7qxZGAY+ltv0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0w3ElBS1+zPDejEMIDlur6O+nWBYLSqTh77RgGQg7k9n0');
-            audio.volume = 0.3;
-            audio.play().catch(e => console.log('Could not play sound:', e));
-        } catch (e) {
-            console.log('Audio not supported');
         }
     }
 

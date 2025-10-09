@@ -99,18 +99,6 @@
           >
             <i class="fas fa-external-link-alt mr-1"></i> Lihat Website
           </a>
-          <div class="relative">
-            <button
-              id="notifications-btn"
-              class="text-amber-800 hover:text-amber-600 transition"
-            >
-              <i class="fas fa-bell text-xl"></i>
-              <span
-                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
-                >3</span
-              >
-            </button>
-          </div>
           <button
             id="logout-btn"
             class="text-amber-800 hover:text-amber-600 transition"
@@ -264,10 +252,13 @@
     </div>
 
     <!-- JavaScript Files -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
     <script type="module" src="../assets/js/main.js"></script>
-    <script defer src="../assets/js/admin-layout.js"></script>
-    <script defer src="../assets/js/dashboard.js"></script>
-    <script defer src="../assets/js/dashboard-home.js"></script>
+    <script type="module" defer src="../assets/js/admin-layout.js"></script>
+    <script type="module" defer src="../assets/js/dashboard.js"></script>
+    <script type="module" defer src="../assets/js/dashboard-home.js"></script>
   </body>
 </html>

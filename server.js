@@ -1,6 +1,12 @@
-const express = require("express");
-const path = require("path");
+import express from "express";
+import path from "path";
+
 const app = express();
+const __dirname = path.resolve();
+
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files (CSS, JS, images, etc.)
 app.use("/assets", express.static(path.join(__dirname, "assets")));
@@ -44,6 +50,10 @@ app.get("/invoice", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/invoice.html"));
 });
 
+app.get("/order-status", (req, res) => {
+  res.sendFile(path.join(__dirname, "pages/order-status.html"));
+});
+
 // Admin routes
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "pages/admin-login.html"));
@@ -79,5 +89,12 @@ app.use(express.static(__dirname));
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
+  console.log(`🚀 Frontend server berjalan di http://localhost:${PORT}`);
+  console.log(`\n📌 Clean URLs tersedia:`);
+  console.log(`   - Homepage:     http://localhost:${PORT}/`);
+  console.log(`   - Products:     http://localhost:${PORT}/products`);
+  console.log(`   - About:        http://localhost:${PORT}/about`);
+  console.log(`   - Contact:      http://localhost:${PORT}/contact`);
+  console.log(`   - Cart:         http://localhost:${PORT}/cart`);
+  console.log(`   - Admin:        http://localhost:${PORT}/admin`);
 });

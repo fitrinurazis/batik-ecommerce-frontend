@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Status Pesanan - Batik Nusantara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="../assets/css/social-icons.css" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-amber-800 text-white shadow-lg sticky top-0 z-50">
+      <div
+        class="container max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center gap-3 sm:gap-0"
+      >
+        <a
+          href="/"
+          class="text-xl sm:text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+        >
+          <img
+            id="site-logo"
+            src=""
+            alt="Logo"
+            class="h-8 w-8 object-contain hidden"
+            onerror="this.style.display='none'; document.getElementById('site-logo-icon').style.display='block';"
+          />
+          <i id="site-logo-icon" class="fas fa-tshirt text-amber-300"></i>
+          <span id="site-title">Batik Nusantara</span>
+        </a>
+
+        <nav class="flex items-center space-x-4 sm:space-x-6">
+          <a
+            href="/"
+            class="flex items-center space-x-1 hover:text-amber-200 transition-colors text-sm sm:text-base"
+          >
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+          </a>
+          <a
+            href="/products"
+            class="flex items-center space-x-1 hover:text-amber-200 transition-colors text-sm sm:text-base"
+          >
+            <i class="fas fa-shopping-bag"></i>
+            <span>Produk</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container max-w-6xl mx-auto px-4 py-6 sm:py-8">
+      <!-- Loading State -->
+      <div id="loading-state" class="text-center py-12">
+        <div
+          class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"
+        ></div>
+        <p class="mt-4 text-gray-600">Memuat data pesanan...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="hidden">
+        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+          <div class="flex items-center">
+            <i class="fas fa-exclamation-circle text-red-500 text-2xl mr-3"></i>
+            <div>
+              <h3 class="text-lg font-semibold text-red-800">
+                Pesanan Tidak Ditemukan
+              </h3>
+              <p class="text-red-600 mt-1" id="error-message">
+                Pesanan dengan ID tersebut tidak ditemukan.
+              </p>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a
+              href="/"
+              class="inline-block bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors"
+            >
+              Kembali ke Beranda
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Content -->
+      <div id="order-content" class="hidden space-y-6">
+        <!-- Order Header -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+          >
+            <div>
+              <h1 class="text-xl sm:text-2xl font-bold text-gray-800">
+                Pesanan <span id="order-id-display"></span>
+              </h1>
+              <p class="text-sm text-gray-600 mt-1">
+                Tanggal: <span id="order-date"></span>
+              </p>
+            </div>
+            <div
+              class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto"
+            >
+              <div
+                id="order-status-badge"
+                class="px-4 py-2 rounded-full text-sm font-semibold text-center"
+              ></div>
+              <a
+                id="view-invoice-btn"
+                href="#"
+                class="inline-flex items-center justify-center px-4 py-2 bg-amber-600 text-white text-sm font-semibold rounded-lg hover:bg-amber-700 transition-colors"
+              >
+                <i class="fas fa-file-invoice mr-2"></i>
+                Lihat Invoice
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <h2
+            class="text-lg sm:text-xl font-bold text-gray-800 mb-6 flex items-center"
+          >
+            <i class="fas fa-shipping-fast text-amber-600 mr-2"></i>
+            Status Pesanan
+          </h2>
+          <div id="status-timeline" class="space-y-4">
+            <!-- Timeline will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <h2
+            class="text-lg sm:text-xl font-bold text-gray-800 mb-4 flex items-center"
+          >
+            <i class="fas fa-box text-amber-600 mr-2"></i>
+            Item Pesanan
+          </h2>
+          <div id="order-items" class="space-y-4">
+            <!-- Items will be inserted here -->
+          </div>
+
+          <!-- Order Summary -->
+          <div class="mt-6 pt-4 border-t border-gray-200">
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm sm:text-base">
+                <span class="text-gray-600">Subtotal:</span>
+                <span id="order-subtotal" class="font-semibold"></span>
+              </div>
+              <div
+                class="flex justify-between text-sm sm:text-base"
+                id="shipping-cost-row"
+              >
+                <span class="text-gray-600">Ongkir:</span>
+                <span id="order-shipping" class="font-semibold"></span>
+              </div>
+              <div
+                class="flex justify-between text-base sm:text-lg font-bold border-t pt-2"
+              >
+                <span>Total:</span>
+                <span id="order-total" class="text-amber-600"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer & Shipping Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Customer Info -->
+          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2
+              class="text-lg sm:text-xl font-bold text-gray-800 mb-4 flex items-center"
+            >
+              <i class="fas fa-user text-amber-600 mr-2"></i>
+              Informasi Pelanggan
+            </h2>
+            <div class="space-y-2 text-sm sm:text-base">
+              <div>
+                <span class="text-gray-600">Nama:</span>
+                <span id="customer-name" class="ml-2 font-semibold"></span>
+              </div>
+              <div>
+                <span class="text-gray-600">Email:</span>
+                <span id="customer-email" class="ml-2"></span>
+              </div>
+              <div>
+                <span class="text-gray-600">Telepon:</span>
+                <span id="customer-phone" class="ml-2"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Info -->
+          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2
+              class="text-lg sm:text-xl font-bold text-gray-800 mb-4 flex items-center"
+            >
+              <i class="fas fa-map-marker-alt text-amber-600 mr-2"></i>
+              Alamat Pengiriman
+            </h2>
+            <div class="space-y-2 text-sm sm:text-base">
+              <p id="shipping-address" class="text-gray-700"></p>
+              <p id="shipping-city" class="text-gray-700"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Section (shown if pending) -->
+        <div
+          id="payment-section"
+          class="hidden bg-amber-50 border-2 border-amber-300 rounded-lg p-4 sm:p-6"
+        >
+          <h2
+            class="text-lg sm:text-xl font-bold text-amber-800 mb-4 flex items-center"
+          >
+            <i class="fas fa-credit-card text-amber-600 mr-2"></i>
+            Upload Bukti Pembayaran
+          </h2>
+
+          <div class="bg-white rounded-lg p-4 mb-4">
+            <h3 class="font-semibold text-gray-800 mb-2">
+              Informasi Rekening:
+            </h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Bank:</span>
+                <span class="font-semibold">BCA</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">No. Rekening:</span>
+                <span class="font-semibold">1234567890</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Atas Nama:</span>
+                <span class="font-semibold">Batik Nusantara</span>
+              </div>
+              <div class="flex justify-between border-t pt-2">
+                <span class="text-gray-600">Total Transfer:</span>
+                <span
+                  id="payment-total"
+                  class="font-bold text-amber-600 text-lg"
+                ></span>
+              </div>
+            </div>
+          </div>
+
+          <form id="payment-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Metode Pembayaran
+              </label>
+              <select
+                id="payment-method"
+                name="payment_method"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                required
+              >
+                <option value="">Pilih Metode Pembayaran</option>
+                <option value="transfer_bank">Transfer Bank</option>
+                <option value="ewallet">E-Wallet</option>
+              </select>
+            </div>
+
+            <div id="bank-fields" class="hidden space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Nama Bank
+                </label>
+                <input
+                  type="text"
+                  id="bank-name"
+                  name="bank_name"
+                  placeholder="Contoh: BCA, Mandiri, BNI"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Nama Pemilik Rekening
+                </label>
+                <input
+                  type="text"
+                  id="account-holder"
+                  name="account_holder"
+                  placeholder="Nama sesuai rekening"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Jumlah Transfer
+              </label>
+              <input
+                type="number"
+                id="payment-amount"
+                name="amount"
+                placeholder="Masukkan jumlah yang ditransfer"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Bukti Transfer (Gambar)
+              </label>
+              <input
+                type="file"
+                id="payment-proof"
+                name="payment_proof"
+                accept="image/*"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                required
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Format: JPG, PNG (Max 5MB)
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Catatan (Opsional)
+              </label>
+              <textarea
+                id="payment-notes"
+                name="notes"
+                rows="3"
+                placeholder="Catatan tambahan..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              id="submit-payment-btn"
+              class="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition-colors flex items-center justify-center"
+            >
+              <i class="fas fa-upload mr-2"></i>
+              Upload Bukti Pembayaran
+            </button>
+          </form>
+        </div>
+
+        <!-- Payment Info (shown if payment uploaded) -->
+        <div
+          id="payment-info-section"
+          class="hidden bg-blue-50 border-2 border-blue-300 rounded-lg p-4 sm:p-6"
+        >
+          <h2
+            class="text-lg sm:text-xl font-bold text-blue-800 mb-4 flex items-center"
+          >
+            <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+            Informasi Pembayaran
+          </h2>
+          <div class="bg-white rounded-lg p-4 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Metode:</span>
+              <span id="payment-method-display" class="font-semibold"></span>
+            </div>
+            <div class="flex justify-between" id="bank-name-row">
+              <span class="text-gray-600">Bank:</span>
+              <span id="bank-name-display" class="font-semibold"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Jumlah:</span>
+              <span
+                id="payment-amount-display"
+                class="font-semibold text-green-600"
+              ></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Status:</span>
+              <span id="payment-status-display" class="font-semibold"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-amber-900 text-white mt-12">
+      <div class="container max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center">
+          <p class="text-sm text-amber-200">
+            &copy; <span id="footer-year"></span>
+            <span id="footer-brand">Batik Nusantara</span>. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <script type="module" src="../assets/js/main.js"></script>
+    <script type="module" src="../assets/js/order-status.js"></script>
+    <script type="module" src="../assets/js/site-settings.js"></script>
+  </body>
+</html>

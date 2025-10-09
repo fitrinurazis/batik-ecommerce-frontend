@@ -10,76 +10,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
-    <style>
-      /* About Carousel Styles */
-      .about-carousel {
-        position: relative;
-        width: 100%;
-        height: 400px;
-        overflow: hidden;
-      }
-
-      .carousel-slide-about {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 0.6s ease-in-out;
-        display: none;
-      }
-
-      .carousel-slide-about.active {
-        opacity: 1;
-        display: block;
-      }
-
-      .carousel-slide-about img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      /* Carousel buttons */
-      .carousel-btn-about {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        opacity: 0.7;
-      }
-
-      .carousel-btn-about:hover {
-        opacity: 1;
-        transform: translateY(-50%) scale(1.1);
-      }
-
-      /* Carousel indicators */
-      .indicator-about {
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .indicator-about:hover {
-        background-color: rgba(255, 255, 255, 0.8) !important;
-      }
-
-      .indicator-about.active {
-        background-color: white !important;
-        width: 24px;
-      }
-
-      /* Mobile responsive */
-      @media (max-width: 768px) {
-        .about-carousel {
-          height: 300px;
-        }
-
-        .carousel-btn-about {
-          width: 36px;
-          height: 36px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/about.css" />
+    <link rel="stylesheet" href="../assets/css/social-icons.css" />
   </head>
   <body class="bg-gray-50">
     <!-- Header -->
@@ -91,10 +23,17 @@
       >
         <a
           href="/"
-          class="text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
+          class="text-xl sm:text-2xl font-bold flex items-center space-x-2 hover:text-amber-200 transition-colors"
         >
-          <i class="fas fa-tshirt text-amber-300"></i>
-          <span>Batik Nusantara</span>
+          <img
+            id="site-logo"
+            src=""
+            alt="Logo"
+            class="h-8 w-8 object-contain hidden"
+            onerror="this.style.display='none'; document.getElementById('site-logo-icon').style.display='block';"
+          />
+          <i id="site-logo-icon" class="fas fa-tshirt text-amber-300"></i>
+          <span id="site-title">Batik Nusantara</span>
         </a>
 
         <!-- Search Bar (Desktop) -->
@@ -190,68 +129,85 @@
       <!-- Mobile Menu -->
       <div
         id="mobile-menu"
-        class="md:hidden hidden bg-amber-900 px-4 py-2 border-t border-amber-700"
+        class="md:hidden hidden bg-gradient-to-b from-amber-900 to-amber-950 border-t border-amber-700 shadow-lg"
       >
-        <a
-          href="/"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
-        >
-          Beranda
-        </a>
-        <a
-          href="/products"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700"
-        >
-          Produk
-        </a>
-        <a
-          href="/about"
-          class="block py-3 hover:text-amber-200 transition-colors border-b border-amber-700 font-semibold"
-        >
-          Tentang Kami
-        </a>
-        <a
-          href="/contact"
-          class="block py-3 hover:text-amber-200 transition-colors"
-        >
-          Kontak
-        </a>
+        <nav class="px-4 py-3 space-y-1">
+          <a
+            href="/"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-home text-amber-300 w-5"></i>
+            <span class="text-white">Beranda</span>
+          </a>
+          <a
+            href="/products"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-amber-800 border-l-4 border-amber-300"
+          >
+            <i class="fas fa-shopping-bag text-amber-300 w-5"></i>
+            <span class="text-white font-semibold">Produk</span>
+          </a>
+          <a
+            href="/about"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-info-circle text-amber-300 w-5"></i>
+            <span class="text-white">Tentang Kami</span>
+          </a>
+          <a
+            href="/contact"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-amber-800 transition-all duration-200"
+          >
+            <i class="fas fa-envelope text-amber-300 w-5"></i>
+            <span class="text-white">Kontak</span>
+          </a>
+        </nav>
+        <!-- Divider -->
+        <div class="border-t border-amber-700 my-2"></div>
+        <!-- Additional Info -->
+        <div class="px-4 py-3 text-center">
+          <p class="text-amber-200 text-xs mb-2">
+            <i class="fas fa-shield-alt mr-1"></i>
+            Belanja Aman & Terpercaya
+          </p>
+        </div>
       </div>
     </header>
 
     <!-- About Section -->
 
-    <section class="py-16">
+    <section class="py-8 sm:py-12 md:py-16">
       <div class="container max-w-[1200px] mx-auto px-4">
-        <div class="flex flex-col md:flex-row items-center">
-          <div class="md:w-1/2 mb-8 md:mb-0">
+        <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <div class="w-full md:w-1/2 mb-4 md:mb-0">
             <!-- About Carousel -->
-            <div class="about-carousel relative rounded-lg shadow-lg overflow-hidden">
+            <div
+              class="about-carousel relative rounded-lg shadow-lg overflow-hidden"
+            >
               <!-- Carousel Slides -->
               <div class="carousel-slide-about active">
                 <img
-                  src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=600&h=400&fit=crop"
+                  src="../assets/images/carousel3.jpg"
                   alt="Batik Nusantara Workshop"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="carousel-slide-about">
                 <img
-                  src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&h=400&fit=crop"
+                  src="../assets/images/carousel2.jpg"
                   alt="Traditional Batik Making"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="carousel-slide-about">
                 <img
-                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop"
+                  src="../assets/images/carousel6.jpg"
                   alt="Batik Collection"
                   class="w-full h-full object-cover"
                 />
               </div>
               <div class="carousel-slide-about">
                 <img
-                  src="https://images.unsplash.com/photo-1591814950825-9c8c7f8aa686?w=600&h=400&fit=crop"
+                  src="../assets/images/carousel7.jpg"
                   alt="Batik Craftsmen"
                   class="w-full h-full object-cover"
                 />
@@ -292,22 +248,28 @@
               </div>
             </div>
           </div>
-          <div class="md:w-1/2 md:pl-12">
-            <h2 class="text-3xl font-bold mb-6 text-amber-800">
+          <div class="w-full md:w-1/2 md:pl-8 lg:pl-12">
+            <h2
+              class="text-2xl sm:text-3xl md:text-3xl font-bold mb-4 sm:mb-6 text-amber-800"
+            >
               Tentang Batik Nusantara
             </h2>
-            <p class="text-gray-700 mb-4">
+            <p
+              class="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed"
+            >
               Batik Nusantara didirikan dengan tujuan untuk melestarikan dan
               mempromosikan keindahan batik Indonesia ke seluruh dunia. Kami
               bekerja sama dengan pengrajin batik terbaik dari berbagai daerah
               di Indonesia.
             </p>
-            <p class="text-gray-700 mb-4">
+            <p
+              class="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed"
+            >
               Setiap produk batik kami dibuat dengan ketelitian dan kecintaan
               terhadap seni tradisional Indonesia. Kami memastikan bahwa setiap
               motif dan warna mencerminkan kekayaan budaya nusantara.
             </p>
-            <p class="text-gray-700">
+            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
               Dengan membeli produk dari Batik Nusantara, Anda tidak hanya
               mendapatkan pakaian berkualitas tinggi tetapi juga turut mendukung
               para pengrajin lokal dan melestarikan warisan budaya Indonesia.
@@ -318,49 +280,58 @@
     </section>
 
     <!-- Our Vision -->
-    <section class="py-16 bg-amber-50">
+    <section class="py-8 sm:py-12 md:py-16 bg-amber-50">
       <div class="container mx-auto px-4 max-w-[1200px]">
-        <h2 class="text-3xl font-bold text-center mb-12 text-amber-800">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-amber-800"
+        >
           Visi & Misi Kami
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="flex items-center mb-4">
-              <div class="bg-amber-100 p-3 rounded-full mr-4">
-                <i class="fas fa-eye text-amber-800 text-xl"></i>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+          <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+            <div class="flex items-center mb-3 sm:mb-4">
+              <div class="bg-amber-100 p-2 sm:p-3 rounded-full mr-3 sm:mr-4">
+                <i class="fas fa-eye text-amber-800 text-lg sm:text-xl"></i>
               </div>
-              <h3 class="text-xl font-bold text-amber-800">Visi</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-amber-800">Visi</h3>
             </div>
-            <p class="text-gray-700">
+            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
               Menjadi platform terdepan dalam melestarikan dan mempromosikan
               batik Indonesia ke seluruh dunia, serta menjadi jembatan antara
               pengrajin batik lokal dengan pasar global.
             </p>
           </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="flex items-center mb-4">
-              <div class="bg-amber-100 p-3 rounded-full mr-4">
-                <i class="fas fa-bullseye text-amber-800 text-xl"></i>
+          <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+            <div class="flex items-center mb-3 sm:mb-4">
+              <div class="bg-amber-100 p-2 sm:p-3 rounded-full mr-3 sm:mr-4">
+                <i
+                  class="fas fa-bullseye text-amber-800 text-lg sm:text-xl"
+                ></i>
               </div>
-              <h3 class="text-xl font-bold text-amber-800">Misi</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-amber-800">Misi</h3>
             </div>
-            <ul class="text-gray-700 space-y-2">
+            <ul
+              class="text-sm sm:text-base text-gray-700 space-y-2 leading-relaxed"
+            >
               <li>
-                <i class="fas fa-check text-amber-600 mr-2"></i> Menyediakan
-                produk batik berkualitas tinggi dengan harga yang terjangkau
+                <i class="fas fa-check text-amber-600 mr-2 text-sm"></i>
+                Menyediakan produk batik berkualitas tinggi dengan harga yang
+                terjangkau
               </li>
               <li>
-                <i class="fas fa-check text-amber-600 mr-2"></i> Mendukung
-                pengrajin batik lokal dengan memberikan kompensasi yang adil
+                <i class="fas fa-check text-amber-600 mr-2 text-sm"></i>
+                Mendukung pengrajin batik lokal dengan memberikan kompensasi
+                yang adil
               </li>
               <li>
-                <i class="fas fa-check text-amber-600 mr-2"></i> Mengedukasi
-                masyarakat tentang nilai sejarah dan budaya di balik motif batik
+                <i class="fas fa-check text-amber-600 mr-2 text-sm"></i>
+                Mengedukasi masyarakat tentang nilai sejarah dan budaya di balik
+                motif batik
               </li>
               <li>
-                <i class="fas fa-check text-amber-600 mr-2"></i> Mengembangkan
-                inovasi dalam desain batik tanpa menghilangkan nilai
-                tradisionalnya
+                <i class="fas fa-check text-amber-600 mr-2 text-sm"></i>
+                Mengembangkan inovasi dalam desain batik tanpa menghilangkan
+                nilai tradisionalnya
               </li>
             </ul>
           </div>
@@ -368,71 +339,356 @@
       </div>
     </section>
 
-    <!-- Our Team -->
-    <section class="py-16">
+    <!-- Our Values -->
+    <section class="py-8 sm:py-12 md:py-16">
       <div class="container max-w-[1200px] mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12 text-amber-800">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-amber-800"
+        >
+          Nilai-Nilai Kami
+        </h2>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        >
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
+            <div
+              class="w-12 h-12 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
+            >
+              <i class="fas fa-heart text-amber-600 text-xl sm:text-2xl"></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">
+              Kualitas Terbaik
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+              Kami hanya menyediakan produk batik dengan kualitas terbaik yang
+              telah melalui seleksi ketat.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
+            <div
+              class="w-12 h-12 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
+            >
+              <i
+                class="fas fa-handshake text-amber-600 text-xl sm:text-2xl"
+              ></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">
+              Kemitraan Adil
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+              Bekerja sama dengan pengrajin lokal dengan sistem pembayaran yang
+              adil dan menguntungkan.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
+            <div
+              class="w-12 h-12 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
+            >
+              <i class="fas fa-leaf text-amber-600 text-xl sm:text-2xl"></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">
+              Ramah Lingkungan
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+              Menggunakan bahan dan pewarna alami yang ramah lingkungan dalam
+              proses produksi.
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center"
+          >
+            <div
+              class="w-12 h-12 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
+            >
+              <i class="fas fa-award text-amber-600 text-xl sm:text-2xl"></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">
+              Inovasi Berkelanjutan
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+              Terus berinovasi dalam desain dan teknologi tanpa melupakan
+              tradisi batik Indonesia.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Team -->
+    <section class="py-8 sm:py-12 md:py-16 bg-amber-50">
+      <div class="container max-w-[1200px] mx-auto px-4">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-amber-800"
+        >
           Tim Kami
         </h2>
         <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
         >
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+          >
             <img
-              src="https://picsum.photos/400/400?random=20"
+              src="../assets/images/team1.jpg"
               alt="Team Member"
-              class="w-full h-64 object-cover"
+              class="w-full h-48 sm:h-56 md:h-64 object-cover"
+              onerror="this.src='https://ui-avatars.com/api/?name=Adi+Nugroho&size=400&background=d97706&color=fff'"
             />
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-gray-800">Adi Nugroho</h3>
-              <p class="text-amber-600">Founder & CEO</p>
-              <p class="text-gray-600 mt-2">
-                Penggemar batik dan berdedikasi untuk melestarikan warisan
+            <div class="p-3 sm:p-4">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                Adi Nugroho
+              </h3>
+              <p class="text-sm sm:text-base text-amber-600">Founder & CEO</p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
+                Penggemar batik yang berdedikasi untuk melestarikan warisan
                 budaya Indonesia.
               </p>
             </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+          <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+          >
             <img
-              src="https://picsum.photos/400/400?random=21"
+              src="../assets/images/team2.jpg"
               alt="Team Member"
-              class="w-full h-64 object-cover"
+              class="w-full h-48 sm:h-56 md:h-64 object-cover"
+              onerror="this.src='https://ui-avatars.com/api/?name=Siti+Rahayu&size=400&background=d97706&color=fff'"
             />
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-gray-800">Siti Rahayu</h3>
-              <p class="text-amber-600">Creative Director</p>
-              <p class="text-gray-600 mt-2">
+            <div class="p-3 sm:p-4">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                Siti Rahayu
+              </h3>
+              <p class="text-sm sm:text-base text-amber-600">
+                Creative Director
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
                 Desainer dengan pengalaman 15 tahun dalam industri fashion
                 batik.
               </p>
             </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+          <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+          >
             <img
-              src="https://picsum.photos/400/400?random=22"
+              src="../assets/images/team3.jpg"
               alt="Team Member"
-              class="w-full h-64 object-cover"
+              class="w-full h-48 sm:h-56 md:h-64 object-cover"
+              onerror="this.src='https://ui-avatars.com/api/?name=Budi+Santoso&size=400&background=d97706&color=fff'"
             />
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-gray-800">Budi Santoso</h3>
-              <p class="text-amber-600">Production Manager</p>
-              <p class="text-gray-600 mt-2">
+            <div class="p-3 sm:p-4">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                Budi Santoso
+              </h3>
+              <p class="text-sm sm:text-base text-amber-600">
+                Production Manager
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
                 Ahli dalam proses pembuatan batik tradisional dan modern.
               </p>
             </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+          <div
+            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
+          >
             <img
-              src="https://picsum.photos/400/400?random=23"
+              src="../assets/images/team4.jpg"
               alt="Team Member"
-              class="w-full h-64 object-cover"
+              class="w-full h-48 sm:h-56 md:h-64 object-cover"
+              onerror="this.src='https://ui-avatars.com/api/?name=Maya+Wijaya&size=400&background=d97706&color=fff'"
             />
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-gray-800">Maya Wijaya</h3>
-              <p class="text-amber-600">Marketing Manager</p>
-              <p class="text-gray-600 mt-2">
+            <div class="p-3 sm:p-4">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                Maya Wijaya
+              </h3>
+              <p class="text-sm sm:text-base text-amber-600">
+                Marketing Manager
+              </p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
                 Spesialis pemasaran digital dengan fokus pada produk lokal.
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-8 sm:py-12 md:py-16">
+      <div class="container max-w-[1200px] mx-auto px-4">
+        <h2
+          class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-amber-800"
+        >
+          Mengapa Memilih Kami?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-check text-amber-600 text-lg sm:text-xl"></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                100% Produk Asli
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Semua produk dijamin keasliannya dan dibuat langsung oleh
+                pengrajin batik berpengalaman dengan sertifikat keaslian.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i
+                class="fas fa-shipping-fast text-amber-600 text-lg sm:text-xl"
+              ></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                Pengiriman Cepat & Aman
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Gratis ongkir ke seluruh Indonesia dengan kemasan aman dan
+                tracking number yang dapat dipantau secara real-time.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-headset text-amber-600 text-lg sm:text-xl"></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                Layanan Pelanggan 24/7
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Tim customer service kami siap membantu Anda kapan saja melalui
+                WhatsApp, email, atau telepon.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-undo text-amber-600 text-lg sm:text-xl"></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                Garansi Kepuasan
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Kami memberikan garansi 30 hari untuk pengembalian produk jika
+                tidak sesuai dengan deskripsi atau cacat produksi.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-tags text-amber-600 text-lg sm:text-xl"></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                Harga Kompetitif
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Dapatkan harga terbaik dengan promo dan diskon menarik setiap
+                bulannya untuk pelanggan setia kami.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3 sm:space-x-4">
+            <div
+              class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-medal text-amber-600 text-lg sm:text-xl"></i>
+            </div>
+            <div>
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2"
+              >
+                Berpengalaman & Terpercaya
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600">
+                Lebih dari 10 tahun pengalaman dalam industri batik dengan
+                ribuan pelanggan puas di seluruh Indonesia.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics -->
+    <section
+      class="py-8 sm:py-12 md:py-16 bg-gradient-to-br from-amber-600 to-amber-800 text-white"
+    >
+      <div class="container max-w-[1200px] mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              10+
+            </div>
+            <div class="text-sm sm:text-base text-amber-100">
+              Tahun Berpengalaman
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              5000+
+            </div>
+            <div class="text-sm sm:text-base text-amber-100">
+              Pelanggan Puas
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              200+
+            </div>
+            <div class="text-sm sm:text-base text-amber-100">
+              Pengrajin Mitra
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              500+
+            </div>
+            <div class="text-sm sm:text-base text-amber-100">
+              Koleksi Produk
             </div>
           </div>
         </div>
@@ -458,62 +714,95 @@
         class="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/20 rounded-full translate-y-16 -translate-x-16"
       ></div>
 
-      <div class="container max-w-[1200px] mx-auto px-4 py-16 relative">
+      <div
+        class="container max-w-[1200px] mx-auto px-4 py-12 md:py-16 relative"
+      >
         <!-- Main Footer Content -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-8 md:mb-12"
+        >
           <!-- Brand Section -->
           <div class="lg:col-span-2">
             <div class="flex items-center space-x-3 mb-6">
               <div
-                class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center"
+                id="footer-logo-container"
+                class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden"
               >
-                <i class="fas fa-tshirt text-white text-xl"></i>
+                <img
+                  id="footer-logo"
+                  src=""
+                  alt="Logo"
+                  class="w-full h-full object-contain p-1 hidden"
+                />
+                <i
+                  id="footer-logo-icon"
+                  class="fas fa-tshirt text-white text-xl"
+                ></i>
               </div>
               <div>
-                <h3 class="text-2xl font-bold">Batik Nusantara</h3>
-                <p class="text-amber-200 text-sm">Warisan Budaya Indonesia</p>
+                <h3 id="footer-title" class="text-2xl font-bold">
+                  Batik Nusantara
+                </h3>
+                <p id="footer-tagline" class="text-amber-200 text-sm">
+                  Warisan Budaya Indonesia
+                </p>
               </div>
             </div>
 
-            <p class="text-amber-100 mb-6 leading-relaxed max-w-md">
+            <p
+              id="footer-description"
+              class="text-amber-100 mb-6 leading-relaxed max-w-md"
+            >
               Melestarikan keindahan dan keunikan batik Indonesia dengan koleksi
               berkualitas tinggi yang memadukan tradisi dan modernitas untuk
               generasi masa kini.
             </p>
 
             <!-- Social Media -->
-            <div class="flex space-x-4">
+            <div class="flex flex-wrap items-center gap-3">
               <a
+                id="footer-social-facebook"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-blue-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="Facebook"
               >
-                <i
-                  class="fab fa-facebook-f text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-facebook-f text-white text-base"></i>
               </a>
               <a
+                id="footer-social-instagram"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="Instagram"
               >
-                <i
-                  class="fab fa-instagram text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-instagram text-white text-base"></i>
               </a>
               <a
+                id="footer-social-whatsapp"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-green-500 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="WhatsApp"
               >
-                <i
-                  class="fab fa-whatsapp text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-whatsapp text-white text-base"></i>
               </a>
               <a
+                id="footer-social-tiktok"
                 href="#"
-                class="group w-10 h-10 bg-amber-700 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon-circle group bg-amber-700/80 hover:bg-black transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110"
+                style="display: none"
+                aria-label="TikTok"
               >
-                <i
-                  class="fab fa-tiktok text-white group-hover:scale-110 transition-transform"
-                ></i>
+                <i class="fab fa-tiktok text-white text-base"></i>
               </a>
             </div>
           </div>
@@ -527,7 +816,7 @@
             <ul class="space-y-3">
               <li>
                 <a
-                  href="index.html"
+                  href="/"
                   class="text-amber-200 hover:text-white transition-colors flex items-center group"
                 >
                   <i
@@ -643,125 +932,12 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="../assets/js/navbar.js"></script>
-    <script>
-      // About Carousel JavaScript
-      document.addEventListener('DOMContentLoaded', function () {
-        const slides = document.querySelectorAll('.carousel-slide-about');
-        const indicators = document.querySelectorAll('.indicator-about');
-        const prevBtn = document.querySelector('.carousel-prev-about');
-        const nextBtn = document.querySelector('.carousel-next-about');
-
-        let currentSlide = 0;
-        let autoplayInterval;
-        const autoplayDelay = 4000; // 4 seconds
-
-        // Show specific slide
-        function showSlide(index) {
-          // Remove active class from all slides and indicators
-          slides.forEach((slide) => {
-            slide.classList.remove('active');
-          });
-          indicators.forEach((indicator) => {
-            indicator.classList.remove('active');
-          });
-
-          // Add active class to current slide and indicator
-          slides[index].classList.add('active');
-          indicators[index].classList.add('active');
-        }
-
-        // Go to next slide
-        function nextSlide() {
-          currentSlide = (currentSlide + 1) % slides.length;
-          showSlide(currentSlide);
-          resetAutoplay();
-        }
-
-        // Go to previous slide
-        function prevSlide() {
-          currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-          showSlide(currentSlide);
-          resetAutoplay();
-        }
-
-        // Start autoplay
-        function startAutoplay() {
-          autoplayInterval = setInterval(nextSlide, autoplayDelay);
-        }
-
-        // Reset autoplay (stop and start again)
-        function resetAutoplay() {
-          clearInterval(autoplayInterval);
-          startAutoplay();
-        }
-
-        // Stop autoplay on hover
-        const aboutCarousel = document.querySelector('.about-carousel');
-        if (aboutCarousel) {
-          aboutCarousel.addEventListener('mouseenter', () => {
-            clearInterval(autoplayInterval);
-          });
-
-          aboutCarousel.addEventListener('mouseleave', () => {
-            startAutoplay();
-          });
-        }
-
-        // Event listeners for navigation buttons
-        if (prevBtn) {
-          prevBtn.addEventListener('click', prevSlide);
-        }
-
-        if (nextBtn) {
-          nextBtn.addEventListener('click', nextSlide);
-        }
-
-        // Event listeners for indicators
-        indicators.forEach((indicator, index) => {
-          indicator.addEventListener('click', () => {
-            currentSlide = index;
-            showSlide(currentSlide);
-            resetAutoplay();
-          });
-        });
-
-        // Touch swipe support for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        if (aboutCarousel) {
-          aboutCarousel.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-          });
-
-          aboutCarousel.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-          });
-        }
-
-        function handleSwipe() {
-          const swipeThreshold = 50;
-          if (touchEndX < touchStartX - swipeThreshold) {
-            nextSlide();
-          } else if (touchEndX > touchStartX + swipeThreshold) {
-            prevSlide();
-          }
-        }
-
-        // Start autoplay on page load
-        startAutoplay();
-
-        // Pause autoplay when page is not visible
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) {
-            clearInterval(autoplayInterval);
-          } else {
-            startAutoplay();
-          }
-        });
-      });
-    </script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    ></script>
+    <script type="module" src="../assets/js/navbar.js"></script>
+    <script type="module" src="../assets/js/about-carousel.js"></script>
+    <script type="module" src="../assets/js/site-settings.js"></script>
   </body>
 </html>

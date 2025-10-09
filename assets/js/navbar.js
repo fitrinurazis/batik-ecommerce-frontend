@@ -25,6 +25,7 @@ class NavbarManager {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setup());
     } else {
+      // DOM is already loaded, setup immediately
       this.setup();
     }
   }
@@ -33,12 +34,17 @@ class NavbarManager {
    * Setup all navbar functionality
    */
   setup() {
-    this.cacheElements();
-    this.bindEvents();
-    this.initializeSearch();
-    this.initializeCart();
+    try {
+      this.cacheElements();
+      this.bindEvents();
+      this.initializeSearch();
+      this.initializeCart();
 
-    this.isInitialized = true;
+      this.isInitialized = true;
+      console.log('Navbar initialized successfully');
+    } catch (error) {
+      console.error('Error initializing navbar:', error);
+    }
   }
 
   /**
@@ -77,16 +83,26 @@ class NavbarManager {
     if (this.elements.mobileMenuButton) {
       this.elements.mobileMenuButton.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        console.log('Mobile menu button clicked');
         this.toggleMobileMenu();
       });
+      console.log('Mobile menu button event bound');
+    } else {
+      console.warn('Mobile menu button not found');
     }
 
     // Mobile search toggle
     if (this.elements.mobileSearchButton) {
       this.elements.mobileSearchButton.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        console.log('Mobile search button clicked');
         this.toggleMobileSearch();
       });
+      console.log('Mobile search button event bound');
+    } else {
+      console.warn('Mobile search button not found');
     }
 
     // Search functionality
@@ -224,18 +240,30 @@ class NavbarManager {
    * Toggle mobile menu visibility
    */
   toggleMobileMenu() {
-    if (!this.elements.mobileMenu || !this.elements.mobileMenuButton) return;
+    console.log('toggleMobileMenu called', {
+      mobileMenu: this.elements.mobileMenu,
+      mobileMenuButton: this.elements.mobileMenuButton,
+      currentState: this.mobileMenuOpen
+    });
+
+    if (!this.elements.mobileMenu || !this.elements.mobileMenuButton) {
+      console.error('Mobile menu or button element not found');
+      return;
+    }
 
     this.mobileMenuOpen = !this.mobileMenuOpen;
+    console.log('New mobile menu state:', this.mobileMenuOpen);
 
     if (this.mobileMenuOpen) {
       this.elements.mobileMenu.classList.remove('hidden');
       this.elements.mobileMenuButton.innerHTML = '<i class="fas fa-times text-xl"></i>';
       // Close search if open
       this.closeMobileSearch();
+      console.log('Mobile menu opened');
     } else {
       this.elements.mobileMenu.classList.add('hidden');
       this.elements.mobileMenuButton.innerHTML = '<i class="fas fa-bars text-xl"></i>';
+      console.log('Mobile menu closed');
     }
   }
 

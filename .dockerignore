@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+# package-lock.json - JANGAN exclude, diperlukan oleh npm ci
+yarn.lock
+
+# Build output (will be generated in Docker)
+dist/
+
+# Environment files
+.env.local
+.env.development
+.env.test
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Testing
+coverage/
+.nyc_output/
+
+# Vite
+.vite/
+vite.config.js.timestamp-*
+
+# Misc
+.history/
+.cache/
+temp/
+tmp/
+
+# Build documentation
+BUILD.md
+BUILD_RESULT.md
+README.md

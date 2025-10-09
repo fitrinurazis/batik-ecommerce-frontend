@@ -222,11 +222,11 @@ function addToCart(productId) {
             updateCartCount();
         }
 
-        showSuccessToast('Produk berhasil ditambahkan ke keranjang!');
+        // Add animation
+        animateCartIcon();
 
     } catch (error) {
         console.error('Error adding to cart:', error);
-        showErrorToast('Gagal menambahkan produk ke keranjang');
     }
 }
 
@@ -242,6 +242,28 @@ function updateCartCount() {
         } else {
             cartCountElement.classList.remove('animate-pulse');
         }
+    }
+}
+
+function animateCartIcon() {
+    const cartIcon = document.querySelector('.fa-shopping-cart');
+    const cartCount = document.getElementById('cart-count');
+
+    if (cartIcon) {
+        // Add bounce animation to cart icon
+        cartIcon.classList.add('animate-bounce');
+        setTimeout(() => {
+            cartIcon.classList.remove('animate-bounce');
+        }, 1000);
+    }
+
+    if (cartCount) {
+        // Add scale animation to cart count
+        cartCount.style.transform = 'scale(1.5)';
+        cartCount.style.transition = 'transform 0.3s ease';
+        setTimeout(() => {
+            cartCount.style.transform = 'scale(1)';
+        }, 300);
     }
 }
 
