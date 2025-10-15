@@ -370,7 +370,14 @@ class ApiService {
 
   static async saveSettings(category, settings) {
     try {
-      const response = await axios.put("/settings/bulk", { settings });
+      // Transform flat settings object into array format expected by backend
+      const settingsArray = Object.entries(settings).map(([key, value]) => ({
+        category: category,
+        key: key,
+        value: value
+      }));
+
+      const response = await axios.put("/settings/bulk", { settings: settingsArray });
       return response.data;
     } catch (error) {
       throw this.handleError(error);

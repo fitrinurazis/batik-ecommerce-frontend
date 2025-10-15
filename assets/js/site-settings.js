@@ -3,8 +3,32 @@
  * Loads public site settings and updates the UI
  */
 
+// Wait for axios to be loaded
+function waitForAxios(maxAttempts = 50) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+
+    const checkAxios = () => {
+      attempts++;
+
+      if (typeof axios !== 'undefined') {
+        resolve();
+      } else if (attempts >= maxAttempts) {
+        reject(new Error('Axios failed to load after maximum attempts'));
+      } else {
+        setTimeout(checkAxios, 100);
+      }
+    };
+
+    checkAxios();
+  });
+}
+
 async function loadSiteSettings() {
   try {
+    // Wait for axios to be available
+    await waitForAxios();
+
     const response = await axios.get("https://admin30.fitrinurazis.com/api/settings/public");
 
     if (response.data && response.data.success) {
