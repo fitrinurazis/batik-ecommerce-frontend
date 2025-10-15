@@ -1,7 +1,7 @@
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = typeof __API_BASE_URL__ !== 'undefined' ? __API_BASE_URL__ : "https://admin30.fitrinurazis.com/api";
 const API_TIMEOUT = 10000;
 const API_RETRY_ATTEMPTS = 3;
-const APP_NAME = "Batik Nusantara";
+const APP_NAME = typeof __APP_NAME__ !== 'undefined' ? __APP_NAME__ : "Batik Nusantara";
 const ITEMS_PER_PAGE = 10;
 
 function initializeAxios() {

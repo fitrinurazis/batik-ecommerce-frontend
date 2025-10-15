@@ -158,7 +158,7 @@ function renderProductDetail(product) {
 
 function setupProductImages(product) {
     const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop&crop=center&q=80';
-    const baseURL = 'http://localhost:3000';
+    const baseURL = 'https://admin30.fitrinurazis.com';
 
     // Build images array from product data
     productImages = [];
@@ -607,7 +607,7 @@ function createRelatedProductCard(product) {
     // Handle image URL
     let imageUrl = product.image_url || product.imageUrl;
     if (imageUrl && imageUrl.startsWith('/api/media/')) {
-        imageUrl = `http://localhost:3000${imageUrl}`;
+        imageUrl = `https://admin30.fitrinurazis.com${imageUrl}`;
     }
 
     const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center&q=80';

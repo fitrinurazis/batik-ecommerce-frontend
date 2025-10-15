@@ -7,7 +7,7 @@ let shopPhone = "+62 274 123456"; // Default phone number
 async function loadSettings() {
   try {
     // Load public settings from backend (no auth required)
-    const response = await axios.get("http://localhost:3000/api/settings/public");
+    const response = await axios.get("https://admin30.fitrinurazis.com/api/settings/public");
 
     // Check if response is successful
     if (response.data && response.data.success) {
@@ -191,7 +191,7 @@ if (contactForm) {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/email/contact",
+        "https://admin30.fitrinurazis.com/api/email/contact",
         {
           name: name,
           email: email,

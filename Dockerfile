@@ -10,10 +10,13 @@ COPY package*.json ./
 # Install all dependencies (including devDependencies for build)
 RUN npm ci
 
-# Copy application files
+# Copy application files INCLUDING .env
 COPY . .
 
-# Build production bundle
+# Verify .env is present (for debugging)
+RUN echo "Checking .env file:" && cat .env || echo "No .env file found"
+
+# Build production bundle with environment variables
 RUN npm run build
 
 # Production stage

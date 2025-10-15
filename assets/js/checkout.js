@@ -140,7 +140,7 @@ function createOrderItemElement(cartItem, product) {
   // Handle image URL
   let imageUrl = product.image_url || product.imageUrl;
   if (imageUrl && imageUrl.startsWith("/api/media/")) {
-    imageUrl = `http://localhost:3000${imageUrl}`;
+    imageUrl = `https://admin30.fitrinurazis.com${imageUrl}`;
   }
   const fallbackImage =
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=100&h=100&fit=crop&crop=center&q=80";

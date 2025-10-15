@@ -1,8 +1,15 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import legacy from "@vitejs/plugin-legacy";
 import removeConsole from "vite-plugin-remove-console";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+  define: {
+    '__API_BASE_URL__': JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:3000/api'),
+    '__APP_NAME__': JSON.stringify(env.VITE_APP_NAME || 'Batik Nusantara'),
+  },
   plugins: [
     removeConsole(),
     legacy({
@@ -55,4 +62,5 @@ export default defineConfig({
     },
   },
   envPrefix: "VITE_",
+  };
 });

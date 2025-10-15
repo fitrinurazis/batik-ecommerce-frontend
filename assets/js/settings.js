@@ -143,8 +143,10 @@ async function saveGeneralSettings() {
 
         const getElementValue = (htmlId, apiKey) => {
             const el = document.getElementById(htmlId);
-            const value = el ? el.value : '';
-            if (value) settings[apiKey] = value;
+            if (el) {
+                // Always send value, even if empty, so users can clear fields
+                settings[apiKey] = el.value || '';
+            }
         };
 
         const getElementChecked = (htmlId, apiKey) => {
@@ -167,15 +169,30 @@ async function saveGeneralSettings() {
         getElementValue('shop-whatsapp', 'shop_whatsapp');
         getElementValue('shop-instagram', 'shop_instagram');
         getElementValue('shop-facebook', 'shop_facebook');
+        getElementValue('shop-tiktok', 'shop_tiktok');
 
         // Save to API (data akan tersimpan di database)
         await ApiService.saveSettings('general', settings);
 
-        // Update global variable
+        // Update global variable - split by category like backend does
         if (!window.siteSettings) {
             window.siteSettings = {};
         }
-        window.siteSettings.general = settings;
+        if (!window.siteSettings.general) {
+            window.siteSettings.general = {};
+        }
+        if (!window.siteSettings.shop) {
+            window.siteSettings.shop = {};
+        }
+
+        // Split settings into correct categories
+        Object.keys(settings).forEach(key => {
+            if (key.startsWith('shop_')) {
+                window.siteSettings.shop[key] = settings[key];
+            } else {
+                window.siteSettings.general[key] = settings[key];
+            }
+        });
 
         Utils.showAlert('Pengaturan umum berhasil disimpan!', 'success');
     } catch (error) {
@@ -188,26 +205,41 @@ async function saveEmailSettings() {
     try {
         const settings = {};
 
-        const smtpHost = document.getElementById('smtp-host');
-        if (smtpHost && smtpHost.value) settings.smtp_host = smtpHost.value;
+        // Helper function to always send value, even if empty
+        const getElementValue = (htmlId, apiKey) => {
+            const el = document.getElementById(htmlId);
+            if (el) {
+                settings[apiKey] = el.value || '';
+            }
+        };
 
-        const smtpPort = document.getElementById('smtp-port');
-        if (smtpPort && smtpPort.value) settings.smtp_port = parseInt(smtpPort.value);
+        const getElementNumber = (htmlId, apiKey, defaultValue = 0) => {
+            const el = document.getElementById(htmlId);
+            if (el) {
+                settings[apiKey] = parseInt(el.value) || defaultValue;
+            }
+        };
 
-        const smtpUser = document.getElementById('smtp-username');
-        if (smtpUser && smtpUser.value) settings.smtp_user = smtpUser.value;
+        const getElementChecked = (htmlId, apiKey) => {
+            const el = document.getElementById(htmlId);
+            if (el) {
+                settings[apiKey] = el.checked;
+            }
+        };
 
+        // Always send these fields, even if empty
+        getElementValue('smtp-host', 'smtp_host');
+        getElementNumber('smtp-port', 'smtp_port', 587);
+        getElementValue('smtp-username', 'smtp_user');
+        getElementValue('email-from-name', 'email_from_name');
+        getElementValue('admin-email', 'admin_email');
+        getElementChecked('smtp-secure', 'smtp_secure');
+
+        // Only send password if user fills it (to update password)
         const smtpPass = document.getElementById('smtp-password');
-        if (smtpPass && smtpPass.value) settings.smtp_pass = smtpPass.value;
-
-        const smtpSecure = document.getElementById('smtp-secure');
-        if (smtpSecure) settings.smtp_secure = smtpSecure.checked;
-
-        const emailFromName = document.getElementById('email-from-name');
-        if (emailFromName && emailFromName.value) settings.email_from_name = emailFromName.value;
-
-        const adminEmail = document.getElementById('admin-email');
-        if (adminEmail && adminEmail.value) settings.admin_email = adminEmail.value;
+        if (smtpPass && smtpPass.value) {
+            settings.smtp_pass = smtpPass.value;
+        }
 
         await ApiService.saveSettings('notification', settings);
         Utils.showAlert('Pengaturan email berhasil disimpan!', 'success');
@@ -364,6 +396,7 @@ function populateSettingsForm(settings) {
             setElementValue('shop-whatsapp', 'shop_whatsapp', 'shop');
             setElementValue('shop-instagram', 'shop_instagram', 'shop');
             setElementValue('shop-facebook', 'shop_facebook', 'shop');
+            setElementValue('shop-tiktok', 'shop_tiktok', 'shop');
         }
 
         if (settings.notification) {

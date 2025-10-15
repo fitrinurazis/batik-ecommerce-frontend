@@ -5,7 +5,7 @@
 
 async function loadSiteSettings() {
   try {
-    const response = await axios.get("http://localhost:3000/api/settings/public");
+    const response = await axios.get("https://admin30.fitrinurazis.com/api/settings/public");
 
     if (response.data && response.data.success) {
       const settings = response.data.data;
@@ -46,19 +46,13 @@ function updateSiteInfo(settings) {
     if (footerTaglineEl) {
       footerTaglineEl.textContent = general.site_tagline;
     }
-  }
 
-  // Update site description in footer
-  if (general.site_description) {
-    const footerDescEl = document.getElementById("footer-description");
-    if (footerDescEl) {
-      footerDescEl.textContent = general.site_description;
-    }
-
-    // Update meta description
+    // Update meta description with site_tagline if available
     const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", general.site_description);
+    if (metaDesc && !metaDesc.hasAttribute('data-user-set')) {
+      // Only update if not manually set by user
+      const descText = general.site_tagline;
+      metaDesc.setAttribute("content", descText);
     }
   }
 

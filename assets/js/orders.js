@@ -1080,11 +1080,11 @@ function getImageUrl(imagePath) {
 
   // If path starts with /api/media or /uploads, prepend base URL
   if (imagePath.startsWith("/api/media") || imagePath.startsWith("/uploads")) {
-    return `http://localhost:3000${imagePath}`;
+    return `https://admin30.fitrinurazis.com${imagePath}`;
   }
 
   // If just filename, assume it's in /api/media
-  return `http://localhost:3000/api/media/${imagePath}`;
+  return `https://admin30.fitrinurazis.com/api/media/${imagePath}`;
 }
 
 // Payment Badge Helper

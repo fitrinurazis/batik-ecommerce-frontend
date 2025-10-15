@@ -1,11 +1,14 @@
 // Payment JavaScript
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("Payment page loaded");
+  console.log("=== Payment page loaded ===");
+  console.log("DOM fully loaded and parsed");
 
   // Initialize payment page
   initializePayment();
   initEventListeners();
   startCountdown();
+
+  console.log("=== Payment page initialization completed ===");
 });
 
 // Global variables
@@ -17,7 +20,16 @@ let paymentMethods = {}; // Will be loaded from backend
 let codFee = 5000; // Default COD fee
 
 async function loadPaymentMethods() {
+  console.log("=== Loading Payment Methods ===");
+
   try {
+    // Check if ApiService exists
+    if (!window.ApiService) {
+      console.error("ApiService not available");
+      throw new Error("ApiService tidak tersedia");
+    }
+
+    console.log("Fetching payment methods from API...");
     // Load payment methods from backend API
     const response = await window.ApiService.get("/settings/payment-methods");
     console.log("Payment methods API response:", response);
@@ -34,11 +46,15 @@ async function loadPaymentMethods() {
       cod_fee: response.cod_fee || 5000,
     };
 
+    console.log("Extracted data:", data);
+
     // Update COD fee
     codFee = data.cod_fee || 5000;
+    console.log("COD fee set to:", codFee);
 
     // Transform bank accounts to payment methods
     if (data.bank_accounts && Array.isArray(data.bank_accounts)) {
+      console.log("Processing", data.bank_accounts.length, "bank accounts");
       data.bank_accounts.forEach((bank) => {
         paymentMethods[bank.id] = {
           id: bank.id,
@@ -51,11 +67,13 @@ async function loadPaymentMethods() {
           fee: 0,
           description: `Transfer ke rekening ${bank.bank_name}. Gratis biaya admin.`,
         };
+        console.log("Added bank:", bank.bank_name);
       });
     }
 
     // Transform e-wallet accounts to payment methods
     if (data.ewallet_accounts && Array.isArray(data.ewallet_accounts)) {
+      console.log("Processing", data.ewallet_accounts.length, "e-wallet accounts");
       data.ewallet_accounts.forEach((ewallet) => {
         paymentMethods[ewallet.id] = {
           id: ewallet.id,
@@ -67,11 +85,13 @@ async function loadPaymentMethods() {
           fee: 0,
           description: `Transfer ke ${ewallet.provider}. Gratis biaya admin.`,
         };
+        console.log("Added e-wallet:", ewallet.provider);
       });
     }
 
     // Add COD if enabled
     if (data.enabled_methods && data.enabled_methods.cod) {
+      console.log("COD is enabled");
       paymentMethods["cod"] = {
         id: "cod",
         name: "COD",
@@ -82,14 +102,17 @@ async function loadPaymentMethods() {
           codFee
         )}`,
       };
+      console.log("Added COD payment method");
     }
 
     // Populate dropdown with loaded payment methods
     populatePaymentMethodDropdown(data);
 
-    console.log("Payment methods loaded:", paymentMethods);
+    console.log("Payment methods loaded successfully:", paymentMethods);
+    console.log("Total payment methods:", Object.keys(paymentMethods).length);
   } catch (error) {
     console.error("Error loading payment methods:", error);
+    console.error("Error stack:", error.stack);
     showError("Gagal memuat metode pembayaran");
   }
 }
@@ -217,41 +240,77 @@ function displayOrderInfo(order) {
 }
 
 function initEventListeners() {
+  console.log("=== Initializing Event Listeners ===");
+
   // Payment method selection
   const paymentMethodSelect = document.getElementById("payment-method");
   if (paymentMethodSelect) {
+    console.log("Payment method select found");
     paymentMethodSelect.addEventListener("change", function () {
       const method = this.value;
+      console.log("Payment method changed to:", method);
       if (method) {
         selectPaymentMethod(method);
       } else {
         hidePaymentDetails();
       }
     });
+  } else {
+    console.error("Payment method select NOT found");
   }
 
   // File upload
   const fileInput = document.getElementById("payment-proof");
   const uploadArea = document.getElementById("upload-area");
 
-  fileInput.addEventListener("change", handleFileSelect);
+  if (fileInput) {
+    console.log("File input found");
+    fileInput.addEventListener("change", handleFileSelect);
+  } else {
+    console.error("File input NOT found");
+  }
 
   // Drag and drop
-  uploadArea.addEventListener("dragover", handleDragOver);
-  uploadArea.addEventListener("dragleave", handleDragLeave);
-  uploadArea.addEventListener("drop", handleFileDrop);
+  if (uploadArea) {
+    console.log("Upload area found");
+    uploadArea.addEventListener("dragover", handleDragOver);
+    uploadArea.addEventListener("dragleave", handleDragLeave);
+    uploadArea.addEventListener("drop", handleFileDrop);
+  } else {
+    console.error("Upload area NOT found");
+  }
 
   // Confirm payment button
-  document
-    .getElementById("confirm-payment-btn")
-    .addEventListener("click", handlePaymentConfirmation);
+  const confirmBtn = document.getElementById("confirm-payment-btn");
+  if (confirmBtn) {
+    console.log("Confirm payment button found:", confirmBtn);
+    console.log("Button disabled state:", confirmBtn.disabled);
+    confirmBtn.addEventListener("click", function(e) {
+      console.log("=== Confirm Payment Button Clicked ===");
+      console.log("Event:", e);
+      handlePaymentConfirmation();
+    });
+    console.log("Event listener attached to confirm button");
+  } else {
+    console.error("Confirm payment button NOT found");
+  }
+
+  console.log("=== Event Listeners Initialized ===");
 }
 
 function selectPaymentMethod(method) {
+  console.log("=== Select Payment Method ===");
+  console.log("Method ID:", method);
+
   selectedPaymentMethod = method;
   const methodDetails = paymentMethods[method];
 
-  if (!methodDetails) return;
+  console.log("Method details:", methodDetails);
+
+  if (!methodDetails) {
+    console.error("Method details not found for:", method);
+    return;
+  }
 
   // Show payment method info
   const infoContainer = document.getElementById("payment-method-info");
@@ -267,22 +326,34 @@ function selectPaymentMethod(method) {
   const uploadSection = document.getElementById("upload-section");
   const confirmBtn = document.getElementById("confirm-payment-btn");
 
+  console.log("Payment type:", methodDetails.type);
+  console.log("Current payment proof file:", paymentProofFile);
+
   // Show account details for bank and e-wallet
   if (methodDetails.type === "bank" || methodDetails.type === "ewallet") {
+    console.log("Setting up bank/ewallet payment");
     displayPaymentDetails(method);
     // Show upload section
     if (uploadSection) uploadSection.classList.remove("hidden");
-    // Disable confirm button until file is uploaded
-    confirmBtn.disabled = !paymentProofFile;
+    // Enable confirm button only if file is uploaded
+    if (confirmBtn) {
+      const shouldEnable = !!paymentProofFile;
+      confirmBtn.disabled = !shouldEnable;
+      console.log("Confirm button disabled:", !shouldEnable, "(file uploaded:", !!paymentProofFile, ")");
+    }
     // Reset total (no fee for bank transfer and e-wallet)
     resetTotal();
   } else if (methodDetails.type === "cod") {
+    console.log("Setting up COD payment");
     // Hide account details for COD
     hideAccountDetails();
     // Hide upload section for COD
     if (uploadSection) uploadSection.classList.add("hidden");
     // Enable confirm button for COD (no file needed)
-    confirmBtn.disabled = false;
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      console.log("Confirm button enabled for COD");
+    }
     // Update total with COD fee
     updateTotalWithFee(methodDetails.fee);
   }
@@ -378,27 +449,53 @@ function handleFileSelect(e) {
 }
 
 function processFile(file) {
+  console.log("=== Processing File ===");
+  console.log("File name:", file.name);
+  console.log("File type:", file.type);
+  console.log("File size:", file.size, "bytes");
+
   // Validate file type
   const validTypes = ["image/jpeg", "image/png", "application/pdf"];
   if (!validTypes.includes(file.type)) {
-    showError("Format file tidak didukung. Gunakan JPG, PNG, atau PDF");
+    const fileExt = file.name.split('.').pop().toUpperCase();
+    console.error("Invalid file type:", file.type);
+    showError(`Format file ${fileExt} tidak didukung. Gunakan JPG, PNG, atau PDF`);
     return;
   }
 
   // Validate file size (max 5MB)
   const maxSize = 5 * 1024 * 1024; // 5MB
   if (file.size > maxSize) {
-    showError("Ukuran file terlalu besar. Maksimal 5MB");
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    console.error("File too large:", fileSizeMB, "MB");
+    showError(`Ukuran file ${fileSizeMB} MB terlalu besar. Maksimal 5 MB`);
     return;
   }
 
+  // Validate if payment method requires file upload
+  const methodDetails = paymentMethods[selectedPaymentMethod];
+  console.log("Current payment method:", selectedPaymentMethod, methodDetails);
+  if (methodDetails && methodDetails.type === "cod") {
+    console.error("COD does not require file upload");
+    showError("Metode COD tidak memerlukan bukti pembayaran");
+    return;
+  }
+
+  console.log("File validation passed");
   paymentProofFile = file;
 
   // Show preview
   showFilePreview(file);
 
   // Enable confirm button
-  document.getElementById("confirm-payment-btn").disabled = false;
+  const confirmBtn = document.getElementById("confirm-payment-btn");
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    console.log("Confirm button enabled after file upload");
+  }
+
+  // Show success feedback
+  showSuccess("File berhasil diunggah. Silakan konfirmasi pembayaran.");
 }
 
 function showFilePreview(file) {
@@ -434,6 +531,7 @@ function removePreview() {
   const placeholder = document.getElementById("upload-placeholder");
   const previewContainer = document.getElementById("preview-container");
   const fileInput = document.getElementById("payment-proof");
+  const confirmBtn = document.getElementById("confirm-payment-btn");
 
   previewContainer.classList.add("hidden");
   placeholder.classList.remove("hidden");
@@ -441,30 +539,55 @@ function removePreview() {
   paymentProofFile = null;
   fileInput.value = "";
 
-  // Disable confirm button
-  document.getElementById("confirm-payment-btn").disabled = true;
+  // Disable confirm button only if payment method is not COD
+  if (confirmBtn) {
+    const methodDetails = paymentMethods[selectedPaymentMethod];
+    if (methodDetails && methodDetails.type === "cod") {
+      // Keep button enabled for COD
+      confirmBtn.disabled = false;
+    } else {
+      // Disable for bank/ewallet (requires file upload)
+      confirmBtn.disabled = true;
+    }
+  }
 }
 
 async function handlePaymentConfirmation() {
+  console.log("=== Payment Confirmation Started ===");
+  console.log("Selected payment method:", selectedPaymentMethod);
+  console.log("Payment proof file:", paymentProofFile);
+  console.log("Current order:", currentOrder);
+
   if (!selectedPaymentMethod) {
+    console.error("No payment method selected");
     showError("Pilih metode pembayaran terlebih dahulu");
     return;
   }
 
   const methodDetails = paymentMethods[selectedPaymentMethod];
+  console.log("Method details:", methodDetails);
+
+  if (!methodDetails) {
+    console.error("Payment method details not found");
+    showError("Metode pembayaran tidak valid");
+    return;
+  }
 
   // For COD, no need to upload payment proof
   if (methodDetails.type === "cod") {
+    console.log("Processing COD order");
     confirmCODOrder();
     return;
   }
 
   if (!paymentProofFile) {
+    console.error("No payment proof file uploaded");
     showError("Upload bukti pembayaran terlebih dahulu");
     return;
   }
 
   if (!currentOrder) {
+    console.error("Current order not found");
     showError("Data pesanan tidak ditemukan");
     return;
   }
@@ -475,6 +598,7 @@ async function handlePaymentConfirmation() {
     button.innerHTML =
       '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
 
+    console.log("Preparing form data...");
     // Upload payment proof using ApiService (same as order-status.js)
     const formData = new FormData();
     formData.append("payment_proof", paymentProofFile);
@@ -487,6 +611,17 @@ async function handlePaymentConfirmation() {
       : parseFloat(currentOrder.total);
     formData.append("amount", amount);
 
+    console.log("Form data prepared. Payment method:", formData.get("payment_method"));
+    console.log("Bank name:", formData.get("bank_name"));
+    console.log("Amount:", formData.get("amount"));
+
+    // Check if ApiService exists
+    if (!window.ApiService) {
+      console.error("ApiService is not available");
+      throw new Error("ApiService tidak tersedia. Pastikan main.js sudah dimuat.");
+    }
+
+    console.log("Uploading to API:", `/payments/upload/${currentOrder.id}`);
     const result = await window.ApiService.post(`/payments/upload/${currentOrder.id}`, formData, true);
     console.log("Payment proof uploaded successfully:", result);
 
@@ -504,6 +639,11 @@ async function handlePaymentConfirmation() {
     showSuccessModal(result);
   } catch (error) {
     console.error("Payment confirmation error:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      response: error.response
+    });
     showError(error.message || "Gagal mengkonfirmasi pembayaran");
 
     const button = document.getElementById("confirm-payment-btn");
@@ -514,14 +654,20 @@ async function handlePaymentConfirmation() {
 }
 
 function confirmCODOrder() {
+  console.log("=== Confirming COD Order ===");
+  console.log("Current order:", currentOrder);
+
   // For COD, just show success message
   localStorage.removeItem("currentOrderId");
   localStorage.removeItem("currentOrder");
   localStorage.removeItem("cart");
 
+  console.log("LocalStorage cleared");
+
   // Stop countdown
   if (countdownInterval) {
     clearInterval(countdownInterval);
+    console.log("Countdown stopped");
   }
 
   // Show success modal
@@ -531,22 +677,39 @@ function confirmCODOrder() {
       phone: currentOrder.customer_phone,
     },
   };
+  console.log("Showing success modal with:", result);
   showSuccessModal(result);
 }
 
 function showSuccessModal(result) {
+  console.log("=== Show Success Modal ===");
+  console.log("Result:", result);
+
   // Update modal with notification info
   if (result.notifications) {
-    document.getElementById("notif-email").textContent =
-      result.notifications.email || currentOrder.customer_email;
-    document.getElementById("notif-phone").textContent =
-      result.notifications.phone || currentOrder.customer_phone;
+    const emailElement = document.getElementById("notif-email");
+    const phoneElement = document.getElementById("notif-phone");
+
+    if (emailElement) {
+      emailElement.textContent = result.notifications.email || currentOrder.customer_email;
+      console.log("Email set to:", emailElement.textContent);
+    }
+
+    if (phoneElement) {
+      phoneElement.textContent = result.notifications.phone || currentOrder.customer_phone;
+      console.log("Phone set to:", phoneElement.textContent);
+    }
   }
 
   // Show modal
   const modal = document.getElementById("success-modal");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    console.log("Success modal displayed");
+  } else {
+    console.error("Success modal element not found");
+  }
 }
 
 function startCountdown() {

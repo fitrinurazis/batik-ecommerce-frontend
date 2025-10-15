@@ -17,7 +17,7 @@ let uploadedImages = []; // Store uploaded image URLs (max 5)
 
 // Helper function to get base URL for media
 function getBaseURL() {
-    const apiUrl = window.API_BASE_URL || "http://localhost:3000/api";
+    const apiUrl = window.API_BASE_URL || "https://admin30.fitrinurazis.com/api";
     return apiUrl.replace('/api', '');
 }
 
