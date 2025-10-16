@@ -111,20 +111,20 @@
 
       <!-- Page Content -->
       <div class="p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h1 class="text-2xl font-bold text-gray-800">Manajemen Pesanan</h1>
-          <div class="flex space-x-2">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Manajemen Pesanan</h1>
+          <div class="flex space-x-2 w-full sm:w-auto">
             <button
               id="export-orders"
-              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+              class="flex-1 sm:flex-initial bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg transition text-sm sm:text-base"
             >
-              <i class="fas fa-file-export mr-1"></i> Export
+              <i class="fas fa-file-export mr-1"></i> <span class="hidden sm:inline">Export</span>
             </button>
             <button
               id="refresh-orders"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+              class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg transition text-sm sm:text-base"
             >
-              <i class="fas fa-sync-alt mr-1"></i> Refresh
+              <i class="fas fa-sync-alt mr-1"></i> <span class="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
@@ -212,7 +212,8 @@
 
         <!-- Orders Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-          <div class="overflow-x-auto">
+          <!-- Desktop Table View -->
+          <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
@@ -267,6 +268,11 @@
                 <!-- Orders will be loaded here -->
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile Card View -->
+          <div id="orders-cards-container" class="md:hidden divide-y divide-gray-200">
+            <!-- Orders cards will be loaded here -->
           </div>
 
           <!-- Orders Pagination -->

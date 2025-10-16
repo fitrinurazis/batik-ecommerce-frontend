@@ -214,86 +214,139 @@ async function loadOrdersData() {
 
 function renderOrdersTable(orders) {
   const tableBody = document.getElementById("orders-table-body");
-  if (!tableBody) return;
+  const cardsContainer = document.getElementById("orders-cards-container");
 
-  tableBody.innerHTML = orders
-    .map((order) => {
-      const paymentBadge = getPaymentBadge(order.payment);
-      return `
-        <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                #${order.id}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">${
-                  order.customer_name || "-"
-                }</div>
-                <div class="text-sm text-gray-500">${
-                  order.customer_email || "-"
-                }</div>
-                ${
-                  order.customer_phone
-                    ? `<div class="text-sm text-gray-500">${order.customer_phone}</div>`
-                    : ""
-                }
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <div>${Utils.formatDateShort(order.created_at)}</div>
-                <div class="text-xs text-gray-500">${new Date(
-                  order.created_at
-                ).toLocaleTimeString("id-ID")}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <div class="font-medium">${Utils.formatCurrency(
-                  order.total
-                )}</div>
-                <div class="text-xs text-gray-500">${
-                  order.items ? order.items.length : 0
-                } item</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                ${Utils.getStatusBadge(order.status)}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+  // Render Desktop Table
+  if (tableBody) {
+    tableBody.innerHTML = orders
+      .map((order) => {
+        const paymentBadge = getPaymentBadge(order.payment);
+        return `
+          <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  #${order.id}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">${
+                    order.customer_name || "-"
+                  }</div>
+                  <div class="text-sm text-gray-500">${
+                    order.customer_email || "-"
+                  }</div>
+                  ${
+                    order.customer_phone
+                      ? `<div class="text-sm text-gray-500">${order.customer_phone}</div>`
+                      : ""
+                  }
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <div>${Utils.formatDateShort(order.created_at)}</div>
+                  <div class="text-xs text-gray-500">${new Date(
+                    order.created_at
+                  ).toLocaleTimeString("id-ID")}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <div class="font-medium">${Utils.formatCurrency(
+                    order.total
+                  )}</div>
+                  <div class="text-xs text-gray-500">${
+                    order.items ? order.items.length : 0
+                  } item</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                  ${Utils.getStatusBadge(order.status)}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                  ${paymentBadge}
+                  ${
+                    order.payment &&
+                    (order.payment.payment_status === "pending" ||
+                      order.payment.status === "pending")
+                      ? `
+                      <button onclick="viewPaymentProof(${order.id})"
+                              class="text-xs text-blue-600 hover:text-blue-800 mt-1 block">
+                          Lihat Bukti
+                      </button>
+                  `
+                      : ""
+                  }
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex justify-end space-x-2">
+                      <button onclick="viewOrderDetail(${order.id})"
+                              class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition"
+                              title="Lihat Detail">
+                          <i class="fas fa-eye"></i>
+                      </button>
+                      <button onclick="editOrderStatus(${order.id}, '${
+          order.status
+        }')"
+                              class="text-amber-600 hover:text-amber-900 p-1 rounded hover:bg-amber-50 transition"
+                              title="Update Status">
+                          <i class="fas fa-edit"></i>
+                      </button>
+                      <button onclick="printInvoice(${order.id})"
+                              class="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition"
+                              title="Cetak Invoice">
+                          <i class="fas fa-print"></i>
+                      </button>
+                  </div>
+              </td>
+          </tr>
+          `;
+      })
+      .join("");
+  }
+
+  // Render Mobile Cards
+  if (cardsContainer) {
+    cardsContainer.innerHTML = orders
+      .map((order) => {
+        const paymentBadge = getPaymentBadge(order.payment);
+        return `
+          <div class="p-4 hover:bg-gray-50 transition">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <div class="font-bold text-gray-900 text-lg">#${order.id}</div>
+                <div class="text-sm text-gray-600">${Utils.formatDateShort(order.created_at)}</div>
+              </div>
+              ${Utils.getStatusBadge(order.status)}
+            </div>
+
+            <div class="space-y-2 mb-3">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Pelanggan:</span>
+                <span class="font-medium text-gray-900">${order.customer_name || "-"}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Total:</span>
+                <span class="font-bold text-amber-600">${Utils.formatCurrency(order.total)}</span>
+              </div>
+              <div class="flex justify-between text-sm items-center">
+                <span class="text-gray-600">Pembayaran:</span>
                 ${paymentBadge}
-                ${
-                  order.payment &&
-                  (order.payment.payment_status === "pending" ||
-                    order.payment.status === "pending")
-                    ? `
-                    <button onclick="viewPaymentProof(${order.id})"
-                            class="text-xs text-blue-600 hover:text-blue-800 mt-1 block">
-                        Lihat Bukti
-                    </button>
-                `
-                    : ""
-                }
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div class="flex justify-end space-x-2">
-                    <button onclick="viewOrderDetail(${order.id})"
-                            class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition"
-                            title="Lihat Detail">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button onclick="editOrderStatus(${order.id}, '${
-        order.status
-      }')"
-                            class="text-amber-600 hover:text-amber-900 p-1 rounded hover:bg-amber-50 transition"
-                            title="Update Status">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="printInvoice(${order.id})"
-                            class="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition"
-                            title="Cetak Invoice">
-                        <i class="fas fa-print"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
+              </div>
+            </div>
+
+            <div class="flex space-x-2 pt-3 border-t border-gray-200">
+              <button onclick="viewOrderDetail(${order.id})"
+                      class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm transition">
+                  <i class="fas fa-eye mr-1"></i> Detail
+              </button>
+              <button onclick="editOrderStatus(${order.id}, '${order.status}')"
+                      class="flex-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md text-sm transition">
+                  <i class="fas fa-edit mr-1"></i> Status
+              </button>
+              <button onclick="printInvoice(${order.id})"
+                      class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm transition">
+                  <i class="fas fa-print"></i>
+              </button>
+            </div>
+          </div>
         `;
-    })
-    .join("");
+      })
+      .join("");
+  }
 }
 
 function updateOrdersPagination(pagination) {

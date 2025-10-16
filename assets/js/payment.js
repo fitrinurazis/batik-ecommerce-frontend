@@ -684,21 +684,28 @@ function confirmCODOrder() {
 function showSuccessModal(result) {
   console.log("=== Show Success Modal ===");
   console.log("Result:", result);
+  console.log("Current Order:", currentOrder);
 
-  // Update modal with notification info
-  if (result.notifications) {
-    const emailElement = document.getElementById("notif-email");
-    const phoneElement = document.getElementById("notif-phone");
+  // Always use currentOrder data (from form checkout)
+  const emailElement = document.getElementById("notif-email");
+  const phoneElement = document.getElementById("notif-phone");
 
-    if (emailElement) {
-      emailElement.textContent = result.notifications.email || currentOrder.customer_email;
-      console.log("Email set to:", emailElement.textContent);
-    }
+  if (emailElement && currentOrder) {
+    // Priority: currentOrder data (from checkout form) -> result.notifications -> fallback
+    const email = currentOrder.customer_email ||
+                  (result.notifications && result.notifications.email) ||
+                  "email@example.com";
+    emailElement.textContent = email;
+    console.log("Email set to:", email);
+  }
 
-    if (phoneElement) {
-      phoneElement.textContent = result.notifications.phone || currentOrder.customer_phone;
-      console.log("Phone set to:", phoneElement.textContent);
-    }
+  if (phoneElement && currentOrder) {
+    // Priority: currentOrder data (from checkout form) -> result.notifications -> fallback
+    const phone = currentOrder.customer_phone ||
+                  (result.notifications && result.notifications.phone) ||
+                  "+62 8xx-xxxx-xxxx";
+    phoneElement.textContent = phone;
+    console.log("Phone set to:", phone);
   }
 
   // Show modal

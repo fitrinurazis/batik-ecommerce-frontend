@@ -96,7 +96,7 @@ async function loadProducts() {
 
 function renderProducts() {
     const tbody = document.getElementById('products-table-body');
-    if (!tbody) return;
+    const cardsContainer = document.getElementById('products-cards-container');
 
     // Apply filters
     let filtered = [...allProducts];
@@ -124,53 +124,118 @@ function renderProducts() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedProducts = filtered.slice(startIndex, endIndex);
+    const baseURL = getBaseURL();
 
-    // Render table rows
-    if (paginatedProducts.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                    <i class="fas fa-box-open text-4xl mb-2"></i>
-                    <p>Tidak ada produk ditemukan</p>
-                </td>
-            </tr>
-        `;
-    } else {
-        const baseURL = getBaseURL();
-        tbody.innerHTML = paginatedProducts.map(product => `
-            <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4">
-                    <div class="flex items-center">
-                        <img src="${product.image_url ? baseURL + product.image_url : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'}"
-                             alt="${product.name}"
-                             class="w-12 h-12 rounded-md object-cover mr-3"
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
-                        <div>
-                            <div class="font-medium text-gray-900">${product.name}</div>
-                            <div class="text-sm text-gray-500">${product.description?.substring(0, 50) || ''}...</div>
+    // Render Desktop Table
+    if (tbody) {
+        if (paginatedProducts.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                        <i class="fas fa-box-open text-4xl mb-2"></i>
+                        <p>Tidak ada produk ditemukan</p>
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = paginatedProducts.map(product => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <img src="${product.image_url ? baseURL + product.image_url : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'}"
+                                 alt="${product.name}"
+                                 class="w-12 h-12 rounded-md object-cover mr-3"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                            <div>
+                                <div class="font-medium text-gray-900">${product.name}</div>
+                                <div class="text-sm text-gray-500">${product.description?.substring(0, 50) || ''}...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${product.category || '-'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${Utils.formatCurrency(product.price)}</td>
+                    <td class="px-6 py-4">
+                        <span class="text-sm ${product.stock < 10 ? 'text-red-600 font-semibold' : 'text-gray-900'}">
+                            ${product.stock}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${product.discount || 0}%</td>
+                    <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
+                        <button onclick="editProduct(${product.id})"
+                                class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}'))"
+                                class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Render Mobile Cards
+    if (cardsContainer) {
+        if (paginatedProducts.length === 0) {
+            cardsContainer.innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    <div class="flex flex-col items-center justify-center py-4">
+                        <i class="fas fa-box-open text-4xl mb-2"></i>
+                        <p>Tidak ada produk ditemukan</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            cardsContainer.innerHTML = paginatedProducts.map(product => {
+                const hasDiscount = product.discount && product.discount > 0;
+                const finalPrice = hasDiscount ? product.price * (1 - product.discount / 100) : product.price;
+                const stockClass = product.stock < 10 ? 'text-red-600 font-semibold' : 'text-green-600';
+                const stockText = product.stock < 10 ? 'Stok Terbatas' : 'Tersedia';
+
+                return `
+                    <div class="p-4 hover:bg-gray-50 transition">
+                        <div class="flex gap-3 mb-3">
+                            <img src="${product.image_url ? baseURL + product.image_url : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'}"
+                                 alt="${product.name}"
+                                 class="w-20 h-20 rounded-md object-cover flex-shrink-0"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-bold text-gray-900 text-base truncate">${product.name}</div>
+                                <div class="text-sm text-gray-600 mt-1">${product.category || '-'}</div>
+                                <div class="mt-2">
+                                    ${hasDiscount ? `
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm text-gray-500 line-through">${Utils.formatCurrency(product.price)}</span>
+                                            <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded">${product.discount}%</span>
+                                        </div>
+                                        <div class="font-bold text-amber-600 text-lg">${Utils.formatCurrency(finalPrice)}</div>
+                                    ` : `
+                                        <div class="font-bold text-amber-600 text-lg">${Utils.formatCurrency(product.price)}</div>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-3 text-sm">
+                            <span class="text-gray-600">Stok:</span>
+                            <span class="${stockClass}">${product.stock} unit - ${stockText}</span>
+                        </div>
+
+                        <div class="flex space-x-2 pt-3 border-t border-gray-200">
+                            <button onclick="editProduct(${product.id})"
+                                    class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-700 transition">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}'))"
+                                    class="flex-1 bg-red-600 text-white px-3 py-2 rounded-md text-sm hover:bg-red-700 transition">
+                                <i class="fas fa-trash mr-1"></i> Hapus
+                            </button>
                         </div>
                     </div>
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-900">${product.category || '-'}</td>
-                <td class="px-6 py-4 text-sm text-gray-900">${Utils.formatCurrency(product.price)}</td>
-                <td class="px-6 py-4">
-                    <span class="text-sm ${product.stock < 10 ? 'text-red-600 font-semibold' : 'text-gray-900'}">
-                        ${product.stock}
-                    </span>
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-900">${product.discount || 0}%</td>
-                <td class="px-6 py-4 text-right text-sm font-medium space-x-2">
-                    <button onclick="editProduct(${product.id})"
-                            class="text-blue-600 hover:text-blue-900">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}'))"
-                            class="text-red-600 hover:text-red-900">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+                `;
+            }).join('');
+        }
     }
 
     // Update pagination

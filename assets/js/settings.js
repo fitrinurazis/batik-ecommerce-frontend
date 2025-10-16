@@ -101,136 +101,85 @@ function setupEmailTest() {
             const originalText = btn.innerHTML;
 
             // Ambil konfigurasi SMTP dari form
-            const smtpHost = document.getElementById('smtp-host')?.value;
-            const smtpPort = parseInt(document.getElementById('smtp-port')?.value) || 587;
-            const smtpUsername = document.getElementById('smtp-username')?.value;
             const smtpPassword = document.getElementById('smtp-password')?.value;
-            const smtpSecure = document.getElementById('smtp-secure')?.checked;
-            const emailFromName = document.getElementById('email-from-name')?.value;
-            const adminEmail = document.getElementById('admin-email')?.value;
 
-            // Validasi konfigurasi SMTP
-            if (!smtpHost || !smtpUsername || !emailFromName || !adminEmail) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Konfigurasi Belum Lengkap',
-                        text: 'Silakan lengkapi semua field yang wajib diisi (bertanda *) terlebih dahulu',
-                        confirmButtonColor: '#D97706'
-                    });
-                } else {
-                    Utils.showAlert('Silakan lengkapi konfigurasi SMTP terlebih dahulu', 'warning');
-                }
-                return;
-            }
+            // Smart logic:
+            // - Jika password terisi = save config baru dulu, lalu test
+            // - Jika password kosong = langsung test dengan config yang sudah tersimpan di database
+            const needToSave = smtpPassword && smtpPassword.length > 0;
 
-            // Validasi password diperlukan untuk menyimpan
-            if (!smtpPassword) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Password Diperlukan',
-                        html: `<p class="text-gray-600">Untuk test email, konfigurasi SMTP harus disimpan terlebih dahulu.</p>
-                               <p class="text-gray-600 mt-2">Silakan isi SMTP Password, lalu klik <strong>"Simpan Perubahan"</strong> sebelum test email.</p>`,
-                        confirmButtonColor: '#2563EB'
-                    });
-                } else {
-                    Utils.showAlert('Silakan isi SMTP Password dan simpan konfigurasi terlebih dahulu', 'warning');
-                }
-                return;
-            }
-
-            // Validasi port
-            if (smtpPort < 1 || smtpPort > 65535) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Port Tidak Valid',
-                        text: 'SMTP Port harus antara 1-65535',
-                        confirmButtonColor: '#D97706'
-                    });
-                } else {
-                    Utils.showAlert('SMTP Port harus antara 1-65535', 'warning');
-                }
-                return;
-            }
-
-            // Validasi format email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(smtpUsername)) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Format Email Tidak Valid',
-                        text: 'Format SMTP Username/Email tidak valid',
-                        confirmButtonColor: '#D97706'
-                    });
-                } else {
-                    Utils.showAlert('Format SMTP Username/Email tidak valid', 'warning');
-                }
-                return;
-            }
-
-            if (!emailRegex.test(adminEmail)) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Format Email Tidak Valid',
-                        text: 'Format Admin Email tidak valid',
-                        confirmButtonColor: '#D97706'
-                    });
-                } else {
-                    Utils.showAlert('Format Admin Email tidak valid', 'warning');
-                }
-                return;
-            }
-
-            // Konfirmasi untuk simpan dan test
             if (typeof Swal !== 'undefined') {
-                const result = await Swal.fire({
-                    icon: 'question',
-                    title: 'Simpan & Test Email',
-                    html: `<p class="text-gray-600">Konfigurasi SMTP akan disimpan terlebih dahulu sebelum melakukan test email.</p>
-                           <p class="text-gray-600 mt-2">Lanjutkan?</p>`,
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Simpan & Test',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#2563EB',
-                    cancelButtonColor: '#6B7280'
-                });
-
-                if (!result.isConfirmed) return;
-
                 try {
-                    // Simpan konfigurasi terlebih dahulu
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Menyimpan...</span>';
                     btn.disabled = true;
 
-                    const settings = {
-                        smtp_host: smtpHost,
-                        smtp_port: smtpPort,
-                        smtp_user: smtpUsername,
-                        smtp_pass: smtpPassword,
-                        smtp_secure: smtpSecure,
-                        email_from_name: emailFromName,
-                        admin_email: adminEmail
-                    };
+                    // Jika ada password baru, simpan dulu
+                    if (needToSave) {
+                        // Validasi form sebelum save
+                        const smtpHost = document.getElementById('smtp-host')?.value;
+                        const smtpPort = parseInt(document.getElementById('smtp-port')?.value) || 587;
+                        const smtpUsername = document.getElementById('smtp-username')?.value;
+                        const smtpSecure = document.getElementById('smtp-secure')?.checked;
+                        const emailFromName = document.getElementById('email-from-name')?.value;
+                        const adminEmail = document.getElementById('admin-email')?.value;
 
-                    await ApiService.saveSettings('notification', settings);
+                        if (!smtpHost || !smtpUsername || !emailFromName || !adminEmail) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Konfigurasi Belum Lengkap',
+                                text: 'Silakan lengkapi semua field yang wajib diisi terlebih dahulu',
+                                confirmButtonColor: '#D97706'
+                            });
+                            btn.disabled = false;
+                            return;
+                        }
 
-                    // Update global settings
-                    if (!window.siteSettings) window.siteSettings = {};
-                    if (!window.siteSettings.notification) window.siteSettings.notification = {};
-                    Object.assign(window.siteSettings.notification, settings);
+                        const result = await Swal.fire({
+                            icon: 'question',
+                            title: 'Simpan & Test Email',
+                            html: `<p class="text-gray-600">Konfigurasi SMTP baru akan disimpan terlebih dahulu sebelum melakukan test email.</p>
+                                   <p class="text-gray-600 mt-2">Lanjutkan?</p>`,
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, Simpan & Test',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#2563EB',
+                            cancelButtonColor: '#6B7280'
+                        });
 
-                    // Clear password field after save
-                    const smtpPassField = document.getElementById('smtp-password');
-                    if (smtpPassField) smtpPassField.value = '';
+                        if (!result.isConfirmed) {
+                            btn.disabled = false;
+                            return;
+                        }
 
-                    // Sekarang minta email tujuan untuk test
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Menyimpan...</span>';
+
+                        const settings = {
+                            smtp_host: smtpHost,
+                            smtp_port: smtpPort,
+                            smtp_user: smtpUsername,
+                            smtp_pass: smtpPassword,
+                            smtp_secure: smtpSecure,
+                            email_from_name: emailFromName,
+                            admin_email: adminEmail
+                        };
+
+                        await ApiService.saveSettings('notification', settings);
+
+                        // Update global settings
+                        if (!window.siteSettings) window.siteSettings = {};
+                        if (!window.siteSettings.notification) window.siteSettings.notification = {};
+                        Object.assign(window.siteSettings.notification, settings);
+
+                        // Clear password field after save
+                        const smtpPassField = document.getElementById('smtp-password');
+                        if (smtpPassField) smtpPassField.value = '';
+                    }
+
+                    // Minta email tujuan untuk test
                     const { value: testEmail } = await Swal.fire({
                         title: 'Test Email',
-                        text: 'Konfigurasi berhasil disimpan! Masukkan alamat email tujuan untuk test:',
+                        text: needToSave
+                            ? 'Konfigurasi berhasil disimpan! Masukkan alamat email tujuan untuk test:'
+                            : 'Test email akan menggunakan konfigurasi yang tersimpan di database. Masukkan alamat email tujuan:',
                         input: 'email',
                         inputPlaceholder: 'contoh@email.com',
                         showCancelButton: true,
@@ -255,7 +204,7 @@ function setupEmailTest() {
                         return;
                     }
 
-                    // Test email
+                    // Test email - backend akan menggunakan config dari database
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Mengirim Email...</span>';
                     await ApiService.sendTestEmail(testEmail);
 
@@ -273,12 +222,12 @@ function setupEmailTest() {
                         icon: 'error',
                         title: 'Gagal Test Email',
                         html: `<p class="text-gray-600">${error.message}</p>
-                               <p class="text-sm text-gray-500 mt-2">Periksa kembali konfigurasi SMTP Anda:</p>
+                               <p class="text-sm text-gray-500 mt-2">Kemungkinan penyebab:</p>
                                <ul class="text-xs text-gray-500 text-left mt-2 ml-4 list-disc">
-                                 <li>Pastikan Host dan Port sudah benar</li>
-                                 <li>Pastikan Username/Email valid</li>
-                                 <li>Pastikan Password/App Password sudah benar</li>
-                                 <li>Untuk Gmail, gunakan App Password (bukan password akun)</li>
+                                 <li>Konfigurasi SMTP belum disimpan - klik "Simpan Perubahan" terlebih dahulu</li>
+                                 <li>SMTP Host atau Port tidak valid</li>
+                                 <li>Username/Email atau Password salah</li>
+                                 <li>Untuk Gmail, pastikan menggunakan App Password</li>
                                </ul>`,
                         confirmButtonColor: '#EF4444'
                     });
@@ -288,39 +237,51 @@ function setupEmailTest() {
                 }
             } else {
                 // Fallback tanpa SweetAlert2
-                const confirmSave = confirm('Konfigurasi SMTP akan disimpan terlebih dahulu sebelum test. Lanjutkan?');
-                if (!confirmSave) return;
-
                 try {
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Menyimpan & Testing...</span>';
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Testing...</span>';
                     btn.disabled = true;
 
-                    // Simpan
-                    const settings = {
-                        smtp_host: smtpHost,
-                        smtp_port: smtpPort,
-                        smtp_user: smtpUsername,
-                        smtp_pass: smtpPassword,
-                        smtp_secure: smtpSecure,
-                        email_from_name: emailFromName,
-                        admin_email: adminEmail
-                    };
+                    // Jika ada password, simpan dulu
+                    if (needToSave) {
+                        const smtpHost = document.getElementById('smtp-host')?.value;
+                        const smtpPort = parseInt(document.getElementById('smtp-port')?.value) || 587;
+                        const smtpUsername = document.getElementById('smtp-username')?.value;
+                        const smtpSecure = document.getElementById('smtp-secure')?.checked;
+                        const emailFromName = document.getElementById('email-from-name')?.value;
+                        const adminEmail = document.getElementById('admin-email')?.value;
 
-                    await ApiService.saveSettings('notification', settings);
+                        const confirmSave = confirm('Konfigurasi SMTP baru akan disimpan terlebih dahulu. Lanjutkan?');
+                        if (!confirmSave) {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                            return;
+                        }
 
-                    // Update global
-                    if (!window.siteSettings) window.siteSettings = {};
-                    if (!window.siteSettings.notification) window.siteSettings.notification = {};
-                    Object.assign(window.siteSettings.notification, settings);
+                        const settings = {
+                            smtp_host: smtpHost,
+                            smtp_port: smtpPort,
+                            smtp_user: smtpUsername,
+                            smtp_pass: smtpPassword,
+                            smtp_secure: smtpSecure,
+                            email_from_name: emailFromName,
+                            admin_email: adminEmail
+                        };
 
-                    // Clear password
-                    const smtpPassField = document.getElementById('smtp-password');
-                    if (smtpPassField) smtpPassField.value = '';
+                        await ApiService.saveSettings('notification', settings);
+
+                        // Clear password
+                        const smtpPassField = document.getElementById('smtp-password');
+                        if (smtpPassField) smtpPassField.value = '';
+                    }
 
                     // Test
                     const testEmail = prompt('Masukkan alamat email untuk test:');
                     if (!testEmail) {
-                        Utils.showAlert('Konfigurasi berhasil disimpan!', 'success');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        if (needToSave) {
+                            Utils.showAlert('Konfigurasi berhasil disimpan!', 'success');
+                        }
                         return;
                     }
 
@@ -328,7 +289,7 @@ function setupEmailTest() {
                     Utils.showAlert('Email test berhasil dikirim ke ' + testEmail, 'success');
                 } catch (error) {
                     console.error('Test email error:', error);
-                    Utils.showAlert('Gagal: ' + error.message, 'error');
+                    Utils.showAlert('Gagal: ' + error.message + '. Pastikan konfigurasi SMTP sudah disimpan.', 'error');
                 } finally {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
@@ -423,19 +384,28 @@ async function saveGeneralSettings() {
             ApiService.saveSettings('shop', shopSettings)
         ]);
 
-        // Update global variable
-        if (!window.siteSettings) {
-            window.siteSettings = {};
-        }
-        if (!window.siteSettings.general) {
-            window.siteSettings.general = {};
-        }
-        if (!window.siteSettings.shop) {
-            window.siteSettings.shop = {};
+        // Reload settings from API to ensure form displays saved data
+        console.log('Reloading settings from API to verify save...');
+        const reloadedSettings = await ApiService.getSettings();
+        console.log('Reloaded settings from API:', reloadedSettings);
+
+        // Group by category
+        const groupedSettings = {};
+        if (Array.isArray(reloadedSettings)) {
+            reloadedSettings.forEach(setting => {
+                if (!groupedSettings[setting.category]) {
+                    groupedSettings[setting.category] = {};
+                }
+                groupedSettings[setting.category][setting.key] = setting.value;
+            });
         }
 
-        Object.assign(window.siteSettings.general, generalSettings);
-        Object.assign(window.siteSettings.shop, shopSettings);
+        // Update global settings with reloaded data
+        window.siteSettings = groupedSettings;
+        console.log('Updated global settings from database:', window.siteSettings);
+
+        // Repopulate form with reloaded data to ensure consistency
+        populateSettingsForm(groupedSettings);
 
         Utils.showAlert('Pengaturan umum berhasil disimpan!', 'success');
     } catch (error) {
@@ -446,27 +416,26 @@ async function saveGeneralSettings() {
 
 async function saveEmailSettings() {
     try {
-        const settings = {};
+        const notificationSettings = {};
 
-        // Helper function to always send value, even if empty
         const getElementValue = (htmlId, apiKey) => {
             const el = document.getElementById(htmlId);
             if (el) {
-                settings[apiKey] = el.value || '';
+                notificationSettings[apiKey] = el.value || '';
             }
         };
 
-        const getElementNumber = (htmlId, apiKey, defaultValue = 0) => {
+        const getElementNumber = (htmlId, apiKey, defaultValue) => {
             const el = document.getElementById(htmlId);
             if (el) {
-                settings[apiKey] = parseInt(el.value) || defaultValue;
+                notificationSettings[apiKey] = parseInt(el.value) || defaultValue;
             }
         };
 
         const getElementChecked = (htmlId, apiKey) => {
             const el = document.getElementById(htmlId);
             if (el) {
-                settings[apiKey] = el.checked;
+                notificationSettings[apiKey] = el.checked;
             }
         };
 
@@ -499,7 +468,7 @@ async function saveEmailSettings() {
             return;
         }
 
-        // Always send these fields, even if empty
+        // Notification category settings
         getElementValue('smtp-host', 'smtp_host');
         getElementNumber('smtp-port', 'smtp_port', 587);
         getElementValue('smtp-username', 'smtp_user');
@@ -510,76 +479,46 @@ async function saveEmailSettings() {
         // Only send password if user fills it (to update password)
         const smtpPass = document.getElementById('smtp-password');
         if (smtpPass && smtpPass.value) {
-            settings.smtp_pass = smtpPass.value;
+            notificationSettings.smtp_pass = smtpPass.value;
         }
 
-        console.log('Saving email settings:', settings);
+        console.log('Saving email settings:', notificationSettings);
 
-        // Show loading
-        const submitBtn = document.querySelector('#email-settings-form button[type="submit"]');
-        const originalBtnText = submitBtn?.innerHTML;
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i><span>Menyimpan...</span>';
-            submitBtn.disabled = true;
-        }
-
-        const response = await ApiService.saveSettings('notification', settings);
-        console.log('Save response:', response);
-
-        // Update global settings
-        if (!window.siteSettings) {
-            window.siteSettings = {};
-        }
-        if (!window.siteSettings.notification) {
-            window.siteSettings.notification = {};
-        }
-
-        // Merge saved settings into global
-        Object.assign(window.siteSettings.notification, settings);
-        console.log('Updated global settings:', window.siteSettings);
+        // Save to API
+        await ApiService.saveSettings('notification', notificationSettings);
 
         // Clear password field after successful save
         if (smtpPass) {
             smtpPass.value = '';
         }
 
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Pengaturan email berhasil disimpan',
-                confirmButtonColor: '#10B981',
-                timer: 2000
+        // Reload settings from API to ensure form displays saved data
+        console.log('Reloading settings from API to verify save...');
+        const reloadedSettings = await ApiService.getSettings();
+        console.log('Reloaded settings from API:', reloadedSettings);
+
+        // Group by category
+        const groupedSettings = {};
+        if (Array.isArray(reloadedSettings)) {
+            reloadedSettings.forEach(setting => {
+                if (!groupedSettings[setting.category]) {
+                    groupedSettings[setting.category] = {};
+                }
+                groupedSettings[setting.category][setting.key] = setting.value;
             });
-        } else {
-            Utils.showAlert('Pengaturan email berhasil disimpan!', 'success');
         }
 
-        // Restore button
-        if (submitBtn && originalBtnText) {
-            submitBtn.innerHTML = originalBtnText;
-            submitBtn.disabled = false;
-        }
+        // Update global settings with reloaded data
+        window.siteSettings = groupedSettings;
+        console.log('Updated global settings from database:', window.siteSettings);
+
+        // Repopulate form with reloaded data to ensure consistency
+        populateSettingsForm(groupedSettings);
+
+        Utils.showAlert('Pengaturan email berhasil disimpan!', 'success');
     } catch (error) {
         console.error('Error saving email settings:', error);
-
-        // Restore button
-        const submitBtn = document.querySelector('#email-settings-form button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i><span>Simpan Perubahan</span>';
-            submitBtn.disabled = false;
-        }
-
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Menyimpan',
-                text: error.message || 'Terjadi kesalahan saat menyimpan pengaturan email',
-                confirmButtonColor: '#EF4444'
-            });
-        } else {
-            Utils.showAlert('Gagal menyimpan pengaturan email: ' + (error.message || 'Unknown error'), 'error');
-        }
+        Utils.showAlert('Gagal menyimpan pengaturan email: ' + (error.message || 'Unknown error'), 'error');
     }
 }
 
@@ -745,6 +684,7 @@ function populateSettingsForm(settings) {
 
         if (settings.notification) {
             console.log('Populating notification settings:', settings.notification);
+            console.log('Available keys in notification:', Object.keys(settings.notification));
             setElementValue('smtp-host', 'smtp_host', 'notification');
             setElementValue('smtp-port', 'smtp_port', 'notification', '587');
             setElementValue('smtp-username', 'smtp_user', 'notification');
@@ -755,6 +695,12 @@ function populateSettingsForm(settings) {
             setElementValue('admin-email', 'admin_email', 'notification');
             setElementChecked('whatsapp-enabled', 'whatsapp_enabled', 'notification');
             setElementValue('whatsapp-admin-phone', 'admin_phone', 'notification');
+
+            // Debug: Log each value
+            console.log('smtp_host:', settings.notification.smtp_host);
+            console.log('smtp_user:', settings.notification.smtp_user);
+            console.log('email_from_name:', settings.notification.email_from_name);
+            console.log('admin_email:', settings.notification.admin_email);
         } else {
             console.log('No notification settings found in response');
         }

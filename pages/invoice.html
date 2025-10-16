@@ -101,7 +101,8 @@
             </div>
           </div>
 
-          <div class="border rounded-lg overflow-hidden mb-8">
+          <!-- Desktop Table -->
+          <div class="hidden md:block border rounded-lg overflow-hidden mb-8">
             <table class="w-full">
               <thead>
                 <tr class="bg-gray-100">
@@ -139,6 +140,30 @@
                 </tr>
               </tfoot>
             </table>
+          </div>
+
+          <!-- Mobile View -->
+          <div class="md:hidden border rounded-lg overflow-hidden mb-8">
+            <div id="invoice-items-mobile" class="divide-y">
+              <!-- Mobile invoice items will be loaded here via JavaScript -->
+              <div class="p-4 text-center text-gray-500">
+                Memuat data pesanan...
+              </div>
+            </div>
+            <div class="border-t bg-gray-50 p-4 space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium">Subtotal:</span>
+                <span id="subtotal-mobile">Rp 0</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="font-medium">Pengiriman:</span>
+                <span id="shipping-mobile">Rp 0</span>
+              </div>
+              <div class="flex justify-between text-base font-bold border-t pt-2">
+                <span>Total:</span>
+                <span id="total-mobile">Rp 0</span>
+              </div>
+            </div>
           </div>
 
           <div

@@ -94,10 +94,19 @@ function displayInvoiceDetails(order) {
     // Invoice items
     displayInvoiceItems(order.items);
 
-    // Order summary
-    document.getElementById('subtotal').textContent = formatCurrency(order.subtotal);
-    document.getElementById('shipping').textContent = formatCurrency(order.shipping_cost || 0);
-    document.getElementById('total').textContent = formatCurrency(order.total);
+    // Order summary (desktop and mobile)
+    const subtotalAmount = formatCurrency(order.subtotal);
+    const shippingAmount = formatCurrency(order.shipping_cost || 0);
+    const totalAmount = formatCurrency(order.total);
+
+    document.getElementById('subtotal').textContent = subtotalAmount;
+    document.getElementById('shipping').textContent = shippingAmount;
+    document.getElementById('total').textContent = totalAmount;
+
+    // Mobile summary
+    document.getElementById('subtotal-mobile').textContent = subtotalAmount;
+    document.getElementById('shipping-mobile').textContent = shippingAmount;
+    document.getElementById('total-mobile').textContent = totalAmount;
 
     // Show/hide payment instructions based on payment status
     const paymentInstructions = document.getElementById('payment-instructions');
@@ -121,6 +130,7 @@ function displayInvoiceDetails(order) {
 
 function displayInvoiceItems(items) {
     const container = document.getElementById('invoice-items');
+    const mobileContainer = document.getElementById('invoice-items-mobile');
 
     if (!items || items.length === 0) {
         container.innerHTML = `
@@ -130,9 +140,15 @@ function displayInvoiceItems(items) {
                 </td>
             </tr>
         `;
+        mobileContainer.innerHTML = `
+            <div class="p-4 text-center text-gray-500">
+                Tidak ada item
+            </div>
+        `;
         return;
     }
 
+    // Desktop table view
     container.innerHTML = items.map(item => `
         <tr class="border-b">
             <td class="py-3 px-4">
@@ -143,6 +159,26 @@ function displayInvoiceItems(items) {
             <td class="py-3 px-4 text-right">${formatCurrency(item.price)}</td>
             <td class="py-3 px-4 text-right font-medium">${formatCurrency(item.subtotal)}</td>
         </tr>
+    `).join('');
+
+    // Mobile card view
+    mobileContainer.innerHTML = items.map(item => `
+        <div class="p-4 space-y-2">
+            <div class="font-medium text-gray-800">${item.product_name}</div>
+            ${item.category ? `<div class="text-sm text-gray-500">${item.category}</div>` : ''}
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-600">Jumlah:</span>
+                <span class="font-medium">${item.quantity}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-600">Harga:</span>
+                <span class="font-medium">${formatCurrency(item.price)}</span>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t">
+                <span class="font-semibold">Subtotal:</span>
+                <span class="font-semibold text-amber-600">${formatCurrency(item.subtotal)}</span>
+            </div>
+        </div>
     `).join('');
 }
 

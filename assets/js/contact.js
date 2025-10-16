@@ -7,7 +7,8 @@ let shopPhone = "+62 274 123456"; // Default phone number
 async function loadSettings() {
   try {
     // Load public settings from backend (no auth required)
-    const response = await axios.get("https://admin30.fitrinurazis.com/api/settings/public");
+    const API_BASE = window.API_BASE_URL || "https://admin30.fitrinurazis.com/api";
+    const response = await axios.get(`${API_BASE}/settings/public`);
 
     // Check if response is successful
     if (response.data && response.data.success) {
@@ -190,8 +191,9 @@ if (contactForm) {
       '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...';
 
     try {
+      const API_BASE = window.API_BASE_URL || "https://admin30.fitrinurazis.com/api";
       const response = await axios.post(
-        "https://admin30.fitrinurazis.com/api/email/contact",
+        `${API_BASE}/email/contact`,
         {
           name: name,
           email: email,
