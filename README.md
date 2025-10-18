@@ -2,14 +2,32 @@
 
 Frontend aplikasi e-commerce Batik Nusantara yang dibangun dengan HTML5, CSS3, JavaScript ES6, dan Tailwind CSS.
 
+## 🚀 Quick Start
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd batik-ecommerce-frontend
+
+# Install dependencies
+npm install
+
+# Setup environment (edit .env sesuai kebutuhan)
+# VITE_API_BASE_URL=https://admin30.fitrinurazis.com/api
+
+# Jalankan development server
+npm start
+
+# Aplikasi berjalan di http://localhost:3001
+```
+
 ## 📋 Persyaratan Sistem
 
 Sebelum memulai instalasi, pastikan sistem Anda memiliki:
 
 - **Node.js** (versi 16 atau lebih tinggi)
-- **npm** atau **yarn**
+- **npm** (Node Package Manager)
 - **Web browser** modern (Chrome, Firefox, Safari, Edge)
-- **Python** (untuk HTTP server alternatif)
 
 ## 🚀 Instalasi
 
@@ -17,12 +35,12 @@ Sebelum memulai instalasi, pastikan sistem Anda memiliki:
 
 ```bash
 git clone <repository-url>
-cd batik-ecommerce/frontend
+cd batik-ecommerce-frontend
 ```
 
-### 2. Install Dependencies (Opsional)
+### 2. Install Dependencies
 
-Jika ingin menggunakan development server atau build tools:
+Install semua dependencies yang diperlukan:
 
 ```bash
 npm install
@@ -30,68 +48,83 @@ npm install
 
 ### 3. Konfigurasi Environment
 
-Salin file environment example:
-
-```bash
-cp .env.example .env
-```
-
-Edit file `.env` sesuai konfigurasi Anda:
+Buat file `.env` di root project dan konfigurasi sesuai kebutuhan:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api
-VITE_BACKEND_URL=http://localhost:3000
+# Frontend Environment Configuration
+VITE_API_BASE_URL=https://admin30.fitrinurazis.com/api
+VITE_APP_NAME=Batik Nusantara
+VITE_APP_VERSION=1.0.0
+
+# Development settings
+VITE_DEBUG=true
+VITE_LOG_LEVEL=debug
+
+# API Configuration
+VITE_API_TIMEOUT=10000
+VITE_API_RETRY_ATTEMPTS=3
+
+# Upload settings
+VITE_MAX_FILE_SIZE=5242880
+VITE_ALLOWED_IMAGE_TYPES=image/jpeg,image/png,image/webp
+
+# UI Configuration
+VITE_ITEMS_PER_PAGE=10
+VITE_PAGINATION_LIMIT=5
 ```
+
+**Catatan:** Sesuaikan `VITE_API_BASE_URL` dengan URL backend API Anda.
 
 ## 🖥️ Menjalankan Aplikasi
 
-### Metode 1: HTTP Server Sederhana (Direkomendasikan)
+### Mode Development
 
-#### Menggunakan Python:
-
-```bash
-# Python 3
-python3 -m http.server 3001
-
-# Python 2
-python -m SimpleHTTPServer 3001
-```
-
-#### Menggunakan Node.js (http-server):
+Jalankan development server dengan Express:
 
 ```bash
-# Install http-server globally
-npm install -g http-server
-
-# Jalankan server
-http-server -p 3001
-```
-
-#### Menggunakan PHP:
-
-```bash
-php -S localhost:3001
-```
-
-### Metode 2: Vite Development Server
-
-```bash
+npm start
+# atau
 npm run dev
 ```
 
-### Metode 3: Live Server (VS Code Extension)
+Server akan berjalan di `http://localhost:3001` dengan routing berikut:
 
-1. Install extension "Live Server" di VS Code
-2. Buka folder frontend di VS Code
-3. Klik kanan pada `index.html`
-4. Pilih "Open with Live Server"
+- **Homepage:** `http://localhost:3001/`
+- **Products:** `http://localhost:3001/products`
+- **About:** `http://localhost:3001/about`
+- **Contact:** `http://localhost:3001/contact`
+- **Cart:** `http://localhost:3001/cart`
+- **Checkout:** `http://localhost:3001/checkout`
+- **Admin:** `http://localhost:3001/admin`
 
-Aplikasi akan berjalan di `http://localhost:3001`
+### Mode Production
+
+#### 1. Build aplikasi:
+
+```bash
+npm run build
+```
+
+#### 2. Jalankan production server:
+
+```bash
+npm run serve
+# atau
+npm run serve:static
+```
+
+#### 3. Preview build:
+
+```bash
+npm run preview
+```
+
+Server production akan berjalan di `http://localhost:3001`
 
 ## 📁 Struktur Project
 
 ```
-frontend/
+batik-ecommerce-frontend/
 ├── assets/                  # Asset statis
 │   ├── css/                # Custom CSS files
 │   ├── js/                 # JavaScript modules
@@ -107,11 +140,20 @@ frontend/
 │   ├── product-detail.html # Detail produk
 │   ├── cart.html          # Keranjang belanja
 │   ├── checkout.html      # Halaman checkout
+│   ├── payment.html       # Halaman pembayaran
+│   ├── invoice.html       # Invoice/struk
+│   ├── order-status.html  # Status pesanan
 │   ├── about.html         # Tentang kami
-│   └── contact.html       # Kontak
+│   ├── contact.html       # Kontak
+│   ├── admin-login.html   # Login admin
+│   ├── dashboard.html     # Dashboard admin
+│   └── dashboard-*.html   # Admin dashboard pages
 ├── index.html             # Homepage
-├── package.json           # Dependencies (opsional)
+├── server.js              # Express development server
+├── serve-dist.js          # Production server
 ├── vite.config.js         # Vite configuration
+├── package.json           # Dependencies dan scripts
+├── package-lock.json      # Lock file dependencies
 └── .env                   # Environment variables
 ```
 
@@ -120,8 +162,10 @@ frontend/
 - **HTML5** - Struktur halaman
 - **Tailwind CSS** - Framework CSS utility-first
 - **JavaScript ES6+** - Interaktivitas dan logic
-- **Vite** - Build tool dan development server
+- **Express.js** - Web server untuk development dan routing
+- **Vite** - Build tool dan bundler
 - **Axios** - HTTP client untuk API calls
+- **SweetAlert2** - Modal dan alert yang indah
 - **Toastify.js** - Notifikasi toast
 - **Font Awesome** - Icon library
 
@@ -165,14 +209,28 @@ frontend/
 - **Form validation** Indonesia (nomor telepon, kode pos)
 - **Success modal** dengan order confirmation
 
+### 💰 Payment & Invoice (`pages/payment.html`, `pages/invoice.html`)
+- Halaman pembayaran dengan instruksi
+- Invoice/struk pembelian
+- Order status tracking
+
+### 👨‍💼 Admin Dashboard (`pages/admin-login.html`, `pages/dashboard*.html`)
+- Login admin dengan autentikasi
+- Dashboard home dengan statistik
+- Management produk (CRUD)
+- Management orders
+- Settings panel
+
 ## 🔌 Integrasi Backend API
 
 ### Konfigurasi API Base URL
 
-Edit file `.env`:
+Edit file `.env` dan sesuaikan URL backend API Anda:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_BASE_URL=https://admin30.fitrinurazis.com/api
+# atau untuk development lokal:
+# VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 ### API Endpoints yang Digunakan
@@ -209,9 +267,15 @@ window.ApiService = {
 ### Menambah Halaman Baru
 
 1. Buat file HTML di folder `pages/`
-2. Buat file JavaScript di folder `assets/js/`
-3. Include script di halaman HTML
-4. Update navigasi menu
+2. Tambahkan route di `server.js`:
+   ```javascript
+   app.get("/nama-halaman", (req, res) => {
+     res.sendFile(path.join(__dirname, "pages/nama-halaman.html"));
+   });
+   ```
+3. Buat file JavaScript di folder `assets/js/` (jika diperlukan)
+4. Include script di halaman HTML
+5. Update navigasi menu
 
 ### Menambah Komponen JavaScript
 
@@ -229,6 +293,14 @@ Aplikasi menggunakan Tailwind CSS via CDN:
 ```
 
 Untuk custom styles, edit file di `assets/css/`
+
+### Available NPM Scripts
+
+- `npm start` / `npm run dev` - Jalankan development server
+- `npm run build` - Build untuk production
+- `npm run preview` - Preview production build
+- `npm run serve` - Jalankan production server
+- `npm run clean` - Bersihkan folder dist
 
 ## 🧪 Testing
 
@@ -290,15 +362,76 @@ Test di viewport:
 ### Build untuk Production
 
 ```bash
+# Bersihkan folder dist lama
+npm run clean
+
+# Build project
 npm run build
 ```
 
+File hasil build akan berada di folder `dist/`
+
 ### Deploy ke Web Server
 
-1. **Apache/Nginx**: Upload folder `dist/` ke document root
-2. **GitHub Pages**: Push ke repository, enable Pages
-3. **Netlify**: Drag & drop folder atau connect repository
-4. **Vercel**: Import project dari Git
+#### 1. VPS/Server dengan Node.js
+
+Upload semua file project ke server, lalu:
+
+```bash
+# Install dependencies
+npm install --production
+
+# Jalankan production server
+npm run serve
+```
+
+Atau gunakan PM2 untuk production:
+
+```bash
+# Install PM2
+npm install -g pm2
+
+# Jalankan dengan PM2
+pm2 start serve-dist.js --name batik-frontend
+pm2 save
+pm2 startup
+```
+
+#### 2. Static Hosting (Netlify, Vercel, etc)
+
+Upload folder `dist/` hasil build:
+
+- **Netlify**: Drag & drop folder `dist/` atau connect repository
+- **Vercel**: Import project dari Git
+- **GitHub Pages**: Deploy folder `dist/`
+
+#### 3. Apache/Nginx
+
+Upload folder `dist/` ke document root dan konfigurasi:
+
+**Nginx:**
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /path/to/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+### Environment Variables Production
+
+Sesuaikan file `.env` untuk production:
+
+```env
+VITE_API_BASE_URL=https://api.yourdomain.com/api
+VITE_DEBUG=false
+VITE_LOG_LEVEL=error
+```
 
 ### Konfigurasi CORS
 
@@ -309,14 +442,20 @@ Pastikan backend dikonfigurasi untuk allow origin frontend:
 CORS_ORIGIN=https://yourdomain.com
 ```
 
-### Environment Variables Production
-
-```env
-VITE_API_BASE_URL=https://api.yourdomain.com/api
-VITE_BACKEND_URL=https://api.yourdomain.com
-```
-
 ## 🛠️ Troubleshooting
+
+### Server tidak bisa dijalankan
+
+**Error: `Cannot find module 'express'`**
+- Pastikan sudah menjalankan `npm install`
+- Cek file `package.json` dan `node_modules/` ada
+
+**Error: `Port 3001 already in use`**
+- Port sudah digunakan aplikasi lain
+- Ubah PORT di `server.js` atau gunakan environment variable:
+  ```bash
+  PORT=3002 npm start
+  ```
 
 ### Error: "API Service not found"
 - Pastikan file `assets/js/main.js` sudah di-load
@@ -329,21 +468,32 @@ VITE_BACKEND_URL=https://api.yourdomain.com
 - Untuk development, gunakan `http://localhost:3001`
 
 ### Error: "Products not loading"
-- Check backend server status
-- Check API base URL di `.env`
-- Check network tab untuk HTTP errors
+- Check backend server status (pastikan backend API berjalan)
+- Check API base URL di `.env` (VITE_API_BASE_URL)
+- Check network tab untuk HTTP errors (404, 500, etc)
 - Check browser console untuk JavaScript errors
+- Pastikan backend API endpoint `/api/products` tersedia
 
 ### Error: "Cart not persisting"
-- Check localStorage quota
-- Check browser privacy settings
-- Clear localStorage dan coba ulang
+- Check localStorage quota (max 5-10MB per domain)
+- Check browser privacy settings (private mode membatasi localStorage)
+- Clear localStorage dan coba ulang:
+  ```javascript
+  localStorage.clear()
+  ```
 
 ### Styling Issues
-- Clear browser cache
-- Check Tailwind CDN loading
-- Check custom CSS conflicts
-- Verify responsive classes
+- Clear browser cache (Ctrl+Shift+Delete)
+- Check Tailwind CDN loading di Network tab
+- Check custom CSS conflicts di DevTools
+- Verify responsive classes dengan device toolbar
+
+### Build Errors
+
+**Error saat `npm run build`**
+- Clear cache: `npm run clean`
+- Reinstall dependencies: `rm -rf node_modules package-lock.json && npm install`
+- Check syntax errors di JavaScript files
 
 ## 📱 PWA (Future Enhancement)
 
