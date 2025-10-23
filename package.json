@@ -1,7 +1,7 @@
 {
   "name": "batik-nusantara-frontend",
   "version": "1.0.0",
-  "description": "Frontend untuk Batik Nusantara E-commerce",
+  "description": "Frontend untuk Batik Windasari E-commerce",
   "main": "index.html",
   "type": "module",
   "scripts": {

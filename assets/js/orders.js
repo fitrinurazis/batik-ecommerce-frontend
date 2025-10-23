@@ -421,6 +421,16 @@ function displayOrderDetail(order, paymentData = null) {
   updateElement("shipping-postal", order.shipping_postal);
   updateElement("shipping-method", order.shipping_method || "Standar");
 
+  // Display shipping notes if available
+  const shippingNotesRow = document.getElementById("shipping-notes-row");
+  const shippingNotesText = document.getElementById("shipping-notes");
+  if (order.shipping_notes && order.shipping_notes.trim()) {
+    shippingNotesText.textContent = order.shipping_notes;
+    if (shippingNotesRow) shippingNotesRow.classList.remove("hidden");
+  } else {
+    if (shippingNotesRow) shippingNotesRow.classList.add("hidden");
+  }
+
   // Update totals
   updateElement("order-subtotal", Utils.formatCurrency(order.subtotal));
   updateElement("order-shipping", Utils.formatCurrency(order.shipping_cost));
@@ -943,7 +953,7 @@ function generateInvoicePrint(order) {
         </head>
         <body>
             <div class="header">
-                <div class="company-name">Batik Nusantara</div>
+                <div class="company-name">Batik Windasari</div>
                 <div class="invoice-title">INVOICE #${order.id}</div>
                 <div>Tanggal: ${Utils.formatDate(order.created_at)}</div>
             </div>
@@ -1133,11 +1143,11 @@ function getImageUrl(imagePath) {
 
   // If path starts with /api/media or /uploads, prepend base URL
   if (imagePath.startsWith("/api/media") || imagePath.startsWith("/uploads")) {
-    return `https://admin30.fitrinurazis.com${imagePath}`;
+    return `https://admindashboard.batikwindasari.my.id${imagePath}`;
   }
 
   // If just filename, assume it's in /api/media
-  return `https://admin30.fitrinurazis.com/api/media/${imagePath}`;
+  return `https://admindashboard.batikwindasari.my.id/api/media/${imagePath}`;
 }
 
 // Payment Badge Helper

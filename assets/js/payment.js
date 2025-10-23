@@ -376,7 +376,7 @@ function displayPaymentDetails(method) {
 
     // Update account holder name
     const holderName =
-      methodDetails.accountHolder || "PT Batik Nusantara Indonesia";
+      methodDetails.accountHolder || "PT Batik Windasari Indonesia";
     document.querySelector("#bank-details .text-lg").textContent = holderName;
 
     detailsContainer.classList.remove("hidden");

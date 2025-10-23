@@ -1,5 +1,5 @@
 /**
- * Navbar functionality for Batik Nusantara E-commerce
+ * Navbar functionality for Batik Windasari E-commerce
  * Handles mobile menu, search, cart, and navigation interactions
  */
 

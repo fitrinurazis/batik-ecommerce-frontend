@@ -9,9 +9,11 @@ let filteredProducts = [];
 let currentFilters = {
     search: '',
     category: 'all',
+    priceRanges: [], // Array untuk menyimpan range harga yang dipilih
+    ratings: [], // Array untuk menyimpan rating yang dipilih
     sort: 'created_at-desc',
     page: 1,
-    limit: 12
+    limit: 9999 // Set to a very large number to show all products
 };
 let cart = [];
 
@@ -100,7 +102,8 @@ async function loadProducts() {
         let products = [];
 
         if (typeof window.ApiService !== 'undefined') {
-            const response = await window.ApiService.getProducts();
+            // Fetch all products by passing a large limit
+            const response = await window.ApiService.getProducts({ limit: 1000 });
 
             if (response && response.data) {
                 products = response.data;
@@ -183,6 +186,31 @@ function applyFilters() {
         filtered = filtered.filter(product => product.category === currentFilters.category);
     }
 
+    // Apply price range filters
+    if (currentFilters.priceRanges.length > 0) {
+        filtered = filtered.filter(product => {
+            const price = parseFloat(product.price || 0);
+            const discount = parseFloat(product.discount || 0);
+            const finalPrice = discount > 0 ? price * (1 - discount / 100) : price;
+
+            return currentFilters.priceRanges.some(range => {
+                if (range === 'under-100k') return finalPrice < 100000;
+                if (range === '100k-300k') return finalPrice >= 100000 && finalPrice <= 300000;
+                if (range === '300k-500k') return finalPrice >= 300000 && finalPrice <= 500000;
+                if (range === 'above-500k') return finalPrice > 500000;
+                return false;
+            });
+        });
+    }
+
+    // Apply rating filters
+    if (currentFilters.ratings.length > 0) {
+        filtered = filtered.filter(product => {
+            const rating = parseFloat(product.rating || 0);
+            return currentFilters.ratings.some(minRating => rating >= minRating);
+        });
+    }
+
     // Apply sorting
     filtered = sortProducts(filtered, currentFilters.sort);
 
@@ -233,9 +261,9 @@ function sortProducts(products, sortOption) {
 
 function renderProducts() {
     const container = document.getElementById('products-container');
-    const startIndex = (currentFilters.page - 1) * currentFilters.limit;
-    const endIndex = startIndex + currentFilters.limit;
-    const productsToShow = filteredProducts.slice(startIndex, endIndex);
+
+    // Show all filtered products without pagination
+    const productsToShow = filteredProducts;
 
     container.innerHTML = '';
 
@@ -263,7 +291,7 @@ function createProductCard(product) {
     // Handle image URL
     let imageUrl = product.image_url || product.imageUrl;
     if (imageUrl && imageUrl.startsWith('/api/media/')) {
-        imageUrl = `https://admin30.fitrinurazis.com${imageUrl}`;
+        imageUrl = `https://admindashboard.batikwindasari.my.id${imageUrl}`;
     }
     const fallbackImage = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center&q=80';
     const finalImageUrl = imageUrl || fallbackImage;
@@ -328,68 +356,15 @@ function createProductCard(product) {
 }
 
 function renderPagination() {
+    // Hide pagination since we're showing all products
     const container = document.getElementById('pagination-container');
-    const totalPages = Math.ceil(filteredProducts.length / currentFilters.limit);
-    const currentPage = currentFilters.page;
+    container.innerHTML = '';
 
-    if (totalPages <= 1) {
-        container.innerHTML = '';
-        return;
+    // Hide pagination container completely
+    const paginationWrapper = container.parentElement;
+    if (paginationWrapper) {
+        paginationWrapper.style.display = 'none';
     }
-
-    let paginationHTML = '';
-
-    // Previous button
-    paginationHTML += `
-        <button onclick="changePage(${currentPage - 1})"
-                class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
-                ${currentPage === 1 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i>
-        </button>
-    `;
-
-    // Page numbers
-    const isMobile = window.innerWidth < 640;
-    const startPage = Math.max(1, currentPage - (isMobile ? 1 : 2));
-    const endPage = Math.min(totalPages, currentPage + (isMobile ? 1 : 2));
-
-    if (startPage > 1) {
-        paginationHTML += `
-            <button onclick="changePage(1)" class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm">1</button>
-        `;
-        if (startPage > 2) {
-            paginationHTML += '<span class="px-2 py-2 text-gray-500 text-sm">...</span>';
-        }
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-        paginationHTML += `
-            <button onclick="changePage(${i})"
-                    class="px-3 sm:px-4 py-2 rounded-lg border transition-colors text-sm font-medium ${i === currentPage ? 'bg-amber-600 text-white border-amber-600 shadow-md' : 'border-gray-300 hover:bg-gray-50'}">
-                ${i}
-            </button>
-        `;
-    }
-
-    if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-            paginationHTML += '<span class="px-2 py-2 text-gray-500 text-sm">...</span>';
-        }
-        paginationHTML += `
-            <button onclick="changePage(${totalPages})" class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm">${totalPages}</button>
-        `;
-    }
-
-    // Next button
-    paginationHTML += `
-        <button onclick="changePage(${currentPage + 1})"
-                class="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
-                ${currentPage === totalPages ? 'disabled' : ''}>
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    `;
-
-    container.innerHTML = paginationHTML;
 }
 
 function changePage(page) {
@@ -406,11 +381,13 @@ function changePage(page) {
 }
 
 function updateResultsInfo() {
-    const startIndex = (currentFilters.page - 1) * currentFilters.limit;
-    const endIndex = Math.min(startIndex + currentFilters.limit, filteredProducts.length);
+    // Show total count only since we're displaying all products
+    const totalCount = filteredProducts.length;
 
-    document.getElementById('showing-count').textContent = `${startIndex + 1}-${endIndex}`;
-    document.getElementById('total-count').textContent = filteredProducts.length;
+    const totalCountEl = document.getElementById('total-count');
+    if (totalCountEl) {
+        totalCountEl.textContent = totalCount;
+    }
 }
 
 function showEmptyState() {
@@ -446,6 +423,52 @@ function initEventListeners() {
         });
     }
 
+    // Category filter - Radio buttons
+    const categoryRadios = document.querySelectorAll('input[name="category"]');
+    categoryRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                currentFilters.category = this.value;
+                currentFilters.page = 1;
+                applyFilters();
+            }
+        });
+    });
+
+    // Price filter - Checkboxes
+    const priceCheckboxes = document.querySelectorAll('.price-filter-checkbox');
+    priceCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const range = this.getAttribute('data-range');
+            if (this.checked) {
+                if (!currentFilters.priceRanges.includes(range)) {
+                    currentFilters.priceRanges.push(range);
+                }
+            } else {
+                currentFilters.priceRanges = currentFilters.priceRanges.filter(r => r !== range);
+            }
+            currentFilters.page = 1;
+            applyFilters();
+        });
+    });
+
+    // Rating filter - Checkboxes
+    const ratingCheckboxes = document.querySelectorAll('.rating-filter-checkbox');
+    ratingCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const rating = parseFloat(this.getAttribute('data-rating'));
+            if (this.checked) {
+                if (!currentFilters.ratings.includes(rating)) {
+                    currentFilters.ratings.push(rating);
+                }
+            } else {
+                currentFilters.ratings = currentFilters.ratings.filter(r => r !== rating);
+            }
+            currentFilters.page = 1;
+            applyFilters();
+        });
+    });
+
     // Sort select
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
@@ -464,9 +487,11 @@ function initEventListeners() {
             currentFilters = {
                 search: '',
                 category: 'all',
+                priceRanges: [],
+                ratings: [],
                 sort: 'created_at-desc',
                 page: 1,
-                limit: 12
+                limit: 9999 // Show all products
             };
 
             // Reset form elements
@@ -476,6 +501,12 @@ function initEventListeners() {
             // Reset category radio buttons
             const allCategoryRadio = document.querySelector('input[name="category"][value="all"]');
             if (allCategoryRadio) allCategoryRadio.checked = true;
+
+            // Reset price checkboxes
+            document.querySelectorAll('.price-filter-checkbox').forEach(cb => cb.checked = false);
+
+            // Reset rating checkboxes
+            document.querySelectorAll('.rating-filter-checkbox').forEach(cb => cb.checked = false);
 
             applyFilters();
         });

@@ -1,6 +1,6 @@
 # Batik E-commerce Frontend
 
-Frontend aplikasi e-commerce Batik Nusantara yang dibangun dengan HTML5, CSS3, JavaScript ES6, dan Tailwind CSS.
+Frontend aplikasi e-commerce Batik Windasari yang dibangun dengan HTML5, CSS3, JavaScript ES6, dan Tailwind CSS.
 
 ## 🚀 Quick Start
 
@@ -53,7 +53,7 @@ Buat file `.env` di root project dan konfigurasi sesuai kebutuhan:
 ```env
 # Frontend Environment Configuration
 VITE_API_BASE_URL=https://admin30.fitrinurazis.com/api
-VITE_APP_NAME=Batik Nusantara
+VITE_APP_NAME=Batik Windasari
 VITE_APP_VERSION=1.0.0
 
 # Development settings
@@ -526,5 +526,5 @@ Jika mengalami masalah atau memiliki pertanyaan:
 
 ---
 
-**Batik Nusantara E-commerce Frontend**
+**Batik Windasari E-commerce Frontend**
 *Preserving Indonesian Heritage Through Beautiful Web Experience*

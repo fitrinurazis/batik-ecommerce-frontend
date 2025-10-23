@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   return {
   define: {
     '__API_BASE_URL__': JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:3000/api'),
-    '__APP_NAME__': JSON.stringify(env.VITE_APP_NAME || 'Batik Nusantara'),
+    '__APP_NAME__': JSON.stringify(env.VITE_APP_NAME || 'Batik Windasari'),
   },
   plugins: [
     removeConsole(),

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manajemen Pesanan - Batik Nusantara</title>
+    <title>Manajemen Pesanan - Batik Windasari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -19,7 +19,7 @@
     <div class="sidebar fixed top-0 left-0 h-full bg-amber-800 text-white z-10">
       <div class="p-4 border-b border-amber-700">
         <div class="flex items-center justify-between">
-          <h1 class="text-xl font-bold">Batik Nusantara</h1>
+          <h1 class="text-xl font-bold">Batik Windasari</h1>
           <button id="close-sidebar" class="md:hidden text-white">
             <i class="fas fa-times"></i>
           </button>
@@ -358,9 +358,13 @@
                   <span class="font-medium">Kode Pos:</span>
                   <span id="shipping-postal">-</span>
                 </p>
-                <p>
+                <p class="mb-2">
                   <span class="font-medium">Metode:</span>
                   <span id="shipping-method">-</span>
+                </p>
+                <p id="shipping-notes-row" class="hidden">
+                  <span class="font-medium">Catatan:</span>
+                  <span id="shipping-notes" class="text-blue-700">-</span>
                 </p>
               </div>
             </div>

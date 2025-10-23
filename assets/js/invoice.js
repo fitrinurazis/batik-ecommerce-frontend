@@ -108,6 +108,16 @@ function displayInvoiceDetails(order) {
     document.getElementById('shipping-mobile').textContent = shippingAmount;
     document.getElementById('total-mobile').textContent = totalAmount;
 
+    // Display shipping notes if available
+    const shippingNotesSection = document.getElementById('shipping-notes-section');
+    const shippingNotesText = document.getElementById('shipping-notes-text');
+    if (order.shipping_notes && order.shipping_notes.trim()) {
+        shippingNotesText.textContent = order.shipping_notes;
+        shippingNotesSection.classList.remove('hidden');
+    } else {
+        shippingNotesSection.classList.add('hidden');
+    }
+
     // Show/hide payment instructions based on payment status
     const paymentInstructions = document.getElementById('payment-instructions');
     const paymentVerifiedNotice = document.getElementById('payment-verified-notice');

@@ -147,7 +147,7 @@ function createCartItemElement(cartItem, product, index) {
   // Handle image URL
   let imageUrl = product.image_url || product.imageUrl;
   if (imageUrl && imageUrl.startsWith("/api/media/")) {
-    imageUrl = `https://admin30.fitrinurazis.com${imageUrl}`;
+    imageUrl = `https://admindashboard.batikwindasari.my.id${imageUrl}`;
   }
   const fallbackImage =
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop&crop=center&q=80";
@@ -204,7 +204,7 @@ function createCartItemElement(cartItem, product, index) {
                         </div>
 
                         <!-- Stock Info -->
-                        <div class="hidden lg:block"> >
+                        <div class="hidden lg:block">
                             ${
                               product.stock > 0
                                 ? `
@@ -507,7 +507,7 @@ function createRecommendedProductCard(product) {
   // Handle image URL
   let imageUrl = product.image_url || product.imageUrl;
   if (imageUrl && imageUrl.startsWith("/api/media/")) {
-    imageUrl = `https://admin30.fitrinurazis.com${imageUrl}`;
+    imageUrl = `https://admindashboard.batikwindasari.my.id${imageUrl}`;
   }
   const fallbackImage =
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center&q=80";
@@ -721,6 +721,12 @@ function showError(message) {
     }).showToast();
   }
 }
+
+// Make functions globally accessible for onclick handlers
+window.updateQuantity = updateQuantity;
+window.removeItem = removeItem;
+window.viewProduct = viewProduct;
+window.addToCartFromRecommendation = addToCartFromRecommendation;
 
 // Initialize cart count on page load
 document.addEventListener("DOMContentLoaded", updateCartCount);

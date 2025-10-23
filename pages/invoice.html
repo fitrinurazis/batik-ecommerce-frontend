@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invoice - Batik Nusantara</title>
+    <title>Invoice - Batik Windasari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -33,7 +33,7 @@
             onerror="this.style.display='none'; document.getElementById('site-logo-icon').style.display='block';"
           />
           <i id="site-logo-icon" class="fas fa-tshirt text-amber-300"></i>
-          <span id="site-title">Batik Nusantara</span>
+          <span id="site-title">Batik Windasari</span>
         </a>
 
         <nav class="flex items-center space-x-4 sm:space-x-6">
@@ -65,8 +65,8 @@
               <p id="invoice-id" class="text-gray-600">INV-12345</p>
             </div>
             <div class="text-right">
-              <h2 class="text-xl font-bold">Batik Nusantara</h2>
-              <p class="text-gray-600">Jl. Batik Nusantara No. 123</p>
+              <h2 class="text-xl font-bold">Batik Windasari</h2>
+              <p class="text-gray-600">Jl. Batik Windasari No. 123</p>
               <p class="text-gray-600">Yogyakarta, Indonesia</p>
               <p class="text-gray-600">info@batiknusantara.com</p>
             </div>
@@ -166,6 +166,18 @@
             </div>
           </div>
 
+          <!-- Shipping Notes Section -->
+          <div
+            id="shipping-notes-section"
+            class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-8 hidden"
+          >
+            <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
+              <i class="fas fa-sticky-note mr-2"></i>
+              Catatan Pengiriman
+            </h3>
+            <p id="shipping-notes-text" class="text-sm text-blue-900"></p>
+          </div>
+
           <div
             id="payment-instructions"
             class="bg-amber-50 p-4 rounded-lg mb-8 no-print"
@@ -181,7 +193,7 @@
                 <p><span class="font-medium">Bank:</span> Bank Mandiri</p>
                 <p><span class="font-medium">No. Rekening:</span> 1234567890</p>
                 <p>
-                  <span class="font-medium">Atas Nama:</span> PT Batik Nusantara
+                  <span class="font-medium">Atas Nama:</span> PT Batik Windasari
                 </p>
               </div>
               <div>
@@ -273,7 +285,7 @@
               </div>
               <div>
                 <h3 id="footer-title" class="text-2xl font-bold">
-                  Batik Nusantara
+                  Batik Windasari
                 </h3>
                 <p id="footer-tagline" class="text-amber-200 text-sm">
                   Warisan Budaya Indonesia
@@ -403,7 +415,7 @@
               <div class="flex items-start space-x-3">
                 <i class="fas fa-map-marker-alt text-amber-400 mt-1"></i>
                 <div>
-                  <p class="text-amber-100 text-sm">
+                  <p id="footer-address" class="text-amber-100 text-sm">
                     Jl. Batik Indonesia No. 123<br />
                     Yogyakarta, Indonesia 55161
                   </p>
@@ -411,11 +423,11 @@
               </div>
               <div class="flex items-center space-x-3">
                 <i class="fas fa-phone text-amber-400"></i>
-                <p class="text-amber-100">+62 274 123 456</p>
+                <p id="footer-phone" class="text-amber-100">+62 274 123 456</p>
               </div>
               <div class="flex items-center space-x-3">
                 <i class="fas fa-envelope text-amber-400"></i>
-                <p class="text-amber-100">info@batiknusantara.com</p>
+                <p id="footer-email" class="text-amber-100">info@batiknusantara.com</p>
               </div>
             </div>
           </div>
@@ -428,7 +440,7 @@
           >
             <div class="text-amber-200 text-center md:text-left">
               <p>
-                &copy; 2024 Batik Nusantara. Hak Cipta Dilindungi Undang-Undang.
+                @2025 batik-windasari. Hak Cipta Dilindungi Undang-Undang.
               </p>
             </div>
 

@@ -17,7 +17,7 @@ let uploadedImages = []; // Store uploaded image URLs (max 5)
 
 // Helper function to get base URL for media
 function getBaseURL() {
-    const apiUrl = window.API_BASE_URL || "https://admin30.fitrinurazis.com/api";
+    const apiUrl = window.API_BASE_URL || "https://admindashboard.batikwindasari.my.id/api";
     return apiUrl.replace('/api', '');
 }
 
@@ -165,7 +165,7 @@ function renderProducts() {
                                 class="text-blue-600 hover:text-blue-900">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}'))"
+                        <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')"
                                 class="text-red-600 hover:text-red-900">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -227,7 +227,7 @@ function renderProducts() {
                                     class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-700 transition">
                                 <i class="fas fa-edit mr-1"></i> Edit
                             </button>
-                            <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}'))"
+                            <button onclick="deleteProduct(${product.id}, '${product.name.replace(/'/g, "\\'")}')"
                                     class="flex-1 bg-red-600 text-white px-3 py-2 rounded-md text-sm hover:bg-red-700 transition">
                                 <i class="fas fa-trash mr-1"></i> Hapus
                             </button>

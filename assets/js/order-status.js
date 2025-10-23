@@ -147,6 +147,16 @@ function displayOrderDetails(order) {
     "shipping-city"
   ).textContent = `${order.shipping_city}, ${order.shipping_postal}`;
 
+  // Display shipping notes if available
+  const shippingNotesSection = document.getElementById("shipping-notes-section");
+  const shippingNotesText = document.getElementById("shipping-notes-text");
+  if (order.shipping_notes && order.shipping_notes.trim()) {
+    shippingNotesText.textContent = order.shipping_notes;
+    if (shippingNotesSection) shippingNotesSection.classList.remove("hidden");
+  } else {
+    if (shippingNotesSection) shippingNotesSection.classList.add("hidden");
+  }
+
   // Payment section
   if (order.status === "pending" && !order.payment) {
     document.getElementById("payment-section").classList.remove("hidden");

@@ -29,7 +29,7 @@ async function loadSiteSettings() {
     // Wait for axios to be available
     await waitForAxios();
 
-    const response = await axios.get("https://admin30.fitrinurazis.com/api/settings/public");
+    const response = await axios.get("https://admindashboard.batikwindasari.my.id/api/settings/public");
 
     if (response.data && response.data.success) {
       const settings = response.data.data;
@@ -57,10 +57,16 @@ function updateSiteInfo(settings) {
       footerTitleEl.textContent = general.site_title;
     }
 
+    // Update admin sidebar title
+    const adminSidebarTitleEl = document.getElementById("admin-sidebar-title");
+    if (adminSidebarTitleEl) {
+      adminSidebarTitleEl.textContent = general.site_title;
+    }
+
     // Update document title
     const currentTitle = document.title;
-    if (currentTitle.includes("Batik Nusantara")) {
-      document.title = currentTitle.replace("Batik Nusantara", general.site_title);
+    if (currentTitle.includes("Batik Windasari")) {
+      document.title = currentTitle.replace("Batik Windasari", general.site_title);
     }
   }
 
@@ -120,6 +126,27 @@ function updateSiteInfo(settings) {
       footerLogoEl.onerror = function() {
         this.style.display = "none";
         footerLogoIconEl.style.display = "block";
+      };
+    }
+
+    // Update admin sidebar logo
+    const adminSidebarLogoEl = document.getElementById("admin-sidebar-logo");
+    const adminSidebarLogoIconEl = document.getElementById("admin-sidebar-logo-icon");
+
+    if (adminSidebarLogoEl && adminSidebarLogoIconEl) {
+      adminSidebarLogoEl.src = general.site_logo;
+      adminSidebarLogoEl.classList.remove("hidden");
+      adminSidebarLogoEl.style.display = "block";
+
+      // Hide the icon when logo is loaded successfully
+      adminSidebarLogoEl.onload = function() {
+        adminSidebarLogoIconEl.style.display = "none";
+      };
+
+      // Show icon if logo fails to load
+      adminSidebarLogoEl.onerror = function() {
+        this.style.display = "none";
+        adminSidebarLogoIconEl.style.display = "block";
       };
     }
   }
